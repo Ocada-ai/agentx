@@ -54,18 +54,19 @@ export function Header() {
           <Image alt='ocada' src="/OCADA.svg" width={150} height={150}/>
       </div>
       <div className="flex items-center justify-end space-x-2">
-        <a
+        {/* <a
           target="_blank"
           href="/"
           rel="noopener noreferrer"
           className={cn(buttonVariants({ variant: 'outline' }))}
         >
-          {/* <IconGitHub /> */}
+          <IconGitHub />
           <span className="hidden ml-2 md:flex">Plugins</span>
-        </a>
+        </a> */}
+
         <a
           href="/"
-          
+          style={{ backgroundColor: '#77beb0' }}
           className={cn(buttonVariants())}
         >
           {/* <IconVercel className="mr-2" /> */}
