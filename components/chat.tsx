@@ -14,25 +14,17 @@ import {
   DialogHeader,
   DialogTitle
 } from '@/components/ui/dialog'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
 import { toast } from 'react-hot-toast'
 import { usePathname } from 'next/navigation'
-import { getChat } from '@/app/actions'
-import { useAccount } from 'wagmi'
-import { Chat } from '@/lib/types'
 
 const IS_PREVIEW = process.env.VERCEL_ENV === 'preview'
 
 export interface ChatProps extends React.ComponentProps<'div'> {
   initialMessages?: Message[]
   id?: string
-}
-
-interface ChatHistory {
-  messages?: string[];
-  // Other properties if any
 }
 
 export function Chat({ id, initialMessages, className }: ChatProps) {
