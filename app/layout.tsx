@@ -7,7 +7,6 @@ import { cn } from '@/lib/utils'
 import { TailwindIndicator } from '@/components/tailwind-indicator'
 import { Providers } from '@/components/providers'
 import { Header } from '@/components/header'
-import { Session } from 'next-auth'
 
 // import { ThirdwebSDKProvider } from "@thirdweb-dev/react";
 // import { ethers } from "ethers";
@@ -51,10 +50,9 @@ export default function RootLayout({ children }: RootLayoutProps) {
         <Toaster />
         <Providers
           attribute="class"
-          defaultTheme="white"
+          defaultTheme="system"
           enableSystem
           disableTransitionOnChange
-         
         >
           <div className="flex flex-col min-h-screen bg-[#101010]">
             <Header />

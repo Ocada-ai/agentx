@@ -8,6 +8,7 @@ export interface Chat extends Record<string, any> {
   path: string
   messages: Message[]
   sharePath?: string
+  auth: {}
 }
 
 export type ServerActionResult<Result> = Promise<
@@ -16,3 +17,13 @@ export type ServerActionResult<Result> = Promise<
       error: string
     }
 >
+
+export interface User extends Record<string, any> {
+  id: string
+  userId: string
+  auth: {
+    genNonce: number,
+    lastAuth: string,
+    lastAuthStatus: string
+  }
+}

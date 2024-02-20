@@ -1,5 +1,6 @@
 'use client'
 import * as React from 'react'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
 // import { auth } from '@/autooh'
@@ -17,6 +18,8 @@ import { SidebarToggle } from './sidebar-toggle'
 import { ChatHistory } from './chat-history'
 import { ConnectButton } from '@rainbow-me/rainbowkit'
 import styles from '../styles/header.module.scss'
+import { useAccountEffect } from 'wagmi'
+import { cookies } from 'next/headers'
 
 // async function UserOrLogin() {
 //   // const session = await auth()
@@ -50,6 +53,22 @@ import styles from '../styles/header.module.scss'
 // }
 
 export function Header() {
+  const router = useRouter()
+
+  function deleteCookie(cookieName: string) {
+    document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+  }
+
+  useAccountEffect({
+    onDisconnect() {
+      deleteCookie('address');
+      deleteCookie('web3jwt');
+      router.push('/')
+    },
+  })
+
+
+
   return (
     // <header className="sticky top-0 z-50 flex items-center justify-between w-full h-16 px-2 lg:px-20 shrink-0 bg-transparent">
     //   <div className="flex items-start ml-10">

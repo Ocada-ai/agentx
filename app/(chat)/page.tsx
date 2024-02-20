@@ -1,8 +1,17 @@
+import { auth } from '@/auth'
 import { nanoid } from '@/lib/utils'
 import { Chat } from '@/components/chat'
+import { redirect } from 'next/navigation'
+import { getChat } from '../actions';
 
-export default function IndexPage() {
+export default async function IndexPage() {
+  
   const id = nanoid()
-
-  return <Chat id={id} />
+  const user = await auth()
+  if (!user) {
+    redirect(`/sign-in`)
+  } else {
+    const messages = await getChat(user.userId)
+    return <Chat id={id} initialMessages={messages?.messages} />
+  }
 }
