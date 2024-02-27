@@ -11,6 +11,7 @@ import { z } from "zod";
 
 import { auth } from '@/auth'
 import { nanoid } from '@/lib/utils'
+import { TavilySearchResults } from "@langchain/community/tools/tavily_search";
 
 export const runtime = 'edge'
 
@@ -81,38 +82,55 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    //https://api.birdprotocol.com/analytics/address/sol/{address}
-
     const fetchWalletDetails = new DynamicStructuredTool({
       name: "fetchWalletDetails",
       description: "Fetches the the details about a spcific Solana Wallet Address",
       schema: z.object({
         address: z.any(),
-        // vsCurrency: z.string().optional().default("USD"),
       }),
       func: async (options) => {
         console.log(
           "Triggered fetchWalletDetails function with options: ",
           options,
         );
-        // const  { name }  = options;
         const url = `https://api.birdprotocol.com/analytics/address/${options.address}`;
         console.log(`THIS IS THE BIRD ENGINE URL ${url}`)
         const response = await fetch(url);
-        // console.log(`this is the reponse ${JSON.stringify(await response.json(), null, 2)}`)
         const data = JSON.stringify(await response.json(), null, 2);
         console.log(`This is the stringified response: ${JSON.stringify(data, null, 2)}`);
         return data;
       },
     });
 
-    //
+    const webSearchTool = new TavilySearchResults();
+
+    const searchInternetWithTavily = new DynamicStructuredTool({
+      name: "searchInternetWithTavily",
+      description: "Searches the internet for information using Tavily",
+      schema: z.object({
+        query: z.string(),
+      }),
+      func: async (options) => {
+        const { query } = options;
+        try {
+          const results = await webSearchTool.invoke(query);
+
+          console.log(results)
+          
+          return results;
+        } catch (error) {
+          console.error("Failed to search with Tavily:", error);
+          return "Failed to retrieve information";
+        }
+      },
+    });
+
     const tools = [
       new RequestsGetTool(),
       new RequestsPostTool(),
       fetchWalletDetails,
       fetchCryptoPrice,
-      
+      searchInternetWithTavily,
     ] as ToolInterface[];
 
     const model = new ChatOpenAI({
