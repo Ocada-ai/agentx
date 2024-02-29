@@ -12,27 +12,24 @@ import {
   SystemMessagePromptTemplate
 } from 'langchain/prompts'
 
-
-
 // import { ChatOpenAI } from "@langchain/openai";
-import { AgentExecutor } from "langchain/agents";
+import { AgentExecutor } from 'langchain/agents'
 // import { ChatPromptTemplate } from "@langchain/core/prompts";
-import { RunnableSequence } from "@langchain/core/runnables";
-import { AgentFinish, AgentAction } from "@langchain/core/agents";
-import { BaseMessageChunk } from "@langchain/core/messages";
-import { SearchApi } from "@langchain/community/tools/searchapi";
+import { RunnableSequence } from '@langchain/core/runnables'
+import { AgentFinish, AgentAction } from '@langchain/core/agents'
+import { BaseMessageChunk } from '@langchain/core/messages'
+import { SearchApi } from '@langchain/community/tools/searchapi'
 
-import { TavilySearchResults } from "@langchain/community/tools/tavily_search";
+import { TavilySearchResults } from '@langchain/community/tools/tavily_search'
 // import { ChatOpenAI } from "@langchain/openai";
 // import type { ChatPromptTemplate } from "@langchain/core/prompts";
-import { createOpenAIFunctionsAgent } from "langchain/agents";
+import { createOpenAIFunctionsAgent } from 'langchain/agents'
 
-import { pull } from "langchain/hub";
+import { pull } from 'langchain/hub'
 // import { AgentExecutor, createOpenAIFunctionsAgent } from "langchain/agents";
 
-
 const model = new ChatOpenAI({
-  openAIApiKey: `${process.env.OPENAI_API_KEY}`,
+  openAIApiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
   //@ts-ignore
   model: 'gpt-3.5-turbo-16k',
   temperature: 0.9
@@ -64,7 +61,7 @@ export default function Component() {
   const wallet = useWallet()
 
   const user = wallet.publicKey?.toBase58()
-  const url = `https://mainnet.helius-rpc.com/?api-key=`
+  const url = `https://mainnet.helius-rpc.com/?api-key=${process.env.NEXT_PUBLIC_HELIUS_API_KEY}`
 
   useEffect(() => {
     const getAssetsByOwner = async () => {
@@ -156,39 +153,7 @@ export default function Component() {
   useEffect(() => {
     const assetsDescription = serializeAssets(splTokens, nfts)
 
-    // async function fetchTokenInformation(splTokens: Asset[]) {
-    //     const requestBody = {
-    //       splTokens,
-    //     //   nfts,
-    //       // Include any other necessary data
-    //     };
-      
-    //     try {
-    //       const response = await fetch('/api/chat/route', {
-    //         method: 'POST',
-    //         headers: {
-    //           'Content-Type': 'application/json',
-    //         },
-    //         body: JSON.stringify(`Search for information about these solana tokens for me ${requestBody}`),
-    //       });
-      
-    //       if (!response.ok) {
-    //         throw new Error('Network response was not ok');
-    //       }
-      
-    //       const data = await response.json();
-    //       console.log(`IOEJFIWUEBFIUBEFFBEWOUFHWEF WKBFIWBFIKWRUBF : ${data}`)
-    //       return data; // This should include the Tavily search results and any other processed information
-    //     } catch (error) {
-    //       console.error('Error fetching token information:', error);
-    //       return null;
-    //     }
-    //   }
-
-    
-
     const walletAnalysis = async () => {
-      
       const chatPrompt = ChatPromptTemplate.fromPromptMessages([
         SystemMessagePromptTemplate.fromTemplate(
           `Analyze the following wallet contents and provide an aggregated summary of the token holdings, should be something like total SPL tokens held in wallet FOR EXAMPLE, IF THERE ARE 3 DIFFERENT SPL TOKENS YOU SAY 3 SPL TOKENS, total NFts held in wallet etc... just an aggregated insight dont list all the tokens:\n\n${assetsDescription}\n\n
@@ -203,8 +168,8 @@ export default function Component() {
         // The result is an object with a `text` property.
         const resA = await chain.call({ conversation: assets })
         // console.log( resA.text );
-        setAnalysis(resA.text);
-        console.log('Wallet ANALYSIS:', resA.text);
+        setAnalysis(resA.text)
+        console.log('Wallet ANALYSIS:', resA.text)
         return resA
       } catch (error) {
         console.log('Error:', error)
@@ -215,72 +180,72 @@ export default function Component() {
     }
 
     walletAnalysis()
-
-
-
   }, [assets])
 
   useEffect(() => {
+    // Function to log a message
+    console.log('RAVILY SEARCH HERE ....')
 
-    if (splTokens.length > 0) {
-        const getLatestTokenInfo = async () => {
-            function serializeAssets(splTokens: Asset[]): string {
-              let splTokensDescription =
-                'SPL Tokens:\n' +
-                splTokens
-                  .map(
-                    token =>
-                      `Token Name: ${token.content.metadata.name}, Symbol: ${token.content.metadata.symbol}`
-                  )
-                  .join('\n')
-          
-          
-              return `${splTokensDescription}\n`
-            }
-          
-            const tokensToSearch = serializeAssets(splTokens);
-          
-          const tools = [new TavilySearchResults({ maxResults: 1 , apiKey: "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"})];
-          
-          const prompt = await pull<ChatPromptTemplate>(
-            "hwchase17/openai-functions-agent"
-          );
-          
-          const llm = new ChatOpenAI({
-              openAIApiKey: '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',
-              //@ts-ignore
-              model: 'gpt-3.5-turbo-16k',
-              temperature: 0.9
-          });
-          
-          const agent = await createOpenAIFunctionsAgent({
-            llm,
-            tools,
-            prompt,
-          });
-          
-          const agentExecutor = new AgentExecutor({
-            agent,
-            tools,
-          });
-          
-          const result = await agentExecutor.invoke({
-            input: `what is the latest information about these crypto tokens ? ${tokensToSearch}, if this token is not a well known or popular token. Just tell the user that it's not a significant token`,
-          });
-          
-          setTokenInfo(result.output)
-          
-          console.log(result);
-              }
-            getLatestTokenInfo();
+    const getLatestTokenInfo = async () => {
+      function serializeAssets(splTokens: Asset[]): string {
+        let splTokensDescription =
+          'SPL Tokens:\n' +
+          splTokens
+            .map(
+              token =>
+                `Token Name: ${token.content.metadata.name}, Symbol: ${token.content.metadata.symbol}`
+            )
+            .join('\n')
+
+        return `${splTokensDescription}\n`
+      }
+
+      const tokensToSearch = serializeAssets(splTokens)
+
+      // Setting up the tools and agents for the search
+      const tools = [
+        new TavilySearchResults({
+          maxResults: 1,
+          apiKey: process.env.NEXT_PUBLIC_TAVILY_API_KEY
+        })
+      ]
+      const prompt = await pull<ChatPromptTemplate>(
+        'hwchase17/openai-functions-agent'
+      )
+      const llm = new ChatOpenAI({
+        openAIApiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
+        //@ts-ignore
+        model: 'gpt-3.5-turbo-16k',
+        temperature: 0.9
+      })
+      const agent = await createOpenAIFunctionsAgent({
+        llm,
+        tools,
+        prompt
+      })
+      const agentExecutor = new AgentExecutor({
+        agent,
+        tools
+      })
+
+      // Invoking the agent to get results
+      const result = await agentExecutor.invoke({
+        input: `what is the latest information about these crypto tokens ? ${tokensToSearch}, if this token is not a well known or popular token. Just tell the user that it's not a significant token`
+      })
+
+      // Setting the token information based on the result
+      setTokenInfo(result.output)
+      console.log(`this is the damn result: ${result}`)
     }
 
-   
+    // Timeout to delay the execution
+    const timer = setTimeout(() => {
+      getLatestTokenInfo()
+    }, 30000) // 30 seconds delay
 
-  } )
-
-  
-
+    // Cleanup function to clear the timeout if the component unmounts before the timeout fires or if the dependencies change
+    return () => clearTimeout(timer)
+  }, [splTokens]) // Dependency array, re-run the effect if `splTokens` changes
 
   return (
     <aside className="h-[97vh] overflow-y-scroll flex flex-col items-center p-4 gap-2 bg-[#101010] m-4 rounded-[28px] ring-[3px] ring-[#1a1a1a]">
@@ -325,17 +290,15 @@ export default function Component() {
           <div className="grid gap-2 items-center">
             <div className="grid gap-0.5">
               {/* SPL-Tokens section */}
-                    <h2>{analysis && (
-                        <h3>{analysis}</h3>
-                    )}</h2>
+              <h1 className="font-bold">Assets Summary</h1>
+              <h2>{analysis && <h3>{analysis}</h3>}</h2>
 
-                <div className='grid gap-0.1'>
-                    <h2>{tokenInfo && (
-                        <h3>{tokenInfo}</h3>
-                    )}</h2>
-
-                </div>
-
+              <h1 className="mt-5 font-bold">
+                Latest Information On your Assets
+              </h1>
+              <div className="grid gap-0.1">
+                <h2>{tokenInfo && <h3>{tokenInfo}</h3>}</h2>
+              </div>
             </div>
           </div>
         </div>
