@@ -31,7 +31,7 @@ import { pull } from "langchain/hub";
 
 
 const model = new ChatOpenAI({
-  openAIApiKey: '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',
+  openAIApiKey: `${process.env.OPENAI_API_KEY}`,
   //@ts-ignore
   model: 'gpt-3.5-turbo-16k',
   temperature: 0.9
