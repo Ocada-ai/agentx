@@ -3,6 +3,40 @@ import { JSX, SVGProps } from 'react'
 import React, { useEffect, useState } from 'react'
 import { useWallet } from '@solana/wallet-adapter-react'
 
+import { LLMChain } from 'langchain/chains'
+import { ChatOpenAI } from 'langchain/chat_models/openai'
+import {
+  ChatPromptTemplate,
+  HumanMessagePromptTemplate,
+  SystemMessagePromptTemplate
+} from 'langchain/prompts'
+
+
+
+// import { ChatOpenAI } from "@langchain/openai";
+import { AgentExecutor } from "langchain/agents";
+// import { ChatPromptTemplate } from "@langchain/core/prompts";
+import { RunnableSequence } from "@langchain/core/runnables";
+import { AgentFinish, AgentAction } from "@langchain/core/agents";
+import { BaseMessageChunk } from "@langchain/core/messages";
+import { SearchApi } from "@langchain/community/tools/searchapi";
+
+import { TavilySearchResults } from "@langchain/community/tools/tavily_search";
+// import { ChatOpenAI } from "@langchain/openai";
+// import type { ChatPromptTemplate } from "@langchain/core/prompts";
+import { createOpenAIFunctionsAgent } from "langchain/agents";
+
+import { pull } from "langchain/hub";
+// import { AgentExecutor, createOpenAIFunctionsAgent } from "langchain/agents";
+
+
+const model = new ChatOpenAI({
+  openAIApiKey: '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',
+  //@ts-ignore
+  model: 'gpt-3.5-turbo-16k',
+  temperature: 0.9
+})
+
 interface TokenMetadata {
   name: string
   symbol: string
@@ -23,15 +57,15 @@ interface Asset {
 
 export default function Component() {
   const [assets, setAssets] = useState<Asset[]>([])
+  const [analysis, setAnalysis] = useState<string>('')
+  const [tokenInfo, setTokenInfo] = useState<string>('')
 
   const wallet = useWallet()
-  const key = process.env.NEXT_PUBLIC_HELIUS_API_KEY
 
   const user = wallet.publicKey?.toBase58()
-  const url = `https://mainnet.helius-rpc.com/?api-key=${key}`
+  const url = `https://mainnet.helius-rpc.com/?api-key=bd5ac844-6bd3-49c2-a5c4-1ff255476089`
 
   useEffect(() => {
-
     const getAssetsByOwner = async () => {
       const response = await fetch(url, {
         method: 'POST',
@@ -96,6 +130,157 @@ export default function Component() {
   const splTokens = assets.filter(asset => asset.interface === 'FungibleToken')
   const nfts = assets.filter(asset => asset.interface === 'V1_NFT')
 
+  // Function to serialize SPL Tokens and NFTs data into a descriptive text format
+  function serializeAssets(splTokens: Asset[], nfts: Asset[]): string {
+    let splTokensDescription =
+      'SPL Tokens:\n' +
+      splTokens
+        .map(
+          token =>
+            `Token Name: ${token.content.metadata.name}, Symbol: ${token.content.metadata.symbol}, Balance: ${token.token_info.balance}`
+        )
+        .join('\n')
+    let nftsDescription =
+      'NFTs:\n' +
+      nfts
+        .map(
+          nft =>
+            `NFT Name: ${nft.content.metadata.name}, Symbol: ${nft.content.metadata.symbol}`
+        )
+        .join('\n')
+
+    return `${splTokensDescription}\n\n${nftsDescription}`
+  }
+
+  useEffect(() => {
+    const assetsDescription = serializeAssets(splTokens, nfts)
+
+    // async function fetchTokenInformation(splTokens: Asset[]) {
+    //     const requestBody = {
+    //       splTokens,
+    //     //   nfts,
+    //       // Include any other necessary data
+    //     };
+      
+    //     try {
+    //       const response = await fetch('/api/chat/route', {
+    //         method: 'POST',
+    //         headers: {
+    //           'Content-Type': 'application/json',
+    //         },
+    //         body: JSON.stringify(`Search for information about these solana tokens for me ${requestBody}`),
+    //       });
+      
+    //       if (!response.ok) {
+    //         throw new Error('Network response was not ok');
+    //       }
+      
+    //       const data = await response.json();
+    //       console.log(`IOEJFIWUEBFIUBEFFBEWOUFHWEF WKBFIWBFIKWRUBF : ${data}`)
+    //       return data; // This should include the Tavily search results and any other processed information
+    //     } catch (error) {
+    //       console.error('Error fetching token information:', error);
+    //       return null;
+    //     }
+    //   }
+
+    
+
+    const walletAnalysis = async () => {
+      
+      const chatPrompt = ChatPromptTemplate.fromPromptMessages([
+        SystemMessagePromptTemplate.fromTemplate(
+          `Analyze the following wallet contents and provide an aggregated summary of the token holdings, should be something like total SPL tokens held in wallet FOR EXAMPLE, IF THERE ARE 3 DIFFERENT SPL TOKENS YOU SAY 3 SPL TOKENS, total NFts held in wallet etc... just an aggregated insight dont list all the tokens:\n\n${assetsDescription}\n\n
+        `
+        ),
+        HumanMessagePromptTemplate.fromTemplate(`${assets}`)
+      ])
+
+      const chain = new LLMChain({ llm: model, prompt: chatPrompt })
+
+      try {
+        // The result is an object with a `text` property.
+        const resA = await chain.call({ conversation: assets })
+        // console.log( resA.text );
+        setAnalysis(resA.text);
+        console.log('Wallet ANALYSIS:', resA.text);
+        return resA
+      } catch (error) {
+        console.log('Error:', error)
+        return error
+      } finally {
+        console.log('done analysing')
+      }
+    }
+
+    walletAnalysis()
+
+
+
+  }, [assets])
+
+  useEffect(() => {
+
+    if (splTokens.length > 0) {
+        const getLatestTokenInfo = async () => {
+            function serializeAssets(splTokens: Asset[]): string {
+              let splTokensDescription =
+                'SPL Tokens:\n' +
+                splTokens
+                  .map(
+                    token =>
+                      `Token Name: ${token.content.metadata.name}, Symbol: ${token.content.metadata.symbol}`
+                  )
+                  .join('\n')
+          
+          
+              return `${splTokensDescription}\n`
+            }
+          
+            const tokensToSearch = serializeAssets(splTokens);
+          
+          const tools = [new TavilySearchResults({ maxResults: 1 , apiKey: "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"})];
+          
+          const prompt = await pull<ChatPromptTemplate>(
+            "hwchase17/openai-functions-agent"
+          );
+          
+          const llm = new ChatOpenAI({
+              openAIApiKey: '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',
+              //@ts-ignore
+              model: 'gpt-3.5-turbo-16k',
+              temperature: 0.9
+          });
+          
+          const agent = await createOpenAIFunctionsAgent({
+            llm,
+            tools,
+            prompt,
+          });
+          
+          const agentExecutor = new AgentExecutor({
+            agent,
+            tools,
+          });
+          
+          const result = await agentExecutor.invoke({
+            input: `what is the latest information about these crypto tokens ? ${tokensToSearch}, if this token is not a well known or popular token. Just tell the user that it's not a significant token`,
+          });
+          
+          setTokenInfo(result.output)
+          
+          console.log(result);
+              }
+            getLatestTokenInfo();
+    }
+
+   
+
+  } )
+
+  
+
+
   return (
     <div className="flex min-h-screen items-start p-4 gap-2">
       <div className="grid gap-4">
@@ -111,45 +296,17 @@ export default function Component() {
           <div className="grid gap-2 items-center">
             <div className="grid gap-0.5">
               {/* SPL-Tokens section */}
-              {splTokens.length > 0 && (
-                <>
-                  <h2 className="text-xl font-bold">SPL-Tokens</h2>
-                  <div className="grid gap-2">
-                    {splTokens.map((asset, index) => (
-                      <div key={index} className="grid gap-0.5">
-                        <p className="font-semibold">
-                          Name: {asset.content.metadata.name}
-                        </p>
-                        <p className="font-semibold">
-                          Symbol: {asset.content.metadata.symbol}
-                        </p>
-                        <p className="font-semibold">
-                          Balance: {asset.token_info.balance}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                </>
-              )}
+                    <h2>{analysis && (
+                        <h3>{analysis}</h3>
+                    )}</h2>
 
-              {/* NFTs section */}
-              {nfts.length > 0 && (
-                <>
-                  <h2 className="text-xl font-bold">NFTs</h2>
-                  <div className="grid gap-2">
-                    {nfts.map((asset, index) => (
-                      <div key={index} className="grid gap-0.5">
-                        <p className="font-semibold">
-                          Name: {asset.content.metadata.name}
-                        </p>
-                        <p className="font-semibold">
-                          Symbol: {asset.content.metadata.symbol}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                </>
-              )}
+                <div className='grid gap-0.1'>
+                    <h2>{tokenInfo && (
+                        <h3>{tokenInfo}</h3>
+                    )}</h2>
+
+                </div>
+
             </div>
           </div>
         </div>
