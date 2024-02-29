@@ -63,7 +63,7 @@ export default function Component() {
   const wallet = useWallet()
 
   const user = wallet.publicKey?.toBase58()
-  const url = `https://mainnet.helius-rpc.com/?api-key=bd5ac844-6bd3-49c2-a5c4-1ff255476089`
+  const url = `https://mainnet.helius-rpc.com/?api-key=`
 
   useEffect(() => {
     const getAssetsByOwner = async () => {
