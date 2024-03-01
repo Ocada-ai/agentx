@@ -61,6 +61,8 @@ export default function Component() {
   const wallet = useWallet()
 
   const user = wallet.publicKey?.toBase58()
+
+  console.log(`THIS IS THE CONNECTED OWNER ADDRESS: ${user}`);
   const url = `https://mainnet.helius-rpc.com/?api-key=${process.env.NEXT_PUBLIC_HELIUS_API_KEY}`
 
   useEffect(() => {
