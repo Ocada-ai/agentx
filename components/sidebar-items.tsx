@@ -26,6 +26,7 @@ export function SidebarItems({ chats }: SidebarItemsProps) {
                 opacity: 0,
                 height: 0
               }}
+              className="before:absolute before:inset-y-1  before:w-[0.8px] before:bg-[#1a1a1a] ps-2"
             >
               <SidebarItem index={index} chat={chat}>
                 <SidebarActions

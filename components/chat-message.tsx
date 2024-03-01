@@ -1,15 +1,14 @@
 // Inspired by Chatbot-UI and modified to fit the needs of this project
 // @see https://github.com/mckaywrigley/chatbot-ui/blob/main/components/Chat/ChatMessage.tsx
-
 import { Message } from 'ai'
 import remarkGfm from 'remark-gfm'
 import remarkMath from 'remark-math'
-
 import { cn } from '@/lib/utils'
 import { CodeBlock } from '@/components/ui/codeblock'
 import { MemoizedReactMarkdown } from '@/components/markdown'
 import { IconOcada, IconUser } from '@/components/ui/icons'
 import { ChatMessageActions } from '@/components/chat-message-actions'
+import styles from '../styles/chat.module.scss'
 
 export interface ChatMessageProps {
   message: Message
@@ -23,7 +22,7 @@ export function ChatMessage({ message, ...props }: ChatMessageProps) {
     >
       <div
         className={cn(
-          'flex size-10 shrink-0 select-none items-center justify-center rounded-full',
+          'flex size-7 shrink-0 select-none items-center justify-center rounded-full',
           message.role === 'user' ? 'bg-[#262626]' : 'bg-transparent'
         )}
       >
@@ -31,11 +30,17 @@ export function ChatMessage({ message, ...props }: ChatMessageProps) {
       </div>
       <div className="flex-1 px-1 ml-4 space-y-2 overflow-hidden">
         <MemoizedReactMarkdown
-          className="prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0"
+          className={`${styles['c-chat']} prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0 text-type-600 text-opacity-90`}
           remarkPlugins={[remarkGfm, remarkMath]}
           components={{
             p({ children }) {
-              return <p className="mb-2 last:mb-0">{children}</p>
+              return (
+                <p
+                  className={`${styles['c-chat']} mb-2 last:mb-0 text-type-600 text-opacity-90`}
+                >
+                  {children}
+                </p>
+              )
             },
             code({ node, inline, className, children, ...props }) {
               if (children.length) {

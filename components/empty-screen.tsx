@@ -55,20 +55,23 @@ export function EmptyScreen({ setInput }: Pick<UseChatHelpers, 'setInput'>) {
     <div className="w-full lg:max-w-3xl mx-auto px-4">
       <div className="rounded-lg py-8">
         <div className="mb-6">
-          <h1 className="mb-2 text-3xl font-semibold text-type-600">
-            Welcome to <span className="text-theme-500 font-bold">OCADA</span>{' '}
+          <h1 className="mb-2 text-3xl font-semibold text-type-600 text-opacity-80">
+            Welcome to{' '}
+            <span className="text-theme-500 font-bold text-opacity-100">
+              OCADA
+            </span>{' '}
             AI Agent!
           </h1>
           <p className="font-normal text-sm leading-normal text-type-600 text-opacity-50">
             You can start a conversation here or try the following examples:
           </p>
         </div>
-        <div className="grid grid-cols-[repeat(auto-fill,minmax(198px,1fr))] grid-flow-row auto-rows-fr gap-3 items-start min-h-48">
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(198px,1fr))] grid-flow-row auto-rows-fr gap-3 items-start min-h-40">
           {exampleMessages.map((message, index) => (
             <Button
               key={index}
               variant="link"
-              className="bg-[#141414] h-full px-5 text-sm font-normal py-4 rounded-xl mt-0 text-left flex-col items-start justify-between hover:no-underline text-type-600 text-opacity-60"
+              className="bg-[#141414] border-[0.5px] border-[#1a1a1a] shadow-[0_2px_4px_0_#0000001a] h-full px-5 text-sm font-normal py-4 rounded-xl mt-0 text-left flex-col items-start justify-between hover:no-underline text-type-600 text-opacity-60"
               onClick={() => setInput(message.message)}
             >
               {message.heading}

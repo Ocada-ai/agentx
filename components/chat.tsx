@@ -58,7 +58,7 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
     <>
       <div
         className={cn(
-          'pt-4 md:pt-10 h-[97vh] bg-[#101010] m-4 rounded-[28px] ring-[3px] ring-[#1a1a1a] overflow-y-scroll relative flex flex-col justify-between',
+          'pt-4 md:pt-16 h-[97vh] bg-[#101010] m-4 rounded-[28px] ring-[3px] ring-[#1a1a1a] overflow-y-scroll relative flex flex-col justify-between',
           className
         )}
       >
