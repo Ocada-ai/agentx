@@ -1,7 +1,5 @@
 import * as React from 'react'
-
 import Link from 'next/link'
-
 import { cn } from '@/lib/utils'
 import { SidebarList } from '@/components/sidebar-list'
 import { buttonVariants } from '@/components/ui/button'
@@ -14,18 +12,6 @@ interface ChatHistoryProps {
 export async function ChatHistory({ userId }: ChatHistoryProps) {
   return (
     <div className="flex flex-col h-full">
-      <div className="mt-5 mb-3">
-        <Link
-          href="/"
-          className={cn(
-            buttonVariants({ variant: 'outline' }),
-            'h-10 w-full justify-start bg-[#171717] px-4 shadow-none transition-colors hover:bg-zinc-200/40 border-none mb-2 rounded-full ring-2 ring-[#1a1a1a]'
-          )}
-        >
-          <IconPlus className="-translate-x-2" />
-          New Chat
-        </Link>
-      </div>
       <React.Suspense
         fallback={
           <div className="flex flex-col flex-1 px-4 space-y-4 overflow-auto">

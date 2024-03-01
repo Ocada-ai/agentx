@@ -38,7 +38,7 @@ export function ChatPanel({
   const [shareDialogOpen, setShareDialogOpen] = React.useState(false)
 
   return (
-    <div className="sticky bottom-0 w-full animate-in duration-300 ease-in-out">
+    <div className="sticky bottom-0 w-full bg-[#101010] animate-in duration-300 ease-in-out">
       {/* <ButtonScrollToBottom /> */}
       <div className="lg:max-w-3xl sm:px-4 mx-auto">
         <div className="flex items-center justify-center h-12">

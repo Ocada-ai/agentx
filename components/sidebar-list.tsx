@@ -17,10 +17,10 @@ export async function SidebarList({ userId }: SidebarListProps) {
   const chats = await loadChats(userId)
 
   return (
-    <div className="flex flex-1 flex-col overflow-hidden">
+    <div className="flex flex-1 flex-col overflow-hidden min-h-full">
       <div className="flex-1 overflow-auto">
         {chats?.length ? (
-          <div className="space-y-2">
+          <div className="space-y-2 relative">
             <SidebarItems chats={chats} />
           </div>
         ) : (
@@ -31,7 +31,7 @@ export async function SidebarList({ userId }: SidebarListProps) {
           </div>
         )}
       </div>
-      <div className="flex items-center justify-between py-4 px-0">
+      <div className="flex items-center justify-between py-4 px-0 mt-auto">
         <ThemeToggle />
         <ClearHistory clearChats={clearChats} isEnabled={chats?.length > 0} />
       </div>
