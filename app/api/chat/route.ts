@@ -287,33 +287,12 @@ export async function POST(req: NextRequest) {
 
     const webSearchTool = new TavilySearchResults();
 
-    const searchInternetWithTavily = new DynamicStructuredTool({
-      name: "searchInternetWithTavily",
-      description: "Searches the internet for information using Tavily",
-      schema: z.object({
-        query: z.string(),
-      }),
-      func: async (options) => {
-        const { query } = options;
-        try {
-          const results = await webSearchTool.invoke(query);
-
-          console.log(results)
-          
-          return results;
-        } catch (error) {
-          console.error("Failed to search with Tavily:", error);
-          return "Failed to retrieve information";
-        }
-      },
-    });
 
     const tools = [
       new RequestsGetTool(),
       new RequestsPostTool(),
       fetchWalletDetails,
       fetchCryptoPrice,
-      searchInternetWithTavily,
       fetchsolanaDetail
     ] as ToolInterface[];
 
