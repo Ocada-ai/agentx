@@ -1,7 +1,5 @@
 'use client'
-
 import { useChat, type Message } from 'ai/react'
-
 import { cn } from '@/lib/utils'
 import { ChatList } from '@/components/chat-list'
 import { ChatPanel } from '@/components/chat-panel'
@@ -64,7 +62,12 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
 
   return (
     <>
-      <div className={cn('pb-[200px] pt-4 md:pt-10', className)}>
+      <div
+        className={cn(
+          'pt-4 md:pt-16 h-[97vh] bg-[#101010] m-4 rounded-[28px] ring-[3px] ring-[#1a1a1a] overflow-y-scroll relative flex flex-col justify-between',
+          className
+        )}
+      >
         {messages.length ? (
           <>
             <ChatList messages={messages} />
@@ -73,9 +76,6 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
         ) : (
           <EmptyScreen setInput={setInput} />
         )}
-      </div>
-      <WalletProvider wallets={wallets}>
-
         <ChatPanel
           id={id}
           isLoading={isLoading}
@@ -86,8 +86,7 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
           input={input}
           setInput={setInput}
         />
-      </WalletProvider>
-
+      </div>
       <Dialog open={previewTokenDialog} onOpenChange={setPreviewTokenDialog}>
         <DialogContent>
           <DialogHeader>
