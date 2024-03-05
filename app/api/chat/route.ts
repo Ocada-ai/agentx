@@ -29,229 +29,241 @@ const convertVercelMessageToLangChainMessage = (message: VercelChatMessage) => {
     return new ChatMessage(message.content, message.role);
   }
 };
-export async function POST(req: NextRequest) {
-  try {
-    const body = await req.json();
-    const userId = (await auth())?.user.id
-    const { previewToken } = body
-
-    if (!userId) {
-      return new Response('Unauthorized', {
-        status: 401
-      })
-    }
-
-    if (previewToken) {
-      openai.apiKey = previewToken
-    }
-
-
-    const messages = (body.messages ?? []).filter(
-      (message: VercelChatMessage) =>
-        message.role === "user" || message.role === "assistant",
-    );
-    const returnIntermediateSteps = body.show_intermediate_steps ?? false;
-    const previousMessages = messages
-      .slice(0, -1)
-      .map(convertVercelMessageToLangChainMessage);
-    const currentMessageContent = messages[messages.length - 1].content;
-
-    const fetchCryptoPrice = new DynamicStructuredTool({
-      name: "fetchCryptoPrice",
-      description: "Fetches the current price of a specified cryptocurrency",
-      schema: z.object({
-        cryptoName: z.string(),
-        vsCurrency: z.string().optional().default("USD"),
-      }),
-      func: async (options) => {
-        console.log(
-          "Triggered fetchCryptoPrice function with options: ",
-          options,
-        );
-        const { cryptoName, vsCurrency } = options;
-        const url = `https://api.coingecko.com/api/v3/simple/price?ids=${cryptoName}&vs_currencies=${vsCurrency}`;
-        const response = await fetch(url);
-        const data = await response.json();
-        // Ensure the cryptoName and vsCurrency are correctly accessed.
-        const price = data[cryptoName.toLowerCase()]?.[vsCurrency.toLowerCase()];
-        if (price === undefined) {
-          console.error("Price not found in response:", data);
-          return "Price not available";
-        }
-        return price.toString();
-      },
-    });
-
-    //https://api.birdprotocol.com/analytics/address/sol/{address}
-
-    const fetchWalletDetails = new DynamicStructuredTool({
-      name: "fetchWalletDetails",
-      description: "Fetches the the details about a spcific Solana Wallet Address",
-      schema: z.object({
-        address: z.any(),
-        // vsCurrency: z.string().optional().default("USD"),
-      }),
-      func: async (options) => {
-        console.log(
-          "Triggered fetchWalletDetails function with options: ",
-          options,
-        );
-        // const  { name }  = options;
-        const url = `https://api.birdprotocol.com/analytics/address/${options.address}`;
-        console.log(`THIS IS THE BIRD ENGINE URL ${url}`)
-        const response = await fetch(url);
-        // console.log(`this is the reponse ${JSON.stringify(await response.json(), null, 2)}`)
-        const data = JSON.stringify(await response.json(), null, 2);
-        console.log(`This is the stringified response: ${JSON.stringify(data, null, 2)}`);
-        return data;
-      },
-    });
-
-    //
-    const tools = [
-      new RequestsGetTool(),
-      new RequestsPostTool(),
-      fetchWalletDetails,
-      fetchCryptoPrice,
-      
-    ] as ToolInterface[];
-
-    const model = new ChatOpenAI({
-      temperature: 0,
-      streaming: true,
-      modelName: "gpt-3.5-turbo-0125",
-    });
-
-    const agentExecutor = await initializeAgentExecutorWithOptions(
-      tools,
-      model,
-      {
-        agentType: "openai-functions",
-        returnIntermediateSteps,
-      },
-    );
-
-    if (!returnIntermediateSteps) {
-      const result = await agentExecutor.invoke({
-        input: currentMessageContent,
-        chat_history: previousMessages,
-      });
-
-      const title = body.messages[0].content.substring(0, 100)
-      const id = body.id ?? nanoid()
-      const createdAt = Date.now()
-      const path = `/chat/${id}`
-      const payload = {
-        id,
-        title,
-        userId,
-        createdAt,
-        path,
-        messages: [
-          ...messages,
-          {
-            content: result.output,
-            role: 'assistant'
-          }
-        ]
-      }
-      await kv.hmset(`chat:${id}`, payload)
-      await kv.zadd(`user:chat:${userId}`, {
-        score: createdAt,
-        member: `chat:${id}`
-      })
-
-      const logStream = await agentExecutor.streamLog({
-        input: currentMessageContent,
-        chat_history: previousMessages,
-      });
-
-      const textEncoder = new TextEncoder();
-      const transformStream = new ReadableStream({
-        async start(controller) {
-          for await (const chunk of logStream) {
-            if (chunk.ops?.length > 0 && chunk.ops[0].op === "add") {
-              const addOp = chunk.ops[0];
-              if (
-                addOp.path.startsWith("/logs/ChatOpenAI") &&
-                typeof addOp.value === "string" &&
-                addOp.value.length
-              ) {
-                controller.enqueue(textEncoder.encode(addOp.value));
-              }
-            }
-          }
-          controller.close();
-        },
-      });
-
-      return new StreamingTextResponse(transformStream);
-    } 
-    else {
-      const result = await agentExecutor.invoke({
-        input: currentMessageContent,
-        chat_history: previousMessages,
-      });
-
-      return NextResponse.json(
-        { output: result.output, intermediate_steps: result.intermediateSteps },
-        { status: 200 },
-      );
-    }
-
-  } catch (e: any) {
-    return NextResponse.json({ error: e.message }, { status: e.status ?? 500 });
-  }
-}
-
 
 // export async function POST(req: NextRequest) {
 //   try {
 //     const body = await req.json();
-//     const userId = (await auth())?.user.id;
-//     const { previewToken } = body;
+//     const userId = (await auth())?.user.id
+//     const { previewToken } = body
 
 //     if (!userId) {
-//       return new Response('Unauthorized', { status: 401 });
+//       return new Response('Unauthorized', {
+//         status: 401
+//       })
 //     }
 
 //     if (previewToken) {
-//       openai.apiKey = previewToken;
+//       openai.apiKey = previewToken
 //     }
 
+
 //     const messages = (body.messages ?? []).filter(
-//       (message: VercelChatMessage) => message.role === "user" || message.role === "assistant",
+//       (message: VercelChatMessage) =>
+//         message.role === "user" || message.role === "assistant",
 //     );
+//     const returnIntermediateSteps = body.show_intermediate_steps ?? false;
+//     const previousMessages = messages
+//       .slice(0, -1)
+//       .map(convertVercelMessageToLangChainMessage);
 //     const currentMessageContent = messages[messages.length - 1].content;
 
-//     // Call the chat API with the current message content
-//     const chatApiResponse = await axios.post('https://agents.bilic.ai/bot/3d718af0-441c-430b-b602-282205e97342/api', {
-//       message: currentMessageContent,
-//       history: messages.map((msg: VercelChatMessage) => msg.content), // Assuming you want to send the entire chat history
-//       stream: true
-//     }, {
-//       headers: {
-//         'content-type': 'application/json',
-//         'x-api-key': 'FJ1hzbVe8SaBYjTA2DGZreMQ14XkGdCi'
+//     const fetchCryptoPrice = new DynamicStructuredTool({
+//       name: "fetchCryptoPrice",
+//       description: "Fetches the current price of a specified cryptocurrency",
+//       schema: z.object({
+//         cryptoName: z.string(),
+//         vsCurrency: z.string().optional().default("USD"),
+//       }),
+//       func: async (options) => {
+//         console.log(
+//           "Triggered fetchCryptoPrice function with options: ",
+//           options,
+//         );
+//         const { cryptoName, vsCurrency } = options;
+//         const url = `https://api.coingecko.com/api/v3/simple/price?ids=${cryptoName}&vs_currencies=${vsCurrency}`;
+//         const response = await fetch(url);
+//         const data = await response.json();
+//         // Ensure the cryptoName and vsCurrency are correctly accessed.
+//         const price = data[cryptoName.toLowerCase()]?.[vsCurrency.toLowerCase()];
+//         if (price === undefined) {
+//           console.error("Price not found in response:", data);
+//           return "Price not available";
+//         }
+//         return price.toString();
+//       },
+//     });
+
+//     //https://api.birdprotocol.com/analytics/address/sol/{address}
+
+//     const fetchWalletDetails = new DynamicStructuredTool({
+//       name: "fetchWalletDetails",
+//       description: "Fetches the the details about a spcific Solana Wallet Address",
+//       schema: z.object({
+//         address: z.any(),
+//         // vsCurrency: z.string().optional().default("USD"),
+//       }),
+//       func: async (options) => {
+//         console.log(
+//           "Triggered fetchWalletDetails function with options: ",
+//           options,
+//         );
+//         // const  { name }  = options;
+//         const url = `https://api.birdprotocol.com/analytics/address/${options.address}`;
+//         console.log(`THIS IS THE BIRD ENGINE URL ${url}`)
+//         const response = await fetch(url);
+//         // console.log(`this is the reponse ${JSON.stringify(await response.json(), null, 2)}`)
+//         const data = JSON.stringify(await response.json(), null, 2);
+//         console.log(`This is the stringified response: ${JSON.stringify(data, null, 2)}`);
+//         return data;
+//       },
+//     });
+
+
+
+
+//     //
+//     const tools = [
+//       new RequestsGetTool(),
+//       new RequestsPostTool(),
+//       fetchWalletDetails,
+//       fetchCryptoPrice,
+      
+//     ] as ToolInterface[];
+
+//     const model = new ChatOpenAI({
+//       temperature: 0,
+//       streaming: true,
+//       modelName: "gpt-3.5-turbo-0125",
+//     });
+
+//     const agentExecutor = await initializeAgentExecutorWithOptions(
+//       tools,
+//       model,
+//       {
+//         agentType: "openai-functions",
+//         returnIntermediateSteps,
+//       },
+//     );
+
+//     if (!returnIntermediateSteps) {
+//       const result = await agentExecutor.invoke({
+//         input: currentMessageContent,
+//         chat_history: previousMessages,
+//       });
+
+//       const title = body.messages[0].content.substring(0, 100)
+//       const id = body.id ?? nanoid()
+//       const createdAt = Date.now()
+//       const path = `/chat/${id}`
+//       const payload = {
+//         id,
+//         title,
+//         userId,
+//         createdAt,
+//         path,
+//         messages: [
+//           ...messages,
+//           {
+//             content: result.output,
+//             role: 'assistant'
+//           }
+//         ]
 //       }
-//     });
+//       await kv.hmset(`chat:${id}`, payload)
+//       await kv.zadd(`user:chat:${userId}`, {
+//         score: createdAt,
+//         member: `chat:${id}`
+//       })
 
-//     // Assuming the API response contains a field `response` with the message you want to display
-//     const chatApiMessage = chatApiResponse.data.response;
+//       const logStream = await agentExecutor.streamLog({
+//         input: currentMessageContent,
+//         chat_history: previousMessages,
+//       });
 
-//     // Add the API response to your messages array or handle it as needed
-//     messages.push({
-//       content: chatApiMessage,
-//       role: 'assistant'
-//     });
+//       const textEncoder = new TextEncoder();
+//       const transformStream = new ReadableStream({
+//         async start(controller) {
+//           for await (const chunk of logStream) {
+//             if (chunk.ops?.length > 0 && chunk.ops[0].op === "add") {
+//               const addOp = chunk.ops[0];
+//               if (
+//                 addOp.path.startsWith("/logs/ChatOpenAI") &&
+//                 typeof addOp.value === "string" &&
+//                 addOp.value.length
+//               ) {
+//                 controller.enqueue(textEncoder.encode(addOp.value));
+//               }
+//             }
+//           }
+//           controller.close();
+//         },
+//       });
 
-//     // Continue with your logic to save the chat session, return response, etc.
-//     // This is a placeholder for where you would include the logic to handle the updated messages array
-//     // For example, saving the updated chat session and returning the updated chat to the client
+//       return new StreamingTextResponse(transformStream);
+//     } 
+//     else {
+//       const result = await agentExecutor.invoke({
+//         input: currentMessageContent,
+//         chat_history: previousMessages,
+//       });
 
-//     return new Response(JSON.stringify(messages), { status: 200, headers: { 'Content-Type': 'application/json' } });
+//       return NextResponse.json(
+//         { output: result.output, intermediate_steps: result.intermediateSteps },
+//         { status: 200 },
+//       );
+//     }
 
 //   } catch (e: any) {
 //     return NextResponse.json({ error: e.message }, { status: e.status ?? 500 });
 //   }
 // }
+
+
+export async function POST(req: NextRequest) {
+  try {
+    const body = await req.json();
+    const userId = (await auth())?.user.id;
+    const { previewToken } = body;
+
+    if (!userId) {
+      return new Response('Unauthorized', { status: 401 });
+    }
+
+    if (previewToken) {
+      openai.apiKey = previewToken;
+    }
+
+    const messages = (body.messages ?? []).filter(
+      (message: VercelChatMessage) => message.role === "user" || message.role === "assistant",
+    );
+    const currentMessageContent = messages[messages.length - 1].content;
+
+    // Call the chat API with the current message content
+    const chatApiResponse = await fetch('https://dialoqbase-production.up.railway.app/bot/e1f2c1e5-0e11-4ac5-b2c9-25dd20a735ac/api', {
+      method: 'POST',
+      body: JSON.stringify({
+        message: currentMessageContent,
+        history: messages.map((msg: VercelChatMessage) => msg.content),
+        stream: false
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': 'sk_db_LaEJaRATwGKc7cYd6JTFHTmqmWr2CREh'
+      }
+    });
+
+ 
+    
+    const chatApiResponseData = await chatApiResponse.json();
+    console.log(`This is the AI response ${JSON.stringify(chatApiResponseData) }`);
+    const chatApiMessage = chatApiResponseData.bot.text[chatApiResponseData.bot.text.length - 1].content;
+
+    // Add the API response to your messages array or handle it as needed
+    messages.push({
+      content: chatApiMessage,
+      role: 'assistant'
+    });
+
+    // Continue with your logic to save the chat session, return response, etc.
+    // This is a placeholder for where you would include the logic to handle the updated messages array
+    // For example, saving the updated chat session and returning the updated chat to the client
+
+    return new Response(JSON.stringify(messages), { status: 200, headers: { 'Content-Type': 'application/json' } });
+
+  } catch (e: any) {
+
+    console.error(`THIS IS THE SERVER ERROR ${e.message}`);
+    return NextResponse.json({ error: e.message }, { status: e.status ?? 500 });
+  }
+  
+}
