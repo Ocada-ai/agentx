@@ -326,7 +326,7 @@ export async function POST(req: NextRequest) {
         const context =
           content[resultOne[0].metadata.id - 1] + 'address: ' + s_address
 
-        const prompt = `You are a helpful assistant.You give detailed information about a context. This is context related to this address ${s_address}.
+        const prompt = `You are a helpful assistant. This is context related to this address ${s_address}.
                         context:${context}
                         questions: ${currentMessageContent}
                         answer based on above context and return the answer in a very well structured format or tabular format.`
