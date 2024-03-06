@@ -31,6 +31,11 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
 })
 
+interface MessageContent {
+  text: string;
+  // Add any other properties if needed
+}
+
 const address = [
   '6LtLpnUFNByNXLyCoK9wA2MykKAmQNZKBdY8s47dehDc',
   '3Katmm9dhvLQijAvomteYMo6rfVbY5NaCRNq9ZBqBgr6',
@@ -307,11 +312,11 @@ export async function POST(req: NextRequest) {
       name: 'fetchsolanaDetail',
       description: 'Fetches information about a specific solana wallet address',
       schema: z.object({
-        address: z.any()
+        address: z.string(),
       }),
       func: async options => {
         console.log(
-          'Triggered fetchsolanaDetail function with options: ',
+          'Triggered fetchsolanaWalletDetail function with options: ',
           options
         )
         const { address } = options
@@ -321,7 +326,7 @@ export async function POST(req: NextRequest) {
         const context =
           content[resultOne[0].metadata.id - 1] + 'address: ' + s_address
 
-        const prompt = `You are a helpful assistant. This is context related to this address ${s_address}.
+        const prompt = `You are a helpful assistant.You give detailed information about a context. This is context related to this address ${s_address}.
                         context:${context}
                         questions: ${currentMessageContent}
                         answer based on above context.`
@@ -331,9 +336,10 @@ export async function POST(req: NextRequest) {
         })
         const response = await chatModel.invoke(prompt)
 
-        return response.content
+        return response.content.toString()
       }
     })
+
 
     const fetchCryptoPrice = new DynamicStructuredTool({
       name: 'fetchCryptoPrice',
