@@ -1,102 +1,79 @@
-import { Toaster } from 'react-hot-toast'
-import localFont from 'next/font/local'
-// import { GeistSans } from 'geist/font/sans'
-// import { GeistMono } from 'geist/font/mono'
-// import { Gabarito } from "next/font/google";
-// import { Rethink_Sans } from 'next/font/google'
+import type { Metadata } from 'next';
+import { GeistMono } from 'geist/font/mono';
+import { GeistSans } from 'geist/font/sans';
+import { Analytics } from '@vercel/analytics/react';
+import { Toaster } from '@/components/ui/toaster';
+import './globals.css';
 
-import '@/app/globals.css'
-import { cn } from '@/lib/utils'
-import { TailwindIndicator } from '@/components/tailwind-indicator'
-import { Providers } from '@/components/providers'
-import { Header } from '@/components/header'
+import { AI } from './action';
+import { Header } from '@/components/header';
+import { Providers } from '@/components/providers';
 
-export const metadata = {
-  metadataBase: new URL(`https://${process.env.VERCEL_URL}`),
-  title: {
-    default: 'Ocada',
-    template: `%s - AI Agent`
-  },
+const meta = {
+  title: 'AI RSC Demo',
   description:
-    'Optimized Computational Algorithms for Distributed Artificial Intelligence',
+    'Demo of an interactive financial assistant built using Next.js and Vercel AI SDK.',
+};
+export const metadata: Metadata = {
+  ...meta,
+  title: {
+    default: 'AI RSC Demo',
+    template: `%s - AI RSC Demo`,
+  },
   icons: {
     icon: '/favicon.ico',
     shortcut: '/favicon-16x16.png',
-    apple: '/apple-touch-icon.png'
-  }
-}
+    apple: '/apple-touch-icon.png',
+  },
+  twitter: {
+    ...meta,
+    card: 'summary_large_image',
+    site: '@vercel',
+  },
+  openGraph: {
+    ...meta,
+    locale: 'en-US',
+    type: 'website',
+  },
+};
 
 export const viewport = {
   themeColor: [
     { media: '(prefers-color-scheme: light)', color: 'white' },
-    { media: '(prefers-color-scheme: dark)', color: 'black' }
-  ]
-}
-
-const Gabarito = localFont({
-  src: [
-    {
-      path: '../public/fonts/Gabarito-Regular.woff2',
-      weight: '400',
-      style: 'normal'
-    },
-    {
-      path: '../public/fonts/Gabarito-Medium.woff2',
-      weight: '500',
-      style: 'normal'
-    },
-    {
-      path: '../public/fonts/Gabarito-SemiBold.woff2',
-      weight: '600',
-      style: 'normal'
-    }
+    { media: '(prefers-color-scheme: dark)', color: 'black' },
   ],
-  variable: '--font-gabarito'
-})
+};
 
-const Rethink_Sans = localFont({
-  src: [
-    {
-      path: '../public/fonts/RethinkSans-Regular.woff2',
-      weight: '400',
-      style: 'normal'
-    },
-    {
-      path: '../public/fonts/RethinkSans-Medium.woff2',
-      weight: '500',
-      style: 'normal'
-    }
-  ],
-  variable: '--font-rethink_sans'
-})
-
-interface RootLayoutProps {
-  children: React.ReactNode
-}
-
-export default function RootLayout({ children }: RootLayoutProps) {
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={cn(
-          'font-sans antialiased',
-          Rethink_Sans.variable,
-          Gabarito.variable
-        )}
+        className={`font-sans antialiased ${GeistSans.variable} ${GeistMono.variable}`}
       >
         <Toaster />
-        <Providers
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <main className="flex flex-col flex-1 h-screen bg-[#121212]">
-            {children}
-          </main>
-          <TailwindIndicator />
-        </Providers>
+        <AI>
+          <Providers
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <div className="flex flex-col min-h-screen">
+              <Header />
+              <main className="flex flex-col flex-1 bg-muted/50 dark:bg-background">
+                {children}
+              </main>
+            </div>
+          </Providers>
+        </AI>
+        <Analytics />
       </body>
     </html>
-  )
+  );
 }
+
+export const runtime = 'edge';
