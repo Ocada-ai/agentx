@@ -77,7 +77,7 @@ export function SidebarItem({ index, chat, children }: SidebarItemProps) {
         )}
       >
         <div
-          className="font-normal text-sm leading-normal text-type-600 text-opacity-50 relative max-h-5 flex-1 select-none overflow-hidden text-ellipsis break-all"
+          className="font-normal text-xs leading-normal text-type-600 text-opacity-50 relative max-h-5 flex-1 select-none overflow-hidden text-ellipsis break-all"
           title={chat.title}
         >
           <span className="whitespace-nowrap">

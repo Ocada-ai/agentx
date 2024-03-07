@@ -5,7 +5,7 @@ import localFont from 'next/font/local'
 // import { Gabarito } from "next/font/google";
 // import { Rethink_Sans } from 'next/font/google'
 
-import '@/app/globals.css'
+import '@/app/globals.scss'
 import { cn } from '@/lib/utils'
 import { TailwindIndicator } from '@/components/tailwind-indicator'
 import { Providers } from '@/components/providers'
