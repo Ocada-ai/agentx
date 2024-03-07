@@ -155,8 +155,9 @@ Besides that, you can also chat with users and do some calculations if needed.`,
           symbol: z
             .string()
             .describe(
-              'The name or symbol of the stock or currency. e.g. DOGE/AAPL/USD.',
+              'The symbol of the stock or currency. e.g. DOGE/AAPL/USD.',
             ),
+          name: z.string().describe('The name of the stock or currency.'),
           price: z.number().describe('The price of the stock fetched from coinmarketcap.'),
           delta: z.number().describe('The change in price of the stock'),
         }),
@@ -216,22 +217,22 @@ Besides that, you can also chat with users and do some calculations if needed.`,
           description: z.string().describe('The data of the solana wallet address')
         }),
       },
-      {
-        name: 'fetch_crypto_price',
-        description: 'Fetches the current price of a specified cryptocurrency.',
-        parameters: z.object({
-          cryptoName: z.string().describe('The name of a cryptocurrency.'),
-          cryptoPrice: z.string().describe('The price of a cryptocurrency fetched from coinmarketcap'),
-        }),
-      },
-      {
-        name: 'fetch_wallet_details',
-        description: 'Fetches the the details about a spcific solana wallet address.',
-        parameters: z.object({
-          address: z.any(),
-          price: z.number().describe('The price of a cryptocurrency fetched from coinmarketcap'),
-        }),
-      },
+      // {
+      //   name: 'fetch_crypto_price',
+      //   description: 'Fetches the current price of a specified cryptocurrency.',
+      //   parameters: z.object({
+      //     cryptoName: z.string().describe('The name of a cryptocurrency.'),
+      //     cryptoPrice: z.string().describe('The price of a cryptocurrency fetched from coinmarketcap'),
+      //   }),
+      // },
+      // {
+      //   name: 'fetch_wallet_details',
+      //   description: 'Fetches the the details about a spcific solana wallet address.',
+      //   parameters: z.object({
+      //     address: z.any(),
+      //     price: z.number().describe('The price of a cryptocurrency fetched from coinmarketcap'),
+      //   }),
+      // },
     ],
     temperature: 0,
   });
@@ -296,18 +297,18 @@ Besides that, you can also chat with users and do some calculations if needed.`,
 
   completion.onFunctionCall(
     'show_stock_price',
-    async ({ symbol, price, delta }) => {      
-      reply.update(
-        <BotCard>
-          <StockSkeleton />
-        </BotCard>,
-      );
-
-      await sleep(1000);
+    async ({ symbol, name, price, delta }) => {      
+      reply.update(<BotCard><StockSkeleton /></BotCard>);
+      // await sleep(1000);
+      const vsCurrency = "USD";
+      const url = `https://api.coingecko.com/api/v3/simple/price?ids=${name}&vs_currencies=${vsCurrency}`
+      const response = await fetch(url)
+      const data = await response.json()
+      const currentPrice = data[name.toLowerCase()]?.[vsCurrency.toLowerCase()]
 
       reply.done(
         <BotCard>
-          <Stock name={symbol} price={price} delta={delta} />
+          <Stock name={symbol} price={currentPrice} delta={delta} />
         </BotCard>,
       );
 
@@ -316,7 +317,7 @@ Besides that, you can also chat with users and do some calculations if needed.`,
         {
           role: 'function',
           name: 'show_stock_price',
-          content: `[Price of ${symbol} = ${price}]`,
+          content: `[Price of ${symbol} = ${currentPrice}]`,
         },
       ]);
     },
@@ -370,8 +371,6 @@ Besides that, you can also chat with users and do some calculations if needed.`,
 
   completion.onFunctionCall('fetch_solana_detail', async ({ address, description }) => {
     const oldDescription = description;
-    console.log('fetch solana detail address:', address)
-    console.log('fetch solana detail description:', description)
     const addressList = [
       '6LtLpnUFNByNXLyCoK9wA2MykKAmQNZKBdY8s47dehDc',
       '3Katmm9dhvLQijAvomteYMo6rfVbY5NaCRNq9ZBqBgr6',
@@ -618,7 +617,6 @@ Besides that, you can also chat with users and do some calculations if needed.`,
       modelName: 'gpt-3.5-turbo'
     })
     const response = await chatModel.invoke(prompt)
-    console.log('chatGPT result:', response.content)
     const answer = response.content.toString()
     reply.update(<BotMessage>{answer}</BotMessage>);
     reply.done();
@@ -631,36 +629,6 @@ Besides that, you can also chat with users and do some calculations if needed.`,
       },
     ]);
   });
-
-  completion.onFunctionCall('fetch_crypto_price', async ({ cryptoName, cryptoPrice }) => {
-    let name = cryptoName;
-    let price = cryptoPrice;
-    const prompt = `You are a helpful assistant.
-    questions: 'Fetches the current price of a specified cryptocurrency.'
-    price: ${name}
-    name: ${price}
-    answer based on above name, answer and return the answer to string.`
-
-    const chatModel = new ChatOpenAI({
-    modelName: 'gpt-3.5-turbo'
-    })
-    const response = await chatModel.invoke(prompt)
-    const answer = response.content.toString()
-    reply.update(<BotMessage>{answer}</BotMessage>);
-    reply.done();
-    aiState.done([
-      ...aiState.get(),
-      {
-        role: 'function',
-        name: 'fetch_crypto_price',
-        content: answer,
-      },
-    ]);
-  });
-
-  // completion.onFunctionCall('fetch_wallet_details', async ({ address, price }) => {
-
-  // });
 
   return {
     id: Date.now(),
