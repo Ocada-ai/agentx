@@ -122,21 +122,21 @@ async function submitUserMessage(content: string) {
       {
         role: 'system',
         content: `\
-You are a stock trading conversation bot and you can help users buy stocks, step by step.
-You and the user can discuss stock prices and the user can adjust the amount of stocks they want to buy, or place an order, in the UI.
+You are a cryptocurrency trading conversation bot and you can help users buy cryptocurrency, step by step.
+You and the user can discuss cryptocurrency prices and the user can adjust the amount of cryptocurrency they want to buy, or place an order, in the UI.
 
 Messages inside [] means that it's a UI element or a user event. For example:
-- "[Price of AAPL = 100]" means that an interface of the stock price of AAPL is shown to the user.
+- "[Price of AAPL = 100]" means that an interface of the cryptocurrency price of AAPL is shown to the user.
 - "[User has changed the amount of AAPL to 10]" means that the user has changed the amount of AAPL to 10 in the UI.
 
 If the user requests purchasing a stock, call \`show_stock_purchase_ui\` to show the purchase UI.
-If the user just wants the price, call \`show_stock_price\` to show the price.
+If the user just wants the price, call \`show_cryptocurrency_price\` to show the price.
 If you want to show trending stocks, call \`list_stocks\`.
 If you want to show events, call \`get_events\`.
 If you want to show information about a specific solana wallet address, call \`fetch_solana_detail\`.
 If you want to show price of a specified cryptocurrency, call \`fetch_crypto_price\`.
 If you want to show details about a spcific solana wallet address, call \`fetch_wallet_details\`.
-If the user wants to sell stock, or complete another impossible task, respond that you are a demo and cannot do that.
+If the user wants to sell cryptocurrency, or complete another impossible task, respond that you are a demo and cannot do that.
 
 Besides that, you can also chat with users and do some calculations if needed.`,
       },
@@ -148,16 +148,16 @@ Besides that, you can also chat with users and do some calculations if needed.`,
     ],
     functions: [
       {
-        name: 'show_stock_price',
+        name: 'show_cryptocurrency_price',
         description:
-          'Get the current stock price of a given stock or currency. Use this to show the price to the user.',
+          'Get the current cryptocurrency price of a given cryptocurrency. Use this to show the price to the user.',
         parameters: z.object({
           symbol: z
             .string()
             .describe(
-              'The symbol of the stock or currency. e.g. DOGE/AAPL/USD.',
+              'The symbol of the cryptocurrency. e.g. DOGE/AAPL/USD.',
             ),
-          name: z.string().describe('The name of the stock or currency.'),
+          name: z.string().describe('The name of the cryptocurrency.'),
           price: z.number().describe('The price of the stock fetched from coinmarketcap.'),
           delta: z.number().describe('The change in price of the stock'),
         }),
@@ -165,12 +165,12 @@ Besides that, you can also chat with users and do some calculations if needed.`,
       {
         name: 'show_stock_purchase_ui',
         description:
-          'Show price and the UI to purchase a stock or currency. Use this if the user wants to purchase a stock or currency.',
+          'Show price and the UI to purchase a cryptocurrency. Use this if the user wants to purchase a cryptocurrency.',
         parameters: z.object({
           symbol: z
             .string()
             .describe(
-              'The name or symbol of the stock or currency. e.g. DOGE/AAPL/USD.',
+              'The name or symbol of the cryptocurrency. e.g. DOGE/AAPL/USD.',
             ),
           price: z.number().describe('The price of the stock.'),
           numberOfShares: z
@@ -186,9 +186,9 @@ Besides that, you can also chat with users and do some calculations if needed.`,
         parameters: z.object({
           stocks: z.array(
             z.object({
-              symbol: z.string().describe('The symbol of the stock'),
-              price: z.number().describe('The price of the stock'),
-              delta: z.number().describe('The change in price of the stock'),
+              symbol: z.string().describe('The symbol of the cryptocurrency'),
+              price: z.number().describe('The price of the cryptocurrency'),
+              delta: z.number().describe('The change in price of the cryptocurrency'),
             }),
           ),
         }),
@@ -196,7 +196,7 @@ Besides that, you can also chat with users and do some calculations if needed.`,
       {
         name: 'get_events',
         description:
-          'List funny imaginary events between user highlighted dates that describe stock activity.',
+          'List funny imaginary events between user highlighted dates that describe cryptocurrency activity.',
         parameters: z.object({
           events: z.array(
             z.object({
@@ -296,15 +296,16 @@ Besides that, you can also chat with users and do some calculations if needed.`,
   });
 
   completion.onFunctionCall(
-    'show_stock_price',
+    'show_cryptocurrency_price',
     async ({ symbol, name, price, delta }) => {      
       reply.update(<BotCard><StockSkeleton /></BotCard>);
-      // await sleep(1000);
       const vsCurrency = "USD";
       const url = `https://api.coingecko.com/api/v3/simple/price?ids=${name}&vs_currencies=${vsCurrency}`
       const response = await fetch(url)
       const data = await response.json()
       const currentPrice = data[name.toLowerCase()]?.[vsCurrency.toLowerCase()]
+
+      console.log('show stock price:', currentPrice)
 
       reply.done(
         <BotCard>
@@ -316,7 +317,7 @@ Besides that, you can also chat with users and do some calculations if needed.`,
         ...aiState.get(),
         {
           role: 'function',
-          name: 'show_stock_price',
+          name: 'show_cryptocurrency_price',
           content: `[Price of ${symbol} = ${currentPrice}]`,
         },
       ]);
