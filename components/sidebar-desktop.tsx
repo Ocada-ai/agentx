@@ -23,7 +23,8 @@ export async function SidebarDesktop() {
   return (
     <Sidebar className="peer absolute inset-y-0 z-30 hidden -translate-x-full bg-[#121212] duration-300 ease-in-out data-[state=open]:translate-x-0 lg:flex lg:w-[220px] h-full min-h-screen px-5 pt-4">
       <Image alt="ocada" src="/OCADA.svg" width={92} height={92} />
-      <div className="mt-5 mb-3">
+      
+      <div className="mt-5 mb-3 ">
         <Link
           href="/"
           className={cn(
@@ -37,36 +38,38 @@ export async function SidebarDesktop() {
       </div>
       <menu className="h-full flex flex-col">
         <>
-          <div className="flex flex-col gap-3 mb-3">
-            <Link
+        {/* <h2>Features Coming soon...</h2> */}
+          <div className="flex flex-col gap-3 mb-3 pointer-events-none opacity-50">
+            {/* <Link
               href="/"
               className="text-base text-type-600 text-opacity-50 font-medium flex gap-2 items-center"
             >
               <IconData className="stroke-type-600 opacity-50" />
               Data
-            </Link>
+            </Link> */}
             <Link
               href="/"
-              className="text-base text-type-600 text-opacity-50 font-medium flex gap-2 items-center"
+              className="text-sm text-type-600 text-opacity-50 font-medium flex gap-1 items-center"
             >
               <IconTools className="stroke-type-600 opacity-50" />
-              Tools
+              Agents (coming soon...)
             </Link>
             <Link
               href="/"
-              className="text-base text-type-600 text-opacity-50 font-medium flex gap-2 items-center"
+              className="text-sm text-type-600 text-opacity-50 font-medium flex gap-1 items-center"
             >
               <IconModel className="stroke-type-600 opacity-50" />
-              Model
+              Models (coming soon...)
             </Link>
-            <p className="text-base text-type-600 text-opacity-50 font-medium flex gap-2 items-center">
+            <p className="text-sm text-type-600 text-opacity-50 font-medium flex gap-1 items-center">
               <IconPromptHistory className="stroke-type-600 opacity-50" />
-              History
+              History (coming soon...)
             </p>
           </div>
           {/* <ChatHistory userId={session.user.id} /> */}
         </>
       </menu>
     </Sidebar>
+    
   )
 }

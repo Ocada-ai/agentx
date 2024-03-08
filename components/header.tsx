@@ -93,7 +93,7 @@ export function Header() {
               (cn(buttonVariants({ variant: 'outline' })), 'hidden lg:flex')
             }
           >
-            <span className="ml-2 text-type-600 text-sm text-opacity-80">
+            <span className="font-normal text-gray-500 text-sm text-opacity-90 ps-2 pointer-events-none">
               Plugins
             </span>
           </a>

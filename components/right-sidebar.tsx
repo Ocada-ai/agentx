@@ -46,9 +46,9 @@ export default function RightSidebar() {
         </div>
         <div className="w-full grid gap-8">
           {/* SPL-Tokens section */}
-          <div className="flex flex-col gap-2">
-            <h1 className="font-normal text-type-600 text-sm text-opacity-90 ps-2">
-              Assets Summary
+          <div className="flex flex-col items-center gap-2">
+            <h1 className="font-normal text-gray-500 text-sm text-opacity-90 ps-2 pointer-events-none">
+              Juice Box (coming soon...)
             </h1>
             {/* {analysis && (
               <div className="grid gap-0.1 bg-[#141414] border-[0.5px] border-[#1a1a1a] shadow-[0_2px_4px_0_#0000001a] h-full px-5  py-4 rounded-xl mt-0 flex-col items-start justify-between hover:no-underline">
@@ -60,9 +60,9 @@ export default function RightSidebar() {
           </div>
 
           <div className="flex flex-col gap-2">
-            <h1 className="font-normal text-type-600 text-sm text-opacity-90 ps-2">
+            {/* <h1 className="font-normal text-type-600 text-sm text-opacity-90 ps-2">
               Latest Information On your Assets
-            </h1>
+            </h1> */}
             {/* {tokenInfo && (
               <h3 className="grid gap-0.1 bg-[#141414] border-[0.5px] border-[#1a1a1a] shadow-[0_2px_4px_0_#0000001a] h-full px-5 text-sm font-normal py-4 rounded-xl mt-0 text-left flex-col items-start justify-between hover:no-underline text-type-600 text-opacity-70">
                 {tokenInfo}
