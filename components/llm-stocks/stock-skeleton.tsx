@@ -1,6 +1,6 @@
 export const StockSkeleton = () => {
   return (
-    <div className="p-4 rounded-xl bg-zinc-950 text-green-400 border border-zinc-900">
+    <div className="p-4 rounded-xl bg-zinc-950 text-yellow-400 border border-zinc-900">
       <div className="float-right inline-block px-2 py-1 rounded-full bg-white/10 text-xs text-transparent w-fit bg-zinc-700">
         xxxxxxx
       </div>
