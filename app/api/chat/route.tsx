@@ -5,7 +5,8 @@ import {
   OpenAIStream,
   StreamingTextResponse
 } from 'ai'
-import type { ToolInterface } from '@langchain/core/tools'
+// import { ToolInterface } from '@langchain/core/tools'
+import type {ToolInterface} from '@langchain/core/tools'
 import {
   DynamicStructuredTool,
   RequestsGetTool,

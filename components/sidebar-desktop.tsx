@@ -49,21 +49,21 @@ export async function SidebarDesktop() {
             </Link> */}
             <Link
               href="/"
-              className="text-sm text-type-600 text-opacity-50 font-medium flex gap-1 items-center"
+              className="text-sm mt-2 text-type-600 text-opacity-50 font-medium flex gap-1 items-center"
             >
               <IconTools className="stroke-type-600 opacity-50" />
               Agents (coming soon...)
             </Link>
             <Link
               href="/"
-              className="text-sm text-type-600 text-opacity-50 font-medium flex gap-1 items-center"
+              className="text-sm mt-2 mb-2 text-type-600 text-opacity-50 font-medium flex gap-1 items-center"
             >
               <IconModel className="stroke-type-600 opacity-50" />
               Models (coming soon...)
             </Link>
             <p className="text-sm text-type-600 text-opacity-50 font-medium flex gap-1 items-center">
               <IconPromptHistory className="stroke-type-600 opacity-50" />
-              History (coming soon...)
+              History
             </p>
           </div>
           {/* <ChatHistory userId={session.user.id} /> */}

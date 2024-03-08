@@ -80,6 +80,9 @@ dependencies:
   langchain:
     specifier: ^0.1.25
     version: 0.1.25(@vercel/kv@1.0.1)(ws@7.5.9)
+  messages:
+    specifier: link:@langchain/core/messages
+    version: link:@langchain/core/messages
   next:
     specifier: 14.1.2-canary.4
     version: 14.1.2-canary.4(@babel/core@7.24.0)(react-dom@18.2.0)(react@18.2.0)(sass@1.71.1)
@@ -113,6 +116,9 @@ dependencies:
   tailwindcss-animate:
     specifier: ^1.0.7
     version: 1.0.7(tailwindcss@3.4.1)
+  tools:
+    specifier: link:@langchain/core/tools
+    version: link:@langchain/core/tools
   tweetnacl:
     specifier: ^1.0.3
     version: 1.0.3
