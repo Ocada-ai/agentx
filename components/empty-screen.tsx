@@ -4,8 +4,8 @@ import { IconArrowRight } from '@/components/ui/icons';
 
 const exampleMessages = [
   {
-    heading: 'What are the trending stocks?',
-    message: 'What are the trending stocks?',
+    heading: 'What are the trending tokens?',
+    message: 'What are the trending tokens?',
   },
   {
     heading: "What's the stock price of AAPL?",

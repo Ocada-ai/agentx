@@ -124,8 +124,8 @@ async function submitUserMessage(content: string) {
       {
         role: 'system',
         content: `\
-        You are a stock trading conversation bot and you can help users buy stocks, step by step.
-        You and the user can discuss stock prices and the user can adjust the amount of stocks they want to buy, or place an order, in the UI.
+        You are a stock and cryptocurrency trading conversation bot and you can help users buy stocks and cryptocurrency, step by step.
+        You and the user can discuss stock and cryptocurrency prices and the user can adjust the amount of stocks they want to buy, or place an order, in the UI.
         
         Messages inside [] means that it's a UI element or a user event. For example:
         - "[Price of AAPL = 100]" means that an interface of the stock price of AAPL is shown to the user.
@@ -138,7 +138,7 @@ async function submitUserMessage(content: string) {
         If you want to show information about a specific solana wallet address, call \`fetch_solana_detail\`.
         If you want to show price of a specified cryptocurrency, call \`fetch_crypto_price\`.
         If you want to show details about a spcific solana wallet address, call \`fetch_wallet_details\`.
-        If the user wants to sell stock, or complete another impossible task, respond that you are a demo and cannot do that.
+        If the user wants to sell stock and cryptocurrency, or complete another impossible task, respond that you are a demo and cannot do that.
 
         Besides that, you can also chat with users and do some calculations if needed.`,
       },
@@ -174,7 +174,7 @@ async function submitUserMessage(content: string) {
             .describe(
               'The name or symbol of the stock or currency. e.g. DOGE/AAPL/USD.',
             ),
-            name: z.string().describe('The name of the stock or currency.'),
+          name: z.string().describe('The name of the stock or currency.'),
           price: z.number().describe('The price of the stock.'),
           numberOfShares: z
             .number()
@@ -189,9 +189,10 @@ async function submitUserMessage(content: string) {
         parameters: z.object({
           stocks: z.array(
             z.object({
-              symbol: z.string().describe('The symbol of the cryptocurrency'),
-              price: z.number().describe('The price of the cryptocurrency'),
-              delta: z.number().describe('The change in price of the cryptocurrency'),
+              symbol: z.string().describe('The symbol of the stock'),
+              name: z.string().describe('The name of the stock'),
+              price: z.number().describe('The price of the stock'),
+              delta: z.number().describe('The change in price of the stock'),
             }),
           ),
         }),
@@ -239,11 +240,26 @@ async function submitUserMessage(content: string) {
       </BotCard>,
     );
 
-    await sleep(1000);
+    const updatedStocks = [];
+  
+    for (let i = 0; i < stocks.length; i++) {
+      const stock = stocks[i];
+      const currentPrice = await cryptoPrice(stock.name);
+      const delta = stock.delta;
+  
+      updatedStocks.push({
+        symbol: stock.symbol,
+        name: stock.name,
+        price: currentPrice,
+        delta: delta
+      });
+    }
+
+  await sleep(1000);
 
     reply.done(
       <BotCard>
-        <Stocks stocks={stocks} />
+        <Stocks stocks={updatedStocks} />
       </BotCard>,
     );
 
