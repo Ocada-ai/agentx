@@ -28,6 +28,8 @@ import { StocksSkeleton } from '@/components/llm-stocks/stocks-skeleton';
 import { MemoryVectorStore } from 'langchain/vectorstores/memory'
 import { OpenAIEmbeddings, ChatOpenAI } from '@langchain/openai'
 
+import { cryptoPrice } from "@/utils/cryptoUtils";
+
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY || '',
 });
@@ -172,6 +174,7 @@ async function submitUserMessage(content: string) {
             .describe(
               'The name or symbol of the stock or currency. e.g. DOGE/AAPL/USD.',
             ),
+            name: z.string().describe('The name of the stock or currency.'),
           price: z.number().describe('The price of the stock.'),
           numberOfShares: z
             .number()
@@ -283,12 +286,7 @@ async function submitUserMessage(content: string) {
     'show_stock_price',
     async ({ symbol, name, price, delta }) => {      
       reply.update(<BotCard><StockSkeleton /></BotCard>);
-      const vsCurrency = "USD";
-      const url = `https://api.coingecko.com/api/v3/simple/price?ids=${name}&vs_currencies=${vsCurrency}`
-      const response = await fetch(url)
-      const data = await response.json()
-      const currentPrice = data[name.toLowerCase()]?.[vsCurrency.toLowerCase()]
-
+      const currentPrice = await cryptoPrice(name);
       console.log('show stock price:', currentPrice)
 
       reply.done(
@@ -310,7 +308,7 @@ async function submitUserMessage(content: string) {
 
   completion.onFunctionCall(
     'show_stock_purchase_ui',
-    ({ symbol, price, numberOfShares = 100 }) => {
+    async ({ symbol, name, price, numberOfShares = 100 }) => {
       if (numberOfShares <= 0 || numberOfShares > 1000) {
         reply.done(<BotMessage>Invalid amount</BotMessage>);
         aiState.done([
@@ -324,6 +322,9 @@ async function submitUserMessage(content: string) {
         return;
       }
 
+      const currentPrice = await cryptoPrice(name);
+      console.log('show stock price:', currentPrice)
+
       reply.done(
         <>
           <BotMessage>
@@ -336,7 +337,7 @@ async function submitUserMessage(content: string) {
             <Purchase
               defaultAmount={numberOfShares}
               name={symbol}
-              price={+price}
+              price={+currentPrice}
             />
           </BotCard>
         </>,
