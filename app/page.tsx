@@ -15,10 +15,12 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { IconArrowElbow, IconPlus } from '@/components/ui/icons';
-import { Button } from '@/components/ui/button';
+import { IconArrowElbow, IconPlus, IconPlane } from '@/components/ui/icons';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { ChatList } from '@/components/chat-list';
 import { EmptyScreen } from '@/components/empty-screen';
+import { cn } from '@/lib/utils'
+
 
 export default function Page() {
   const [messages, setMessages] = useUIState<typeof AI>();
@@ -52,7 +54,7 @@ export default function Page() {
   }, [inputRef]);
 
   return (
-    <div>
+    <div className="pt-4 md:pt-16 h-[97vh] bg-[#101010] m-4 rounded-[28px] ring-[3px] ring-[#1a1a1a] overflow-y-scroll relative flex flex-col justify-between">
       <div className="pb-[200px] pt-4 md:pt-10">
         {messages.length ? (
           <>
@@ -81,9 +83,9 @@ export default function Page() {
         )}
         <ChatScrollAnchor trackVisibility={true} />
       </div>
-      <div className="fixed inset-x-0 bottom-0 w-full bg-gradient-to-b from-muted/30 from-0% to-muted/30 to-50% duration-300 ease-in-out animate-in dark:from-background/10 dark:from-10% dark:to-background/80 peer-[[data-state=open]]:group-[]:lg:pl-[250px] peer-[[data-state=open]]:group-[]:xl:pl-[300px]">
-        <div className="mx-auto sm:max-w-2xl sm:px-4">
-          <div className="px-4 py-2 space-y-4 border-t shadow-lg bg-background sm:rounded-t-xl sm:border md:py-4">
+      <div className="sticky bottom-0 w-full bg-[#101010] animate-in duration-300 ease-in-out">
+        <div className="lg:max-w-3xl sm:px-4 mx-auto">
+          <div className="px-4 py-2 space-y-4 bg-transparent sm:rounded-t-xl md:py-4">
             <form
               ref={formRef}
               onSubmit={async (e: any) => {
@@ -120,19 +122,22 @@ export default function Page() {
                 }
               }}
             >
-              <div className="relative flex flex-col w-full px-8 overflow-hidden max-h-60 grow bg-background sm:rounded-md sm:border sm:px-12">
+              <div className="relative flex flex-col w-full px-8 overflow-hidden max-h-48 bg-[#141414] ring-[6px] ring-[#141414] rounded-full border-[2px] border-[#242424] text-type-600">
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button
                       variant="outline"
                       size="icon"
-                      className="absolute left-0 w-8 h-8 p-0 rounded-full top-4 bg-background sm:left-4"
+                      className={cn(
+                        buttonVariants({ size: 'sm', variant: 'outline' }),
+                        'absolute left-3 top-[10px] size-8 rounded-full bg-transparent hover:bg-theme-700 p-0 sm:left-4 border-[2px] border-[#242424] '
+                      )}
                       onClick={e => {
                         e.preventDefault();
                         window.location.reload();
                       }}
                     >
-                      <IconPlus />
+                      <IconPlus className="text-[#242424] font-bold" />
                       <span className="sr-only">New Chat</span>
                     </Button>
                   </TooltipTrigger>
@@ -143,7 +148,7 @@ export default function Page() {
                   tabIndex={0}
                   onKeyDown={onKeyDown}
                   placeholder="Send a message."
-                  className="min-h-[60px] w-full resize-none bg-transparent px-4 py-[1.3rem] focus-within:outline-none sm:text-sm"
+                  className="w-full resize-none bg-transparent px-4 py-[1rem] focus-within:outline-none sm:text-sm placeholder:text-type-600 placeholder:text-opacity-70 ps-8"
                   autoFocus
                   spellCheck={false}
                   autoComplete="off"
@@ -153,19 +158,24 @@ export default function Page() {
                   value={inputValue}
                   onChange={e => setInputValue(e.target.value)}
                 />
-                <div className="absolute right-0 top-4 sm:right-4">
+                <div className="absolute right-3 top-[10px] sm:right-4">
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Button
                         type="submit"
                         size="icon"
+                        className="bg-transparent hover:bg-transparent right-10"
                         disabled={inputValue === ''}
                       >
-                        <IconArrowElbow />
-                        <span className="sr-only">Send message</span>
+                        <IconPlane className="opacity-75 hover:opacity-100" />
+                        <span className="sr-only bg-type-600 text-opacity-70">
+                          Send message
+                        </span>
                       </Button>
                     </TooltipTrigger>
-                    <TooltipContent>Send message</TooltipContent>
+                    <TooltipContent className="text-type-600 bg-type-600">
+                      Send message
+                    </TooltipContent>
                   </Tooltip>
                 </div>
               </div>

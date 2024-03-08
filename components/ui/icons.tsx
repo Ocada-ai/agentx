@@ -276,6 +276,121 @@ function IconSparkles({ className, ...props }: React.ComponentProps<'svg'>) {
   );
 }
 
+function IconPlane({ className, ...props }: React.ComponentProps<'svg'>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="currentColor"
+      className={cn('size-5', className)}
+      viewBox="0 0 24 24"
+      {...props}
+    >
+      <g clipPath="url(#a)">
+        <path
+          className="fill-type-500"
+          fillRule="evenodd"
+          d="M1.925 1.669A.8.8 0 0 0 .909 2.803L6.274 12 .909 21.197a.8.8 0 0 0 1.016 1.134l21.6-9.6a.8.8 0 0 0 0-1.462l-21.6-9.6Zm5.829 9.691L3.539 4.138 21.232 12 3.54 19.862l4.215-7.222H14.4a.64.64 0 0 0 0-1.28H7.754Z"
+          clipRule="evenodd"
+        />
+      </g>
+      <defs>
+        <clipPath id="a">
+          <path fill="" d="M0 0h24v24H0z" />
+        </clipPath>
+      </defs>
+    </svg>
+  )
+}
+
+function IconData({ className, ...props }: React.ComponentProps<'svg'>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      className={cn('size-5', className)}
+      {...props}
+    >
+      <path
+        d="M6.57349 4.99951V6.99951M10.5735 4.99951V6.99951M6.57349 16.9995V18.9995M10.5735 16.9995V18.9995M14.5735 6H18.5735M14.5735 18H18.5735M19.8934 9.99977H5.26344C3.78344 9.99977 2.58344 8.78978 2.58344 7.31978V4.68977C2.58344 3.20977 3.79344 2.00977 5.26344 2.00977H19.8934C21.3734 2.00977 22.5734 3.21977 22.5734 4.68977V7.31978C22.5734 8.78978 21.3634 9.99977 19.8934 9.99977ZM19.8934 21.9998H5.26344C3.78344 21.9998 2.58344 20.7898 2.58344 19.3198V16.6898C2.58344 15.2098 3.79344 14.0098 5.26344 14.0098H19.8934C21.3734 14.0098 22.5734 15.2198 22.5734 16.6898V19.3198C22.5734 20.7898 21.3634 21.9998 19.8934 21.9998Z"
+        stroke="#e8e8d9"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
+function IconModel({ className, ...props }: React.ComponentProps<'svg'>) {
+  return (
+    <svg
+      viewBox="0 0 25 25"
+      fill="none"
+      className={cn('size-5', className)}
+      {...props}
+    >
+      <path
+        d="M12.8366 9.03308V3.53308M12.8366 9.03308C11.5466 9.03308 10.4166 9.73308 9.80658 10.7831M12.8366 9.03308C14.1266 9.03308 15.2566 9.73313 15.8666 10.7831M12.8366 21.533V16.033M12.8366 16.033C14.1266 16.033 15.2566 15.3331 15.8666 14.2831M12.8366 16.033C11.5466 16.033 10.4166 15.3331 9.80658 14.2831M10.8366 3.53308H14.8366M10.8366 21.5331H14.8366M9.80658 10.7831L5.04658 8.03308M9.80658 10.7831C9.50658 11.3031 9.33658 11.8931 9.33658 12.5331C9.33658 13.1731 9.50658 13.7631 9.80658 14.2831M20.6266 17.0331L15.8666 14.2831M15.8666 14.2831C16.1666 13.7631 16.3366 13.1731 16.3366 12.5331C16.3366 11.8931 16.1666 11.3031 15.8666 10.7831M4.04659 9.76309L6.04659 6.3031M19.6266 18.7631L21.6266 15.3031M9.80658 14.2831L5.04658 17.0331M15.8666 10.7831L20.6266 8.03308M21.6266 9.76309L19.6266 6.3031M6.04659 18.7631L4.04659 15.3031"
+        stroke="#e8e8d9"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
+function IconPromptHistory({
+  className,
+  ...props
+}: React.ComponentProps<'svg'>) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      className={cn('size-5', className)}
+      {...props}
+    >
+      <path
+        d="M18.25 16.2513V17.7513L19.5 18.5013M14.5 17.5013C14.5 18.7013 15.03 19.7713 15.86 20.5013C16.57 21.1213 17.49 21.5013 18.5 21.5013C20.71 21.5013 22.5 19.7113 22.5 17.5013C22.5 16.2413 21.92 15.1113 21 14.3813C20.31 13.8313 19.44 13.5013 18.5 13.5013C16.29 13.5013 14.5 15.2913 14.5 17.5013Z"
+        stroke="#e8e8d9"
+        strokeWidth="1.5"
+        strokeMiterlimit="10"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M15 10.5014H8M1.5 7.4314V13.4314C1.5 14.9314 2 16.1814 2.88001 17.0614C3.75001 17.9314 5 18.4314 6.5 18.4314V20.5614C6.5 21.3614 7.38999 21.8414 8.04999 21.4014L12.5 18.4314H14.62C14.54 18.1314 14.5 17.8214 14.5 17.5014C14.5 16.4814 14.89 15.5414 15.53 14.8314C16.25 14.0114 17.32 13.5014 18.5 13.5014C19.62 13.5014 20.64 13.9614 21.37 14.7114C21.46 14.3114 21.5 13.8814 21.5 13.4314V7.4314C21.5 4.4314 19.5 2.4314 16.5 2.4314H6.5C3.5 2.4314 1.5 4.4314 1.5 7.4314Z"
+        stroke="#e8e8d9"
+        strokeWidth="1.5"
+        strokeMiterlimit="10"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
+function IconTools({ className, ...props }: React.ComponentProps<'svg'>) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      className={cn('size-5', className)}
+      {...props}
+    >
+      <path
+        d="M6.74016 6.65647L18.2402 18.1565M18.2402 6.65647L6.74016 18.1565M21.4402 14.9564L15.0502 21.3464C13.6502 22.7464 11.3502 22.7464 9.94018 21.3464L3.55017 14.9564C2.15017 13.5564 2.15017 11.2564 3.55017 9.84639L9.94018 3.45637C11.3402 2.05637 13.6402 2.05637 15.0502 3.45637L21.4402 9.84639C22.8402 11.2564 22.8402 13.5564 21.4402 14.9564Z"
+        stroke="#e8e8d9"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
 export {
   IconAI,
   IconVercel,
@@ -295,4 +410,9 @@ export {
   IconExternalLink,
   IconChevronUpDown,
   IconSparkles,
+  IconPlane,
+  IconData,
+  IconModel,
+  IconPromptHistory,
+  IconTools
 };

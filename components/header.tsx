@@ -1,50 +1,111 @@
-import Link from 'next/link';
+'use client'
+import React, { useEffect, useCallback } from 'react'
+import Image from 'next/image'
+import dynamic from 'next/dynamic'
+import { signIn, signOut, useSession } from 'next-auth/react'
+import { useWallet } from '@solana/wallet-adapter-react'
+import { useWalletModal } from '@solana/wallet-adapter-react-ui'
+import { SigninMessage } from '@/utils/signMessage'
+import { cn } from '@/lib/utils'
+import { useRouter, usePathname } from 'next/navigation'
+import { buttonVariants } from '@/components/ui/button'
+import bs58 from 'bs58'
 
-import {
-  IconGitHub,
-  IconSeparator,
-  IconSparkles,
-  IconVercel,
-} from '@/components/ui/icons';
-import { Button } from '@/components/ui/button';
+import styles from '../styles/header.module.scss'
 
-export async function Header() {
+export function Header() {
+  const pathname = usePathname()
+  const { data: session, status } = useSession()
+  const wallet = useWallet()
+  const walletModal = useWalletModal()
+  const WalletMultiButtonDynamic = dynamic(
+    async () =>
+      (await import('@solana/wallet-adapter-react-ui')).WalletMultiButton,
+    { ssr: false }
+  )
+  const nonce = Math.floor(Math.random() * 100000000)
+
+  const handleLogin = useCallback(async () => {
+    try {
+      const callbackUrl = '/'
+
+      if (!wallet.connected) {
+        walletModal.setVisible(true)
+      }
+
+      if (!wallet.publicKey || !wallet.signMessage) return
+
+      const message = new SigninMessage({
+        domain: window.location.host,
+        publicKey: wallet.publicKey?.toBase58(),
+        statement: `Sign this message to sign in to the app.`,
+        nonce: nonce.toString()
+      })
+
+      const data = new TextEncoder().encode(message.prepare())
+      const signature = await wallet.signMessage(data)
+      const serializedSignature = bs58.encode(signature)
+
+      await signIn('credentials', {
+        message: JSON.stringify(message),
+        redirect: true,
+        signature: serializedSignature,
+        callbackUrl
+      })
+    } catch (error) {
+      console.log(error)
+    }
+  }, [nonce, wallet, walletModal])
+
+  useEffect(() => {
+    console.log(`wallet details is ${wallet.wallet}`)
+    console.log(wallet.wallet)
+    if (wallet.disconnecting) {
+      signOut({ callbackUrl: '/' })
+    }
+  }, [wallet])
+
+  useEffect(() => {
+    if (wallet.connected && status === 'unauthenticated') {
+      console.log('handle login useEffect')
+      handleLogin()
+    }
+  }, [wallet.connected])
+
   return (
-    <header className="sticky top-0 z-50 flex items-center justify-between w-full px-4 border-b h-14 shrink-0 bg-background backdrop-blur-xl">
-      <span className="inline-flex items-center home-links whitespace-nowrap">
-        <a href="https://vercel.com" rel="noopener" target="_blank">
-          <IconVercel className="w-5 h-5 sm:h-6 sm:w-6" />
-        </a>
-        <IconSeparator className="w-6 h-6 text-muted-foreground/20" />
-        <Link href="/">
-          <span className="text-lg font-bold">
-            <IconSparkles className="inline mr-0 w-4 sm:w-5 mb-0.5" />
-            AI
-          </span>
-        </Link>
-      </span>
-      <div className="flex items-center justify-end space-x-2">
-        <Button variant="outline" asChild>
+    <header
+      className={`${
+        pathname === '/sign-in'
+          ? 'top-4 border-b border-[#1a1a1a] pt-2 pb-4 px-4'
+          : 'top-0'
+      } ${styles['c-header']} flex sticky sm:top-0 z-50 justify-end w-full h-auto shrink-0 bg-transparent`}
+    >
+      {/* <div className="flex items-start ml-2">
+        <Image alt="ocada" src="/OCADA.svg" width={100} height={100} />
+      </div> */}
+      <div className="flex items-center justify-end space-x-2 w-full">
+        <div className="flex items-center gap-4">
           <a
             target="_blank"
-            href="https://github.com/vercel/ai/tree/main/examples/next-ai-rsc"
+            href="/"
             rel="noopener noreferrer"
+            className={
+              (cn(buttonVariants({ variant: 'outline' })), 'hidden lg:flex')
+            }
           >
-            <IconGitHub />
-            <span className="hidden ml-2 md:flex">GitHub</span>
+            <span className="ml-2 text-type-600 text-sm text-opacity-80">
+              Plugins
+            </span>
           </a>
-        </Button>
-        <Button asChild>
-          <a
-            href="https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fvercel%2Fai%2Fblob%2Fmain%2Fexamples%2Fnext-ai-rsc&env=OPENAI_API_KEY&envDescription=OpenAI+API+Key&envLink=https%3A%2F%2Fplatform.openai.com%2Fapi-keys"
-            target="_blank"
-          >
-            <IconVercel className="mr-2" />
-            <span className="hidden sm:block">Deploy to Vercel</span>
-            <span className="sm:hidden">Deploy</span>
-          </a>
-        </Button>
+          <WalletMultiButtonDynamic
+            className={cn(
+              buttonVariants({ variant: 'outline' }),
+              'bg-type-alt-500 text-black hover:bg-type-alt-700 hover:text-black'
+            )}
+          />
+          {wallet.publicKey && <></>}
+        </div>
       </div>
     </header>
-  );
+  )
 }
