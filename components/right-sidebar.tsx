@@ -26,6 +26,12 @@ import { TavilySearchResults } from '@langchain/community/tools/tavily_search'
 import { createOpenAIFunctionsAgent } from 'langchain/agents'
 
 import { pull } from 'langchain/hub'
+import { OpenAIEmbeddings } from "@langchain/openai";
+import { MemoryVectorStore } from "langchain/vectorstores/memory";
+import { SerpAPILoader } from "langchain/document_loaders/web/serpapi";
+// import { ChatPromptTemplate } from "@langchain/core/prompts";
+import { createStuffDocumentsChain } from "langchain/chains/combine_documents";
+import { createRetrievalChain } from "langchain/chains/retrieval";
 // import { AgentExecutor, createOpenAIFunctionsAgent } from "langchain/agents";
 
 const model = new ChatOpenAI({
@@ -130,6 +136,9 @@ export default function Component() {
   const splTokens = assets.filter(asset => asset.interface === 'FungibleToken')
   const nfts = assets.filter(asset => asset.interface === 'V1_NFT')
 
+  console.log(`SPL TOKENS FIRST SETTING : ${splTokens}`)
+
+
   // Function to serialize SPL Tokens and NFTs data into a descriptive text format
   function serializeAssets(splTokens: Asset[], nfts: Asset[]): string {
     let splTokensDescription =
@@ -154,6 +163,7 @@ export default function Component() {
 
   useEffect(() => {
     const assetsDescription = serializeAssets(splTokens, nfts)
+    console.log(`Needed asset description:::: hereerere ::${assetsDescription}`)
 
     const walletAnalysis = async () => {
       const chatPrompt = ChatPromptTemplate.fromPromptMessages([
@@ -203,6 +213,7 @@ export default function Component() {
       }
 
       const tokensToSearch = serializeAssets(splTokens)
+      
 
       // Setting up the tools and agents for the search
       const tools = [
@@ -248,6 +259,84 @@ export default function Component() {
     // Cleanup function to clear the timeout if the component unmounts before the timeout fires or if the dependencies change
     return () => clearTimeout(timer)
   }, [splTokens]) // Dependency array, re-run the effect if `splTokens` changes
+
+  useEffect(() => {
+
+    console.log(`SERP API search working here ....`);
+
+    const searchTokenInfo = async () => {
+      function serializeAssets(splTokens: Asset[]): string {
+        let splTokensDescription =
+          'SPL Tokens:\n' +
+          splTokens
+            .map(
+              token =>
+                `Token Name: ${token.content.metadata.name}, Symbol: ${token.content.metadata.symbol}`
+            )
+            .join('\n')
+
+        return `${splTokensDescription}\n`
+      }
+
+      const tokensToSearch = serializeAssets(splTokens)
+
+      const model = new ChatOpenAI({
+        openAIApiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
+        //@ts-ignore
+        model: 'gpt-3.5-turbo-16k',
+        temperature: 0.9
+      });
+
+      const tools = [
+        new SearchApi("09373a32cf6671afc3674f1839961c7e5e6a9bdcc36f9360de52299a82a43222", {
+          engine: "google_news",
+        }),
+      ];
+
+      const prefix = ChatPromptTemplate.fromMessages([
+        [
+          "ai",
+          "Answer the following questions as best you can. In your final answer, use a bulleted list markdown format.",
+        ],
+        ["human", "{input}"],
+      ]);
+
+      const customOutputParser = (
+        input: BaseMessageChunk
+      ): AgentAction | AgentFinish => ({
+        log: "test",
+        returnValues: {
+          output: input,
+        },
+      });
+      console.log(`Solana tokens to search for: ${tokensToSearch}`);
+      console.log(`SOLANA TOKENS SPLTOKENS: ${splTokens}`)
+
+            // Replace this placeholder agent with your actual implementation.
+      const agent = RunnableSequence.from([prefix, model, customOutputParser]);
+      const executor = AgentExecutor.fromAgentAndTools({
+        agent,
+        tools,
+      });
+      const res = await executor.invoke({
+        input: `what do you know about these solana tokens ? ${tokensToSearch}`,
+      });
+      console.log(`THIS IS THE SEARCH ENGINE RESPONSE :: ${JSON.stringify(res)}`);
+
+
+            // Timeout to delay the execution
+
+
+
+    }
+
+    const timer = setTimeout(() => {
+      searchTokenInfo()
+    }, 40000) // 30 seconds delay
+
+    // Cleanup function to clear the timeout if the component unmounts before the timeout fires or if the dependencies change
+    return () => clearTimeout(timer)
+  }, [])
 
   return (
     <aside className="h-[97vh] overflow-y-scroll flex flex-col items-center gap-9 py-4 px-6 bg-[#101010] m-4 rounded-[28px] ring-[3px] ring-[#1a1a1a] no-scrollbar">
