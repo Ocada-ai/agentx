@@ -21,7 +21,7 @@ export function Stocks({ stocks }: { stocks: any[] }) {
         >
           <div
             className={`text-xl ${
-              stock.delta > 0 ? 'text-green-600' : 'text-red-600'
+              stock.delta > 0 ? 'text-yellow-600' : 'text-red-600'
             } p-2 w-11 bg-white/10 flex flex-row justify-center rounded-md`}
           >
             {stock.delta > 0 ? '↑' : '↓'}
@@ -33,14 +33,14 @@ export function Stocks({ stocks }: { stocks: any[] }) {
           <div className="flex flex-col ml-auto">
             <div
               className={`${
-                stock.delta > 0 ? 'text-green-600' : 'text-red-600'
+                stock.delta > 0 ? 'text-yellow-600' : 'text-red-600'
               } bold uppercase text-right`}
             >
               {` ${((stock.delta / stock.price) * 100).toFixed(2)}%`}
             </div>
             <div
               className={`${
-                stock.delta > 0 ? 'text-green-700' : 'text-red-700'
+                stock.delta > 0 ? 'text-yellow-700' : 'text-red-700'
               } text-base text-right`}
             >
               {stock.delta}

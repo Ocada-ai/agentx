@@ -56,7 +56,7 @@ export function Stock({ name = 'DOGE', price = 12.34, delta = 1 }) {
   }, [startHighlight, endHighlight]);
 
   return (
-    <div className="p-4 text-green-400 border rounded-xl bg-zinc-950">
+    <div className="p-4 text-yellow-400 border rounded-xl bg-zinc-950">
       <div className="inline-block float-right px-2 py-1 text-xs rounded-full bg-white/10">
         {`${delta > 0 ? '+' : ''}${((delta / price) * 100).toFixed(2)}% ${
           delta > 0 ? '↑' : '↓'
