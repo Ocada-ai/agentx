@@ -48,7 +48,7 @@ export default function RightSidebar() {
           {/* SPL-Tokens section */}
           <div className="flex flex-col items-center gap-2">
             <h1 className="font-normal text-gray-500 text-sm text-opacity-90 ps-2 pointer-events-none">
-              Juice Box (coming soon...)
+              Juicebot (coming soon...)
             </h1>
             {/* {analysis && (
               <div className="grid gap-0.1 bg-[#141414] border-[0.5px] border-[#1a1a1a] shadow-[0_2px_4px_0_#0000001a] h-full px-5  py-4 rounded-xl mt-0 flex-col items-start justify-between hover:no-underline">
