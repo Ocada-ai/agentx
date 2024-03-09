@@ -12,25 +12,25 @@ import { SidebarDesktop } from '@/components/sidebar-desktop'
 import RightSidebar from '@/components/right-sidebar';
 
 const meta = {
-  title: 'AI RSC Demo',
+  title: 'OCADA AI (beta)',
   description:
-    'Demo of an interactive financial assistant built using Next.js and Vercel AI SDK.',
+    'Beta version of the OCADA AI Blockchain Agent',
 };
 export const metadata: Metadata = {
   ...meta,
   title: {
-    default: 'AI RSC Demo',
-    template: `%s - AI RSC Demo`,
+    default: 'OCADA AI (beta)',
+    template: `%s - OCADA AI (beta)`,
   },
   icons: {
-    icon: '/favicon.ico',
-    shortcut: '/favicon-16x16.png',
-    apple: '/apple-touch-icon.png',
+    icon: '/OCADA.svg',
+    shortcut: '/OCADA.svg',
+    apple: '/OCADA.svg',
   },
   twitter: {
     ...meta,
     card: 'summary_large_image',
-    site: '@vercel',
+    site: '@ocada',
   },
   openGraph: {
     ...meta,
