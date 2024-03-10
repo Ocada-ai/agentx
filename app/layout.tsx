@@ -91,7 +91,9 @@ export default function RootLayout({ children }: RootLayoutProps) {
           enableSystem
           disableTransitionOnChange
         >
-          <main className="flex flex-col flex-1 h-screen bg-[#121212]">
+          <main className="flex flex-col flex-1 h-screen bg-[#141414]">
+            {' '}
+            {/* bg-[#121212] */}
             {children}
           </main>
           <TailwindIndicator />

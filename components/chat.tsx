@@ -58,10 +58,11 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
     <>
       <div
         className={cn(
-          'pt-4 md:pt-16 h-[97vh] bg-[#141414] m-4 rounded-[28px] ring-[3px] ring-[#1a1a1a] overflow-y-scroll relative flex flex-col justify-between no-scrollbar',
+          'pt-4 md:pt-16 h-[97vh] m-4 rounded-[28px] overflow-y-scroll relative flex flex-col justify-between no-scrollbar',
           className
         )}
       >
+        {/* bg-[#141414] rounded-[28px] ring-[3px] ring-[#1a1a1a] */}
         {messages.length ? (
           <>
             <ChatList messages={messages} />

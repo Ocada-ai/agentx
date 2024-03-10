@@ -70,7 +70,7 @@ export function LoginButtonSolana({
         <article className="flex justify-center flex-col items-center mb-6">
           <IconOcada className="size-20" />
           <h4 className="font-semibold text-3xl">Get started</h4>
-          <p className="opacity-60 max-w-80">
+          <p className="opacity-60 max-w-80 font-rethink_sans">
             Select wallet{' '}
             <span className="inline-flex size-5 bg-white rounded-full justify-center items-center relative top-1 mx-1 opacity-100">
               <svg
