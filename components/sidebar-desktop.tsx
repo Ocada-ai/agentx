@@ -28,7 +28,7 @@ export async function SidebarDesktop() {
           href="/"
           className={cn(
             buttonVariants({ variant: 'outline' }),
-            'h-10 w-full justify-start bg-[#171717] px-4 shadow-none transition-colors hover:bg-zinc-200/40 border-none mb-2 rounded-full ring-[3px] ring-[#1a1a1a]'
+            'h-10 w-full justify-start bg-[#171717] px-4 shadow-none transition-colors hover:bg-zinc-200/40 border-none mb-2 rounded-full ring-[3px] ring-[#1a1a1a] text-type-600 text-opacity-50'
           )}
         >
           <IconPlus className="-translate-x-2" />
@@ -37,29 +37,37 @@ export async function SidebarDesktop() {
       </div>
       <menu className="h-full flex flex-col">
         <>
-          <div className="flex flex-col gap-3 mb-3">
+          <div className="flex flex-col gap-4 mb-3">
             <Link
               href="/"
               className="text-base text-type-600 text-opacity-50 font-medium flex gap-2 items-center"
             >
-              <IconData className="stroke-type-600 opacity-50" />
-              Data
+              <IconData className="stroke-type-600 opacity-20" />
+              <span className="opacity-50 pointer-events-none">
+                Data <span className="text-[8px] font-normal">coming soon</span>
+              </span>
             </Link>
             <Link
               href="/"
-              className="text-base text-type-600 text-opacity-50 font-medium flex gap-2 items-center"
+              className="text-sm text-type-600 text-opacity-50 font-medium flex gap-2 items-center"
             >
-              <IconTools className="stroke-type-600 opacity-50" />
-              Tools
+              <IconTools className="stroke-type-600 opacity-20" />
+              <span className="opacity-50 pointer-events-none">
+                Tools{' '}
+                <span className="text-[8px] font-normal">coming soon</span>
+              </span>
             </Link>
             <Link
               href="/"
-              className="text-base text-type-600 text-opacity-50 font-medium flex gap-2 items-center"
+              className="text-sm text-type-600 text-opacity-50 font-medium flex gap-2 items-center"
             >
-              <IconModel className="stroke-type-600 opacity-50" />
-              Model
+              <IconModel className="stroke-type-600 opacity-20" />
+              <span className="opacity-50 pointer-events-none">
+                Model{' '}
+                <span className="text-[8px] font-normal">coming soon</span>
+              </span>
             </Link>
-            <p className="text-base text-type-600 text-opacity-50 font-medium flex gap-2 items-center">
+            <p className="text-sm text-type-600 text-opacity-50 font-medium flex gap-2 items-center">
               <IconPromptHistory className="stroke-type-600 opacity-50" />
               History
             </p>
