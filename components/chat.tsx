@@ -58,7 +58,7 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
     <>
       <div
         className={cn(
-          'pt-4 md:pt-16 h-[96vh] m-4 rounded-[28px] overflow-y-scroll relative flex flex-col justify-between no-scrollbar  bg-[#141414] ring-[3px] ring-[#1a1a1a]',
+          'h-screen overflow-y-scroll relative flex flex-col justify-between no-scrollbar  bg-[#141414]',
           className
         )}
       >

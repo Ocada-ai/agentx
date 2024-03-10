@@ -250,7 +250,7 @@ export default function Component() {
   }, [splTokens]) // Dependency array, re-run the effect if `splTokens` changes
 
   return (
-    <aside className="h-[96vh] overflow-y-scroll flex flex-col items-center gap-9 py-4 px-6 bg-[#101010] m-4 rounded-[28px] ring-[3px] ring-[#1a1a1a] no-scrollbar">
+    <aside className="h-screen overflow-y-scroll flex flex-col items-center gap-9 py-4 px-6 bg-[#101010] ring-[#1a1a1a] no-scrollbar">
       <Header />
       <div className="w-full flex flex-col gap-6 mt-2">
         <div className="w-full flex justify-center">
