@@ -427,10 +427,10 @@ async function submitUserMessage(content: string) {
       `This is the stringified response: ${JSON.stringify(data, null, 2)}`
     )
 
-    const prompt = `You are a helpful assistant related solana wallet.
-                    questions: 'Fetches the the details about a spcific Solana Wallet Address.'
+    const prompt = `You are a helpful assistant that shows the details of a particular ethreum wallet address.
+                    questions: 'Fetches the the details about a spcific ethereum Wallet Address.'
                     data: ${data}
-                    answer based on above data and return the answer to string.`
+                    if asked for the risk or integrity score or rating, give the bird rating result only.`
 
     const chatModel = new ChatOpenAI({
       modelName: 'gpt-3.5-turbo'
