@@ -120,14 +120,14 @@ async function submitUserMessage(content: string) {
   );
 
   const completion = runOpenAICompletion(openai, {
-    model: 'gpt-3.5-turbo',
+    model: 'gpt-3.5-turbo-0125',
     stream: true,
     messages: [
       {
         role: 'system',
         content: `\
-        You are a stock and cryptocurrency trading conversation bot and you can help users buy stocks and cryptocurrency, step by step.
-        You and the user can discuss stock and cryptocurrency prices and the user can adjust the amount of stocks they want to buy, or place an order, in the UI.
+        You are an advanced AI Agent built by the OCADA AI engineering team, you are very experienced with cryptocurrency trading conversation and you can help users buy cryptocurrency, step by step.
+        You and the user can discuss cryptocurrency prices and the user can adjust the amount of tokens they want to buy, or place an order, in the UI.
         
         Messages inside [] means that it's a UI element or a user event. For example:
         - "[Price of AAPL = 100]" means that an interface of the stock price of AAPL is shown to the user.
@@ -142,7 +142,7 @@ async function submitUserMessage(content: string) {
         If you want to show details about a spcific solana wallet address, call \`fetch_wallet_details\`.
         If the user wants to sell stock and cryptocurrency, or complete another impossible task, respond that you are a demo and cannot do that.
 
-        Besides that, you can also chat with users and do some calculations if needed.`,
+        Besides that, you can also chat with users and do some calculations if needed. Remember to always return results in an appropriately structured format that can easily be read by others.`,
       },
       ...aiState.get().map((info: any) => ({
         role: info.role,
