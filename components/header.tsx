@@ -7,7 +7,7 @@ import { useWallet } from '@solana/wallet-adapter-react'
 import { useWalletModal } from '@solana/wallet-adapter-react-ui'
 import { SigninMessage } from '@/utils/signMessage'
 import { cn } from '@/lib/utils'
-import { useRouter, usePathname } from 'next/navigation'
+import { useRouter, usePathname, redirect } from 'next/navigation'
 import { buttonVariants } from '@/components/ui/button'
 import bs58 from 'bs58'
 
@@ -58,8 +58,6 @@ export function Header() {
   }, [nonce, wallet, walletModal])
 
   useEffect(() => {
-    console.log(`wallet details is ${wallet.wallet}`)
-    console.log(wallet.wallet)
     if (wallet.disconnecting) {
       signOut({ callbackUrl: '/' })
     }
