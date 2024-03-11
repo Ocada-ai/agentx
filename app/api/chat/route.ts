@@ -23,7 +23,7 @@ import { nanoid } from '@/lib/utils'
 //******** Training & Finetuing *********//
 import { MemoryVectorStore } from 'langchain/vectorstores/memory'
 import { OpenAIEmbeddings } from '@langchain/openai'
-
+import { Agent } from '@/lib/types'
 
 export const runtime = 'edge'
 
@@ -32,7 +32,7 @@ const openai = new OpenAI({
 })
 
 interface MessageContent {
-  text: string;
+  text: string
   // Add any other properties if needed
 }
 
@@ -273,9 +273,7 @@ const convertVercelMessageToLangChainMessage = (message: VercelChatMessage) => {
 }
 
 export async function POST(req: NextRequest) {
-
   try {
-    console.log('here')
     const body = await req.json()
     const userId = (await auth())?.user.id
     const { previewToken } = body
@@ -312,7 +310,7 @@ export async function POST(req: NextRequest) {
       name: 'fetchsolanaDetail',
       description: 'Fetches information about a specific solana wallet address',
       schema: z.object({
-        address: z.string(),
+        address: z.string()
       }),
       func: async options => {
         console.log(
@@ -339,7 +337,6 @@ export async function POST(req: NextRequest) {
         return response.content.toString()
       }
     })
-
 
     const fetchCryptoPrice = new DynamicStructuredTool({
       name: 'fetchCryptoPrice',
@@ -421,15 +418,91 @@ export async function POST(req: NextRequest) {
     )
 
     if (!returnIntermediateSteps) {
-      const result = await agentExecutor.invoke({
-        input: currentMessageContent,
-        chat_history: previousMessages
-      })
-
       const title = body.messages[0].content.substring(0, 100)
-      const id = body.id ?? nanoid()
+      const agentId = body.agentId
+      const id = body.id
       const createdAt = Date.now()
       const path = `/chat/${id}`
+      console.log({ title, agentId, id, createdAt, path })
+
+      let result = 'Something went wrong!'
+      const textEncoder = new TextEncoder()
+      let transformStream: ReadableStream<any>
+
+      if (agentId === 'ocada') {
+        result = (
+          await agentExecutor.invoke({
+            input: currentMessageContent,
+            chat_history: previousMessages
+          })
+        ).output
+
+        const logStream = await agentExecutor.streamLog({
+          input: currentMessageContent,
+          chat_history: previousMessages
+        })
+
+        transformStream = new ReadableStream({
+          async start(controller) {
+            for await (const chunk of logStream) {
+              if (chunk.ops?.length > 0 && chunk.ops[0].op === 'add') {
+                const addOp = chunk.ops[0]
+                if (
+                  addOp.path.startsWith('/logs/ChatOpenAI') &&
+                  typeof addOp.value === 'string' &&
+                  addOp.value.length
+                ) {
+                  controller.enqueue(textEncoder.encode(addOp.value))
+                }
+              }
+            }
+            controller.close()
+          }
+        })
+      } else {
+        const agent: Agent | null = await kv.get(`agent:${agentId}`)
+        if (agent) {
+          result = await fetch(agent.apiEndpoint, {
+            headers: [
+              ['content-type', 'application/json'],
+              ['x-api-key', agent.apiKey]
+            ],
+            method: 'POST',
+            body: JSON.stringify({
+              message: currentMessageContent,
+              history: previousMessages.map(({ role, content }: any) => ({
+                role,
+                text: content
+              })),
+              stream: false
+            })
+          })
+            .then(res => res.json())
+            .then(data => data?.bot?.text ?? 'Dialoqbase response wrong')
+            .catch(err => {
+              console.log({ err })
+              return 'Dialoqbase response failed'
+            })
+        }
+        transformStream = new ReadableStream({
+          async start(controller) {
+            let curInd = 0
+            let min = 10
+            let random = Math.round(Math.random() * 20)
+            let chars = min + random
+            let interval = setInterval(() => {
+              let end = Math.min(curInd + chars, result.length)
+              controller.enqueue(textEncoder.encode(result.slice(curInd, end)))
+              curInd = end
+              if (end === result.length) {
+                clearInterval(interval)
+                controller.close()
+              }
+            }, 100)
+          }
+        })
+      }
+
       const payload = {
         id,
         title,
@@ -439,7 +512,7 @@ export async function POST(req: NextRequest) {
         messages: [
           ...messages,
           {
-            content: result.output,
+            content: result,
             role: 'assistant'
           }
         ]
@@ -449,29 +522,9 @@ export async function POST(req: NextRequest) {
         score: createdAt,
         member: `chat:${id}`
       })
-
-      const logStream = await agentExecutor.streamLog({
-        input: currentMessageContent,
-        chat_history: previousMessages
-      })
-
-      const textEncoder = new TextEncoder()
-      const transformStream = new ReadableStream({
-        async start(controller) {
-          for await (const chunk of logStream) {
-            if (chunk.ops?.length > 0 && chunk.ops[0].op === 'add') {
-              const addOp = chunk.ops[0]
-              if (
-                addOp.path.startsWith('/logs/ChatOpenAI') &&
-                typeof addOp.value === 'string' &&
-                addOp.value.length
-              ) {
-                controller.enqueue(textEncoder.encode(addOp.value))
-              }
-            }
-          }
-          controller.close()
-        }
+      await kv.zadd(`user:agent:chat:${userId}:${agentId}`, {
+        score: createdAt,
+        member: `chat:${id}`
       })
 
       return new StreamingTextResponse(transformStream)

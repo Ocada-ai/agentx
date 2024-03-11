@@ -12,6 +12,8 @@ import {
   IconPromptHistory,
   IconTools
 } from '@/components/ui/icons'
+import { AgentPickerDropdown } from './agent-picker-dropdown'
+import useAppStore from '@/lib/store/app'
 
 export async function SidebarDesktop() {
   const session = await auth()
@@ -23,7 +25,10 @@ export async function SidebarDesktop() {
   return (
     <Sidebar className="peer absolute inset-y-0 z-30 hidden -translate-x-full bg-[#121212] duration-300 ease-in-out data-[state=open]:translate-x-0 lg:flex lg:w-[220px] h-full min-h-screen px-5 pt-4">
       <Image alt="ocada" src="/OCADA.svg" width={92} height={92} />
-      <div className="mt-5 mb-3">
+      <div className="mt-5 mb-3 flex flex-col gap-3 items-center">
+        <div className="w-full">
+          <AgentPickerDropdown />
+        </div>
         <Link
           href="/"
           className={cn(

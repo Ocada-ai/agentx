@@ -1,20 +1,24 @@
+'use client'
 import { clearChats, getChats } from '@/app/actions'
 import { ClearHistory } from '@/components/clear-history'
 import { SidebarItems } from '@/components/sidebar-items'
 import { ThemeToggle } from '@/components/theme-toggle'
+import useAppStore from '@/lib/store/app'
 import { cache } from 'react'
 
 interface SidebarListProps {
   userId?: string
+  agentId?: string
   children?: React.ReactNode
 }
 
-const loadChats = cache(async (userId?: string) => {
-  return await getChats(userId)
+const loadChats = cache(async (userId?: string, agentId?: string) => {
+  return await getChats(userId, agentId)
 })
 
-export async function SidebarList({ userId }: SidebarListProps) {
-  const chats = await loadChats(userId)
+export async function SidebarList({ userId, agentId }: SidebarListProps) {
+  const { activeAgent } = useAppStore()
+  const chats = await loadChats(userId, activeAgent?.agent_id)
 
   return (
     <div className="flex flex-1 flex-col overflow-hidden min-h-full">

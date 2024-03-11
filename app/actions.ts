@@ -5,18 +5,27 @@ import { redirect } from 'next/navigation'
 import { kv } from '@vercel/kv'
 
 import { auth } from '@/auth'
-import { type Chat } from '@/lib/types'
+import { Agent, type Chat } from '@/lib/types'
+import useAppStore from '@/lib/store/app'
 
-export async function getChats(userId?: string | null) {
+export async function getChats(
+  userId?: string | null,
+  agentId?: string | null
+) {
   if (!userId) {
     return []
   }
 
   try {
     const pipeline = kv.pipeline()
-    const chats: string[] = await kv.zrange(`user:chat:${userId}`, 0, -1, {
-      rev: true
-    })
+    const chats: string[] = await kv.zrange(
+      `user:agent:chat:${userId}:${agentId}`,
+      0,
+      -1,
+      {
+        rev: true
+      }
+    )
 
     for (const chat of chats) {
       pipeline.hgetall(chat)
@@ -40,7 +49,15 @@ export async function getChat(id: string, userId: string) {
   return chat
 }
 
-export async function removeChat({ id, path }: { id: string; path: string }) {
+export async function removeChat({
+  id,
+  path,
+  agentId
+}: {
+  id: string
+  path: string
+  agentId: string
+}) {
   const session = await auth()
 
   if (!session) {
@@ -60,6 +77,7 @@ export async function removeChat({ id, path }: { id: string; path: string }) {
 
   await kv.del(`chat:${id}`)
   await kv.zrem(`user:chat:${session.user.id}`, `chat:${id}`)
+  await kv.zrem(`user:agent:chat:${session.user.id}:${agentId}`, `chat:${id}`)
 
   revalidatePath('/')
   return revalidatePath(path)
@@ -83,6 +101,10 @@ export async function clearChats() {
   for (const chat of chats) {
     pipeline.del(chat)
     pipeline.zrem(`user:chat:${session.user.id}`, chat)
+    pipeline.zrem(
+      `user:agent:chat:${session.user.id}:${useAppStore.getState().activeAgent?.agent_id}`,
+      chat
+    )
   }
 
   await pipeline.exec()
@@ -126,4 +148,31 @@ export async function shareChat(id: string) {
   await kv.hmset(`chat:${chat.id}`, payload)
 
   return payload
+}
+
+export async function getAgents() {
+  const agentsId = (await kv.lrange<string>(`agents`, 0, -1)).map(
+    id => 'agent:' + id
+  )
+
+  const agents = await kv.mget<Agent[]>(...agentsId)
+
+  return agents
+}
+
+export async function getMatchingKeys(pattern: string) {
+  let cursor = 0
+  const iterCount = 20
+  const matchedKeys: string[] = []
+  while (true) {
+    if (cursor === -1) break
+    const [curCursor, keys] = await kv.scan(cursor, {
+      count: iterCount,
+      match: pattern
+    })
+    // console.log({ curCursor, keys })
+    matchedKeys.push(...keys)
+    cursor = curCursor == 0 ? -1 : curCursor
+  }
+  return matchedKeys
 }

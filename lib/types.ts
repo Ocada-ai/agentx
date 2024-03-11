@@ -10,6 +10,13 @@ export interface Chat extends Record<string, any> {
   sharePath?: string
 }
 
+export interface Agent extends Record<string, any> {
+  agent_id: string
+  name: string
+  apiKey: string
+  apiEndpoint: string
+}
+
 export type ServerActionResult<Result> = Promise<
   | Result
   | {
