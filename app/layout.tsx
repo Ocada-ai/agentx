@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
+import localFont from "next/font/local";
 import { GeistMono } from "geist/font/mono";
 import { GeistSans } from "geist/font/sans";
 import { Analytics } from "@vercel/analytics/react";
 import { Toaster } from "@/components/ui/toaster";
-import "./globals.css";
+import "./globals.scss";
 
 import { AI } from "./action";
 import { Header } from "@/components/header";
@@ -45,6 +46,43 @@ export const viewport = {
   ],
 };
 
+const Gabarito = localFont({
+  src: [
+    {
+      path: "../public/fonts/Gabarito-Regular.woff2",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/Gabarito-Medium.woff2",
+      weight: "500",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/Gabarito-SemiBold.woff2",
+      weight: "600",
+      style: "normal",
+    },
+  ],
+  variable: "--font-gabarito",
+});
+
+const Rethink_Sans = localFont({
+  src: [
+    {
+      path: "../public/fonts/RethinkSans-Regular.woff2",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/RethinkSans-Medium.woff2",
+      weight: "500",
+      style: "normal",
+    },
+  ],
+  variable: "--font-rethink_sans",
+});
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -53,7 +91,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`font-sans antialiased ${GeistSans.variable} ${GeistMono.variable}`}
+        className={`font-sans antialiased ${Gabarito.variable} ${Rethink_Sans.variable} ${GeistSans.variable} ${GeistMono.variable}`}
       >
         <Toaster />
         <AI>
@@ -63,7 +101,7 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <div className="relative flex h-screen overflow-hidden">
+            <div className="relative flex h-screen overflow-hidden bg-[#121212]">
               {/* <Header /> */}
               <SidebarDesktop />
               {/* <main className="flex flex-col flex-1 bg-muted/50 dark:bg-background">

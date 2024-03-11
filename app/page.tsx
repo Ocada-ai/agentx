@@ -121,7 +121,7 @@ export default function Page() {
                 }
               }}
             >
-              <div className="relative flex flex-col w-full px-8 overflow-hidden max-h-48 bg-[#141414] ring-[6px] ring-[#141414] rounded-full border-[2px] border-[#242424] text-type-600">
+              <div className="relative flex flex-col w-full px-8 overflow-hidden max-h-48 bg-[#1a1a1a] ring-[6px] ring-[#141414] rounded-full border-[2px] border-[#242424] text-type-600">
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button

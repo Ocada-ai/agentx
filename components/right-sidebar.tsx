@@ -47,7 +47,7 @@ export default function RightSidebar() {
         <div className="w-full grid gap-8">
           {/* SPL-Tokens section */}
           <div className="flex flex-col items-center gap-2">
-            <h1 className="font-normal text-gray-500 text-sm text-opacity-90 ps-2 pointer-events-none">
+            <h1 className="ps-2 text-sm text-type-600 text-opacity-50 font-normal flex gap-2 items-center pointer-events-none cursor-crosshair">
               Juicebot (coming soon...)
             </h1>
             {/* {analysis && (

@@ -21,7 +21,7 @@ export async function SidebarDesktop() {
   // }
 
   return (
-    <Sidebar className="peer absolute inset-y-0 z-30 hidden -translate-x-full bg-[#121212] duration-300 ease-in-out data-[state=open]:translate-x-0 lg:flex lg:w-[220px] h-full min-h-screen px-5 pt-4">
+    <Sidebar className="peer absolute inset-y-0 z-30 hidden -translate-x-full bg-[#171717] duration-300 ease-in-out data-[state=open]:translate-x-0 lg:flex lg:w-[220px] h-full min-h-screen px-5 pt-4">
       <Image alt="ocada" src="/OCADA.svg" width={92} height={92} />
 
       <div className="mt-5 mb-4">
@@ -39,39 +39,31 @@ export async function SidebarDesktop() {
       <menu className="h-full flex flex-col">
         <>
           {/* <h2>Features Coming soon...</h2> */}
-          <div className="flex flex-col gap-5 mb-3 pointer-events-none opacity-50">
-            {/* <Link
-              href="/"
-              className="text-base text-type-600 text-opacity-50 font-medium flex gap-2 items-center"
-            >
-              <IconData className="stroke-type-600 opacity-50" />
-              Data
-            </Link> */}
-
+          <div className="flex flex-col gap-5 mb-3 pointer-events-none">
             <Link
               href="/"
-              className="text-sm text-type-600 font-medium flex gap-2 items-center"
+              className="text-base text-type-600 text-opacity-50 font-medium flex gap-2 items-center pointer-events-none cursor-crosshair"
             >
               <IconTools className="stroke-type-600 opacity-20" />
-              <span className="opacity-30 pointer-events-none">
+              <span className="opacity-50 pointer-events-none">
                 Data{" "}
-                <span className="text-[8px] font-normal">(coming soon...)</span>
+                <span className="text-xs font-normal">(coming soon...)</span>
               </span>
             </Link>
 
             <Link
               href="/"
-              className="text-sm text-type-600 font-medium flex gap-2 items-center"
+              className="text-sm text-type-600 text-opacity-50 font-medium flex gap-2 items-center pointer-events-none cursor-not-allowed"
             >
               <IconModel className="stroke-type-600 opacity-20" />
-              <span className="opacity-30 pointer-events-none">
-                Models{" "}
-                <span className="text-[8px] font-normal">(coming soon...)</span>
+              <span className="opacity-50 pointer-events-none">
+                Model{" "}
+                <span className="text-xs font-normal">(coming soon...)</span>
               </span>
             </Link>
 
             <p className="text-sm text-type-600 text-opacity-50 font-medium flex gap-2 items-center">
-              <IconPromptHistory className="stroke-type-600 opacity-70" />
+              <IconPromptHistory className="stroke-type-600 opacity-50" />
               History
             </p>
           </div>
