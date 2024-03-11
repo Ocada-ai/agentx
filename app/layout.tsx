@@ -23,9 +23,9 @@ export const metadata: Metadata = {
     template: `%s - OCADA AI (beta)`,
   },
   icons: {
-    icon: "/OCADA.svg",
-    shortcut: "/OCADA.svg",
-    apple: "/OCADA.svg",
+    icon: "/favicon.ico",
+    shortcut: "/favicon-16x16.png",
+    apple: "/apple-touch-icon.png",
   },
   twitter: {
     ...meta,
