@@ -24,7 +24,7 @@ export function EmptyScreen({
 }) {
   return (
     <div className="w-full lg:max-w-3xl mx-auto px-4">
-      <div className="py-20">
+      <div className="py-16">
         <div className="mb-6">
           <h1 className="mb-2 text-3xl font-semibold text-type-600 text-opacity-80">
             Welcome to{" "}

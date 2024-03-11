@@ -1,17 +1,17 @@
-import { Sidebar } from '@/components/sidebar'
-import Image from 'next/image'
-import Link from 'next/link'
+import { Sidebar } from "@/components/sidebar";
+import Image from "next/image";
+import Link from "next/link";
 // import { auth } from '@/auth'
-import { cn } from '@/lib/utils'
-import { buttonVariants } from '@/components/ui/button'
+import { cn } from "@/lib/utils";
+import { buttonVariants } from "@/components/ui/button";
 // import { ChatHistory } from '@/components/chat-history'
 import {
   IconPlus,
   IconData,
   IconModel,
   IconPromptHistory,
-  IconTools
-} from '@/components/ui/icons'
+  IconTools,
+} from "@/components/ui/icons";
 
 export async function SidebarDesktop() {
   // const session = await auth()
@@ -23,13 +23,13 @@ export async function SidebarDesktop() {
   return (
     <Sidebar className="peer absolute inset-y-0 z-30 hidden -translate-x-full bg-[#121212] duration-300 ease-in-out data-[state=open]:translate-x-0 lg:flex lg:w-[220px] h-full min-h-screen px-5 pt-4">
       <Image alt="ocada" src="/OCADA.svg" width={92} height={92} />
-      
-      <div className="mt-5 mb-3 ">
+
+      <div className="mt-5 mb-4">
         <Link
           href="/"
           className={cn(
-            buttonVariants({ variant: 'outline' }),
-            'h-10 w-full justify-start bg-[#171717] px-4 shadow-none transition-colors hover:bg-zinc-200/40 border-none mb-2 rounded-full ring-[3px] ring-[#1a1a1a]'
+            buttonVariants({ variant: "outline" }),
+            "h-10 w-full justify-start bg-[#171717] px-4 shadow-none transition-colors hover:bg-zinc-200/40 border-none mb-2 rounded-full ring-[3px] ring-[#1a1a1a] text-type-600 text-opacity-50"
           )}
         >
           <IconPlus className="-translate-x-2" />
@@ -38,8 +38,8 @@ export async function SidebarDesktop() {
       </div>
       <menu className="h-full flex flex-col">
         <>
-        {/* <h2>Features Coming soon...</h2> */}
-          <div className="flex flex-col gap-3 mb-3 pointer-events-none opacity-50">
+          {/* <h2>Features Coming soon...</h2> */}
+          <div className="flex flex-col gap-5 mb-3 pointer-events-none opacity-50">
             {/* <Link
               href="/"
               className="text-base text-type-600 text-opacity-50 font-medium flex gap-2 items-center"
@@ -47,22 +47,31 @@ export async function SidebarDesktop() {
               <IconData className="stroke-type-600 opacity-50" />
               Data
             </Link> */}
+
             <Link
               href="/"
-              className="text-sm mt-2 text-type-600 text-opacity-50 font-medium flex gap-1 items-center"
+              className="text-sm text-type-600 font-medium flex gap-2 items-center"
             >
-              <IconTools className="stroke-type-600 opacity-50" />
-              Agents (coming soon...)
+              <IconTools className="stroke-type-600 opacity-20" />
+              <span className="opacity-30 pointer-events-none">
+                Data{" "}
+                <span className="text-[8px] font-normal">(coming soon...)</span>
+              </span>
             </Link>
+
             <Link
               href="/"
-              className="text-sm mt-2 mb-2 text-type-600 text-opacity-50 font-medium flex gap-1 items-center"
+              className="text-sm text-type-600 font-medium flex gap-2 items-center"
             >
-              <IconModel className="stroke-type-600 opacity-50" />
-              Models (coming soon...)
+              <IconModel className="stroke-type-600 opacity-20" />
+              <span className="opacity-30 pointer-events-none">
+                Models{" "}
+                <span className="text-[8px] font-normal">(coming soon...)</span>
+              </span>
             </Link>
-            <p className="text-sm text-type-600 text-opacity-50 font-medium flex gap-1 items-center">
-              <IconPromptHistory className="stroke-type-600 opacity-50" />
+
+            <p className="text-sm text-type-600 text-opacity-50 font-medium flex gap-2 items-center">
+              <IconPromptHistory className="stroke-type-600 opacity-70" />
               History
             </p>
           </div>
@@ -70,6 +79,5 @@ export async function SidebarDesktop() {
         </>
       </menu>
     </Sidebar>
-    
-  )
+  );
 }
