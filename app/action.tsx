@@ -355,7 +355,7 @@ async function submitUserMessage(content: string) {
           <BotMessage>
             Sure!{' '}
             {typeof numberOfShares === 'number'
-              ? `Click the button below to purchase ${numberOfShares} shares of $${symbol}:`
+              ? `Click the button below to purchase ${numberOfShares} tokens of $${symbol}:`
               : `How many $${symbol} would you like to purchase?`}
           </BotMessage>
           <BotCard showAvatar={false}>
@@ -372,7 +372,7 @@ async function submitUserMessage(content: string) {
         {
           role: 'function',
           name: 'show_stock_purchase_ui',
-          content: `[UI for purchasing ${numberOfShares} shares of ${symbol}. Current price = ${price}, total cost = ${
+          content: `[UI for purchasing ${numberOfShares} tokens of ${symbol}. Current price = ${price}, total cost = ${
             numberOfShares * price
           }]`,
         },
