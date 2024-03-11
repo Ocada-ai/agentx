@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useUIState, useActions } from 'ai/rsc';
 import { UserMessage } from '@/components/llm-stocks/message';
 
-import { type AI } from './action';
+import { type AI } from '@/app/action';
 import { ChatScrollAnchor } from '@/lib/hooks/chat-scroll-anchor';
 import { FooterText } from '@/components/footer';
 import Textarea from 'react-textarea-autosize';
@@ -21,6 +21,9 @@ import { ChatList } from '@/components/chat-list';
 import { EmptyScreen } from '@/components/empty-screen';
 import { cn } from '@/lib/utils'
 
+import { useWallet } from '@solana/wallet-adapter-react'
+import { redirect } from 'next/navigation'
+
 
 export default function Page() {
   const [messages, setMessages] = useUIState<typeof AI>();
@@ -28,6 +31,7 @@ export default function Page() {
   const [inputValue, setInputValue] = useState('');
   const { formRef, onKeyDown } = useEnterSubmit();
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const wallet = useWallet()
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -53,6 +57,11 @@ export default function Page() {
     };
   }, [inputRef]);
 
+  useEffect(() => {
+    if (!wallet.wallet) {
+      redirect('/sign-in')
+    }
+  }, [wallet])
   return (
     <div className="pt-4 md:pt-16 h-[97vh] bg-[#101010] m-4 rounded-[28px] ring-[3px] ring-[#1a1a1a] overflow-y-scroll relative flex flex-col justify-between">
       <div className="pb-[200px] pt-4 md:pt-10">
