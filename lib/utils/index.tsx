@@ -9,6 +9,7 @@ import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { z } from 'zod';
 import type MistralClient from '@mistralai/mistralai';
+import { MistralStream, StreamingTextResponse } from 'ai';
 
 const consumeStream = async (stream: ReadableStream) => {
   const reader = stream.getReader();
@@ -47,42 +48,44 @@ export function runOpenAICompletion<
 
   (async () => {
     consumeStream(
-      OpenAIStream(
+      MistralStream(
         (mistral.chatStream({
           ...rest,
           stream: true,
           function: tools.map(fn => ({
+            type: fn.type,
             name: fn.name,
             description: fn.description,
             parameters: zodToJsonSchema(fn.parameters) as Record<
               string,
               unknown
             >,
+            
           })),
         })) as any,
         {
-          async experimental_onFunctionCall(functionCallPayload) {
-            hasFunction = true;
+          // async experimental_onFunctionCall(functionCallPayload) {
+          //   hasFunction = true;
 
-            if (!onFunctionCall[functionCallPayload.name]) {
-              return;
-            }
+          //   if (!onFunctionCall[functionCallPayload.name]) {
+          //     return;
+          //   }
 
-            // we need to convert arguments from z.input to z.output
-            // this is necessary if someone uses a .default in their schema
-            const zodSchema = functionsMap[functionCallPayload.name].parameters;
-            const parsedArgs = zodSchema.safeParse(
-              functionCallPayload.arguments,
-            );
+          //   // we need to convert arguments from z.input to z.output
+          //   // this is necessary if someone uses a .default in their schema
+          //   const zodSchema = functionsMap[functionCallPayload.name].parameters;
+          //   const parsedArgs = zodSchema.safeParse(
+          //     functionCallPayload.arguments,
+          //   );
 
-            if (!parsedArgs.success) {
-              throw new Error(
-                `Invalid function call in message. Expected a function call object`,
-              );
-            }
+          //   if (!parsedArgs.success) {
+          //     throw new Error(
+          //       `Invalid function call in message. Expected a function call object`,
+          //     );
+          //   }
 
-            onFunctionCall[functionCallPayload.name]?.(parsedArgs.data);
-          },
+          //   onFunctionCall[functionCallPayload.name]?.(parsedArgs.data);
+          // },
           onToken(token) {
             text += token;
             if (text.startsWith('{')) return;

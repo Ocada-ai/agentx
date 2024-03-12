@@ -34,6 +34,7 @@ export interface ToolDefinition<
   NAME extends string,
   PARAMETERS extends z.AnyZodObject,
 > {
+  type: string;
   /**
    * The name of the tool.
    * Should be understandable for language models and unique among the tools that they know.
@@ -52,4 +53,5 @@ export interface ToolDefinition<
    * Use descriptions to make the input understandable for the language model.
    */
   parameters: PARAMETERS;
+  required: [string];
 }
