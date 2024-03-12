@@ -8,6 +8,7 @@ import zodToJsonSchema from 'zod-to-json-schema';
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { z } from 'zod';
+import type MistralClient from '@mistralai/mistralai';
 
 const consumeStream = async (stream: ReadableStream) => {
   const reader = stream.getReader();
@@ -19,12 +20,12 @@ const consumeStream = async (stream: ReadableStream) => {
 
 export function runOpenAICompletion<
   T extends Omit<
-    Parameters<typeof OpenAI.prototype.chat.completions.create>[0],
+    Parameters<typeof MistralClient.prototype.chatStream>[0],
     'functions'
   >,
   const TFunctions extends TAnyToolDefinitionArray,
 >(
-  openai: OpenAI,
+  mistral: MistralClient,
   params: T & {
     functions: TFunctions;
   },
@@ -47,7 +48,7 @@ export function runOpenAICompletion<
   (async () => {
     consumeStream(
       OpenAIStream(
-        (await openai.chat.completions.create({
+        (mistral.chatStream({
           ...rest,
           stream: true,
           functions: functions.map(fn => ({
