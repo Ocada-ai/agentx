@@ -125,6 +125,43 @@ async function submitUserMessage(content: string) {
     <BotMessage className="items-center">{spinner}</BotMessage>,
   );
 
+//   const tools = [
+//     {
+//         "type": "function",
+//         "function": {
+//             "name": "show_stock_purchase_ui",
+//             "description": "Show price and the UI to purchase a cryptocurrency. Use this if the user wants to purchase a cryptocurrency.",
+//             "parameters": {
+//                 "type": "object",
+//                 "properties": {
+//                     "transaction_id": {
+//                         "type": "string",
+//                         "description": "The transaction id.",
+//                     }
+//                 },
+//                 "required": ["transaction_id"],
+//             },
+//         },
+//     },
+//     {
+//         "type": "function",
+//         "function": {
+//             "name": "retrieve_payment_date",
+//             "description": "Get payment date of a transaction",
+//             "parameters": {
+//                 "type": "object",
+//                 "properties": {
+//                     "transaction_id": {
+//                         "type": "string",
+//                         "description": "The transaction id.",
+//                     }
+//                 },
+//                 "required": ["transaction_id"],
+//             },
+//         },
+//     }
+// ]
+
   const completion = runOpenAICompletion(mistral, {
     model: 'mistral-large-latest',
     stream: true,
@@ -145,7 +182,7 @@ async function submitUserMessage(content: string) {
         If you want to show events, call \`get_events\`.
         If you want to show information about a specific solana wallet address, call \`fetch_solana_detail\`.
         If you want to show price of a specified cryptocurrency, call \`fetch_crypto_price\`.
-        If you want to show details about a specific solana wallet address, call \`fetch_wallet_details\`.
+        If you want to show details about a specific ethereum wallet address, call \`fetch_wallet_details\`.
         If the user wants to sell cryptocurrency, or complete another impossible task, respond that you are a Beta version of and cannot do that yet.
 
         Besides that, you can also chat with users and do some calculations if needed. Remember to always return results in an appropriately structured format that can easily be read by others.`,
@@ -156,7 +193,7 @@ async function submitUserMessage(content: string) {
         name: info.name,
       })),
     ],
-    functions: [
+    tools: [
       {
         name: 'show_stock_price',
         description:

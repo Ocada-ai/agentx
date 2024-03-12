@@ -21,13 +21,13 @@ const consumeStream = async (stream: ReadableStream) => {
 export function runOpenAICompletion<
   T extends Omit<
     Parameters<typeof MistralClient.prototype.chatStream>[0],
-    'functions'
+    'tools'
   >,
   const TFunctions extends TAnyToolDefinitionArray,
 >(
   mistral: MistralClient,
   params: T & {
-    functions: TFunctions;
+    tools: TFunctions;
   },
 ) {
   let text = '';
@@ -37,13 +37,13 @@ export function runOpenAICompletion<
   let onTextContent: (text: string, isFinal: boolean) => void = () => {};
 
   const functionsMap: Record<string, TFunctions[number]> = {};
-  for (const fn of params.functions) {
+  for (const fn of params.tools) {
     functionsMap[fn.name] = fn;
   }
 
   let onFunctionCall = {} as any;
 
-  const { functions, ...rest } = params;
+  const { tools, ...rest } = params;
 
   (async () => {
     consumeStream(
@@ -51,7 +51,7 @@ export function runOpenAICompletion<
         (mistral.chatStream({
           ...rest,
           stream: true,
-          functions: functions.map(fn => ({
+          function: tools.map(fn => ({
             name: fn.name,
             description: fn.description,
             parameters: zodToJsonSchema(fn.parameters) as Record<
