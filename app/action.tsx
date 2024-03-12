@@ -32,9 +32,15 @@ import { OpenAIEmbeddings, ChatOpenAI } from '@langchain/openai'
 
 import { cryptoPrice } from "@/utils/cryptoUtils";
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY || '',
-});
+import { MistralStream, StreamingTextResponse } from 'ai';
+ 
+import MistralClient from '@mistralai/mistralai';
+
+// const openai = new OpenAI({
+//   apiKey: process.env.OPENAI_API_KEY || '',
+// });
+
+const mistral = new MistralClient(process.env.MISTRAL_API_KEY || '');
 
 async function confirmPurchase(symbol: string, price: number, amount: number) {
   'use server';
@@ -119,8 +125,8 @@ async function submitUserMessage(content: string) {
     <BotMessage className="items-center">{spinner}</BotMessage>,
   );
 
-  const completion = runOpenAICompletion(openai, {
-    model: 'gpt-3.5-turbo-0125',
+  const completion = runOpenAICompletion(mistral, {
+    model: 'mistral-large-latest',
     stream: true,
     messages: [
       {
@@ -130,17 +136,17 @@ async function submitUserMessage(content: string) {
         You and the user can discuss cryptocurrency prices and the user can adjust the amount of tokens they want to buy, or place an order, in the UI.
         
         Messages inside [] means that it's a UI element or a user event. For example:
-        - "[Price of AAPL = 100]" means that an interface of the stock price of AAPL is shown to the user.
+        - "[Price of AAPL = 100]" means that an interface of the crypto token price of AAPL is shown to the user.
         - "[User has changed the amount of AAPL to 10]" means that the user has changed the amount of AAPL to 10 in the UI.
 
-        If the user requests purchasing a stock, call \`show_stock_purchase_ui\` to show the purchase UI.
+        If the user requests purchasing a crypto token, call \`show_stock_purchase_ui\` to show the purchase UI.
         If the user just wants the price, call \`show_stock_price\` to show the price.
-        If you want to show trending stocks, call \`list_stocks\`.
+        If you want to show trending cryptocurrencies, call \`list_stocks\`.
         If you want to show events, call \`get_events\`.
         If you want to show information about a specific solana wallet address, call \`fetch_solana_detail\`.
         If you want to show price of a specified cryptocurrency, call \`fetch_crypto_price\`.
-        If you want to show details about a spcific solana wallet address, call \`fetch_wallet_details\`.
-        If the user wants to sell stock and cryptocurrency, or complete another impossible task, respond that you are a demo and cannot do that.
+        If you want to show details about a specific solana wallet address, call \`fetch_wallet_details\`.
+        If the user wants to sell cryptocurrency, or complete another impossible task, respond that you are a Beta version of and cannot do that yet.
 
         Besides that, you can also chat with users and do some calculations if needed. Remember to always return results in an appropriately structured format that can easily be read by others.`,
       },
@@ -154,47 +160,47 @@ async function submitUserMessage(content: string) {
       {
         name: 'show_stock_price',
         description:
-          'Get the current stock price of a given stock or currency. Use this to show the price to the user.',
+          'Get the current price of a given cryptocurrency. Use this to show the price to the user.',
         parameters: z.object({
           symbol: z
             .string()
             .describe(
-              'The name or symbol of the stock or currency. e.g. DOGE/AAPL/USD.',
+              'The name or symbol of the cryptocurrency. e.g. DOGE/AAPL/BTC/SOL/USD.',
             ),
-          name: z.string().describe('The name of the stock.'),
-          price: z.number().describe('The price of the stock fetched from coinmarketcap.'),
-          delta: z.number().describe('The change in price of the stock'),
+          name: z.string().describe('The name of the Cryptocurrency.'),
+          price: z.number().describe('The price of the cryptocurrency fetched from coinmarketcap.'),
+          delta: z.number().describe('The change in price of the cryptocurrency'),
         }),
       },
       {
         name: 'show_stock_purchase_ui',
         description:
-          'Show price and the UI to purchase a stock or currency. Use this if the user wants to purchase a stock or currency.',
+          'Show price and the UI to purchase a cryptocurrency. Use this if the user wants to purchase a cryptocurrency.',
         parameters: z.object({
           symbol: z
             .string()
             .describe(
-              'The name or symbol of the stock or currency. e.g. DOGE/AAPL/USD.',
+              'The name or symbol of the cryptocurrency. e.g. DOGE/AAPL/BTC/SOL/USD.',
             ),
-          name: z.string().describe('The name of the stock or currency.'),
-          price: z.number().describe('The price of the stock.'),
+          name: z.string().describe('The name of the cryptocurrency.'),
+          price: z.number().describe('The price of the cryptocurrency.'),
           numberOfShares: z
             .number()
             .describe(
-              'The **number of shares** for a stock or currency to purchase. Can be optional if the user did not specify it.',
+              'The **number of shares** for a cryptocurrency to purchase. Can be optional if the user did not specify it.',
             ),
         }),
       },
       {
         name: 'list_stocks',
-        description: 'List three imaginary stocks that are trending.',
+        description: 'List three imaginary cryptocurrencies that are trending.',
         parameters: z.object({
           stocks: z.array(
             z.object({
-              symbol: z.string().describe('The symbol of the stock'),
-              name: z.string().describe('The name of the stock'),
-              price: z.number().describe('The price of the stock'),
-              delta: z.number().describe('The change in price of the stock'),
+              symbol: z.string().describe('The symbol of the cryptocurrency. e.g. DOGE/AAPL/BTC/'),
+              name: z.string().describe('The name of the cryptocurrency'),
+              price: z.number().describe('The price of the cryptocurrency'),
+              delta: z.number().describe('The change in price of the cryptocurrency'),
             }),
           ),
         }),
@@ -202,7 +208,7 @@ async function submitUserMessage(content: string) {
       {
         name: 'get_events',
         description:
-          'List funny imaginary events between user highlighted dates that describe stock activity.',
+          'List funny imaginary events between user highlighted dates that describe cryptocurrency activity.',
         parameters: z.object({
           events: z.array(
             z.object({
@@ -355,7 +361,7 @@ async function submitUserMessage(content: string) {
           <BotMessage>
             Sure!{' '}
             {typeof numberOfShares === 'number'
-              ? `Click the button below to purchase ${numberOfShares} shares of $${symbol}:`
+              ? `Click the button below to purchase ${numberOfShares} tokens of $${symbol}:`
               : `How many $${symbol} would you like to purchase?`}
           </BotMessage>
           <BotCard showAvatar={false}>
@@ -404,8 +410,19 @@ async function submitUserMessage(content: string) {
     const chatModel = new ChatOpenAI({
       modelName: 'gpt-3.5-turbo'
     })
-    const response = await chatModel.invoke(prompt)
-    const answer = response.content.toString()
+
+    const mistral = new MistralClient(process.env.MISTRAL_API_KEY || '');
+
+    const response = mistral.chatStream({
+      model: 'mistral-large-latest',
+      maxTokens: 1000,
+      messages: [{ role: 'user', content: prompt }],
+    });
+
+
+    // const response = await mistral.invoke(prompt)
+    // const answer = response.content.toString()
+    const answer = response.toString()
     reply.update(<BotMessage>{answer}</BotMessage>);
     reply.done();
     aiState.done([
@@ -421,8 +438,8 @@ async function submitUserMessage(content: string) {
   completion.onFunctionCall('fetch_wallet_details', async ({ address }) => {
     const url = `https://api.birdprotocol.com/analytics/address/${address}`
     console.log(`THIS IS THE BIRD ENGINE URL ${url}`)
-    const response = await fetch(url)
-    const data = JSON.stringify(await response.json(), null, 2)
+    const result = await fetch(url)
+    const data = JSON.stringify(await result.json(), null, 2)
     console.log(
       `This is the stringified response: ${JSON.stringify(data, null, 2)}`
     )
@@ -436,7 +453,20 @@ async function submitUserMessage(content: string) {
       modelName: 'gpt-3.5-turbo'
     })
 
-    const answer = (await chatModel.invoke(prompt)).content.toString();
+        const mistral = new MistralClient(process.env.MISTRAL_API_KEY || '');
+
+    const response = mistral.chatStream({
+      model: 'mistral-large-latest',
+      maxTokens: 1000,
+      messages: [{ role: 'user', content: prompt }],
+    });
+
+
+    // const response = await mistral.invoke(prompt)
+    // const answer = response.content.toString()
+    const answer =  response.toString()
+
+    // const answer = (await chatModel.invoke(prompt)).content.toString();
 
     reply.update(<BotMessage>{answer}</BotMessage>);
     reply.done();
