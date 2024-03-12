@@ -1,17 +1,43 @@
-import { PrismaClient } from "@/prisma/generated/client";
+import { createClient } from '@supabase/supabase-js';
 
-const prismaClientSingleton = () => {
-  return new PrismaClient();
-};
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_KEY;
 
-type PrismaClientSingleton = ReturnType<typeof prismaClientSingleton>;
+console.log(supabaseUrl)
+console.log(supabaseKey)
 
-const globalForPrisma = globalThis as unknown as {
-  prisma: PrismaClientSingleton | undefined;
-};
+if (!supabaseUrl || !supabaseKey) {
+    throw new Error('Missing Supabase environment variables');
+}
 
-const prisma = globalForPrisma.prisma ?? prismaClientSingleton();
+export const supabase = createClient(supabaseUrl, supabaseKey);
 
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
-
-export const db = prisma
+// const tableDefinitions = [
+//     {
+//       tableName: 'Users',
+//       columns: [
+//         { name: 'id', type: 'uuid', primary: true },
+//         { name: 'address', type: 'text' },
+//       ]
+//     },
+//     {
+//       tableName: 'Titles',
+//       columns: [
+//         { name: 'id', type: 'uuid', primary: true },
+//         { name: 'user_id', type: 'integer' },
+//         { name: 'title', type: 'text' },
+//         { name: 'user', type: 'text' },
+//         { name: 'contents', type: 'text' },
+//       ]
+//     },
+//     {
+//         tableName: 'Contents',
+//         columns: [
+//           { name: 'id', type: 'uuid', primary: true },
+//           { name: 'title_id', type: 'integer' },
+//           { name: 'question', type: 'text' },
+//           { name: 'description', type: 'text' },
+//           { name: 'type', type: 'integer' },
+//         ]
+//     }
+// ];
