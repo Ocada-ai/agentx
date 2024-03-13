@@ -24,7 +24,6 @@ import { cn } from '@/lib/utils'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { redirect } from 'next/navigation'
 
-
 export default function Page() {
   const [messages, setMessages] = useUIState<typeof AI>();
   const { submitUserMessage } = useActions<typeof AI>();
@@ -62,10 +61,11 @@ export default function Page() {
       redirect('/sign-in')
     }
   }, [wallet])
+
   return (
     <div className="pt-4 md:pt-16 h-[97vh] bg-[#101010] m-4 rounded-[28px] ring-[3px] ring-[#1a1a1a] overflow-y-scroll relative flex flex-col justify-between">
       <div className="pb-[200px] pt-4 md:pt-10">
-        {messages.length ? (
+        {messages && messages.length ? (
           <>
             <ChatList messages={messages} />
           </>
@@ -121,6 +121,20 @@ export default function Page() {
                 try {
                   // Submit and get response message
                   const responseMessage = await submitUserMessage(value);
+                  // Save title into Supabase
+                  if (!wallet.publicKey) return
+                  if(messages.length == 0 ){
+                    const titleData = JSON.stringify({ data: { address: wallet.publicKey, title: value.substring(0, 100) }})
+                    const res = await fetch('/api/chat/title', {
+                      method: 'POST',
+                      body: titleData,
+                      headers: {
+                        'Content-Type': 'application/json',
+                      },
+                    });
+                  }
+
+                  // Show Message
                   setMessages(currentMessages => [
                     ...currentMessages,
                     responseMessage,

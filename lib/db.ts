@@ -11,33 +11,3 @@ if (!supabaseUrl || !supabaseKey) {
 }
 
 export const supabase = createClient(supabaseUrl, supabaseKey);
-
-// const tableDefinitions = [
-//     {
-//       tableName: 'Users',
-//       columns: [
-//         { name: 'id', type: 'uuid', primary: true },
-//         { name: 'address', type: 'text' },
-//       ]
-//     },
-//     {
-//       tableName: 'Titles',
-//       columns: [
-//         { name: 'id', type: 'uuid', primary: true },
-//         { name: 'user_id', type: 'integer' },
-//         { name: 'title', type: 'text' },
-//         { name: 'user', type: 'text' },
-//         { name: 'contents', type: 'text' },
-//       ]
-//     },
-//     {
-//         tableName: 'Contents',
-//         columns: [
-//           { name: 'id', type: 'uuid', primary: true },
-//           { name: 'title_id', type: 'integer' },
-//           { name: 'question', type: 'text' },
-//           { name: 'description', type: 'text' },
-//           { name: 'type', type: 'integer' },
-//         ]
-//     }
-// ];

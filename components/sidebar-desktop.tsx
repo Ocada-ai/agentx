@@ -1,24 +1,17 @@
 import { Sidebar } from '@/components/sidebar'
 import Image from 'next/image'
 import Link from 'next/link'
-// import { auth } from '@/auth'
 import { cn } from '@/lib/utils'
 import { buttonVariants } from '@/components/ui/button'
-// import { ChatHistory } from '@/components/chat-history'
-import {
-  IconPlus,
-  IconData,
-  IconModel,
-  IconPromptHistory,
-  IconTools
-} from '@/components/ui/icons'
+import { ChatHistory } from '@/components/chat-history'
+import { IconPlus, IconData, IconModel, IconPromptHistory, IconTools } from '@/components/ui/icons'
+import { auth } from '@/auth'
 
 export async function SidebarDesktop() {
-  // const session = await auth()
-
-  // if (!session?.user?.id) {
-  //   return null
-  // }
+  const session = await auth()
+  if (!session?.user?.name) {
+    return null
+  }
 
   return (
     <Sidebar className="peer absolute inset-y-0 z-30 hidden -translate-x-full bg-[#121212] duration-300 ease-in-out data-[state=open]:translate-x-0 lg:flex lg:w-[220px] h-full min-h-screen px-5 pt-4">
@@ -66,7 +59,7 @@ export async function SidebarDesktop() {
               History
             </p>
           </div>
-          {/* <ChatHistory userId={session.user.id} /> */}
+          <ChatHistory userId={session.user.name} />
         </>
       </menu>
     </Sidebar>

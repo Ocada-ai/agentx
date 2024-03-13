@@ -9,3 +9,4 @@ node_modules
 .turbo
 /prisma/generated
 /prisma/migrations
+pnpm-lock.yaml
