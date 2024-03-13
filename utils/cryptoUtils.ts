@@ -4,8 +4,42 @@ export const cryptoPrice = async (name: String) => {
     const response = await fetch(url)
     const data = await response.json()
     const currentPrice = data[name.toLowerCase()]?.[vsCurrency.toLowerCase()]
+    console.log(`Current Holding here: ${currentPrice}`)
 	return currentPrice;
 }
+
+// export const cryptoCompanyHoldings = async (coin_id: string) => {
+//     const url = `https://api.coingecko.com/api/v3/companies/public_treasury/${coin_id}`
+//     const response = await fetch(url)
+//     const data = await response.json()
+//     const currentHolding = data[coin_id.toLowerCase()]
+//     console.log(`Current Holding here: ${currentHolding}`)
+// 	return currentHolding;
+// }
+
+export const trendingCrypto = async () => {
+    const url = `https://api.coingecko.com/api/v3/search/trending`;
+    const response = await fetch(url);
+    const data = await response.json();
+
+    // Map to get symbols and prices
+    const trendingTokens = data.coins.map((coin: any) => {
+        const symbol: string = coin.item.symbol;
+        const price: string = coin.item.data.price;
+        return { symbol, price };
+    });
+
+    // Format the results as a list
+    const formattedList = trendingTokens.map((token: { symbol: string, price: string }, index: number) => {
+        return `${index + 1}) ${token.symbol}, price is ${token.price}`;
+    }).join('\n');
+
+    console.log(`RESULT OF TRENDING TOKENS:\n${formattedList}`);
+    return formattedList; // Now returning the formatted string
+};
+
+
+
 
 export const cryptoHistoricalData = async (name: String) => {
     // const timestamp24hAgo = Date.now() - 24 * 60 * 60 * 1000;
