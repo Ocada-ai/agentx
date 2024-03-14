@@ -31,9 +31,10 @@ import { MemoryVectorStore } from 'langchain/vectorstores/memory'
 import { OpenAIEmbeddings, ChatOpenAI } from '@langchain/openai'
 
 import { cryptoPrice } from "@/utils/cryptoUtils";
+import { insertRoomHistory } from '@/app/supabase';
 
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY || '',
+  apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY || '',
 });
 
 async function confirmPurchase(symbol: string, price: number, amount: number) {
@@ -103,9 +104,10 @@ async function confirmPurchase(symbol: string, price: number, amount: number) {
   };
 }
 
-async function submitUserMessage(content: string) {
+async function submitUserMessage(content: string, titleId: any) {
   'use server';
 
+  const question = content;
   const aiState = getMutableAIState<typeof AI>();
   aiState.update([
     ...aiState.get(),
@@ -234,9 +236,18 @@ async function submitUserMessage(content: string) {
     temperature: 0,
   });
 
-  completion.onTextContent((content: string, isFinal: boolean) => {
+  completion.onTextContent(async (content: string, isFinal: boolean) => {
+    const answer = content;
     reply.update(<BotMessage>{content}</BotMessage>);
     if (isFinal) {
+      const data = {
+        title_id: "", 
+        question: question, 
+        answer: answer, 
+        type: "text"
+      }
+      const res = await insertRoomHistory(data);
+      
       reply.done();
       aiState.done([...aiState.get(), { role: 'assistant', content }]);
     }

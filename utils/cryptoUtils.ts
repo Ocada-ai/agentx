@@ -6,30 +6,3 @@ export const cryptoPrice = async (name: String) => {
     const currentPrice = data[name.toLowerCase()]?.[vsCurrency.toLowerCase()]
 	return currentPrice;
 }
-
-export const cryptoHistoricalData = async (name: String) => {
-    // const timestamp24hAgo = Date.now() - 24 * 60 * 60 * 1000;
-    // const url = `https://coingecko.p.rapidapi.com/coins/${name}/history?date=08-03-2024`;
-    // const response = await fetch(url);
-    // console.log('crypto historical data')
-    // console.log(response)
-    // // return response.data.prices;
-
-    // const url = 'https://api.coingecko.com/api/v3/coins/Ethereum/history?date=08-03-2024';
-    // const options = {
-    //     method: 'GET',
-    //     headers: {
-    //         'X-RapidAPI-Key': 'd2fa07070dmsh6bf9c4cc978655dp1fb325jsnc7f61370fdc2',
-    //         'X-RapidAPI-Host': 'coingecko.p.rapidapi.com'
-    //     }
-    // };
-
-    // try {
-    //     const response = await fetch(url, options);
-    //     const result = await response.text();
-    //     console.log('cryptoUtils');
-    //     console.log(result);
-    // } catch (error) {
-    //     console.error(error);
-    // }
-  };

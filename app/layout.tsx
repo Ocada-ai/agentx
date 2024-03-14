@@ -3,13 +3,11 @@ import { GeistMono } from 'geist/font/mono';
 import { GeistSans } from 'geist/font/sans';
 import { Analytics } from '@vercel/analytics/react';
 import { Toaster } from '@/components/ui/toaster';
-import './globals.css';
 
 import { AI } from './action';
-import { Header } from '@/components/header';
 import { Providers } from '@/components/providers';
-import { SidebarDesktop } from '@/components/sidebar-desktop'
-import RightSidebar from '@/components/right-sidebar';
+
+import './globals.css';
 
 const meta = {
   title: 'OCADA AI (beta)',
@@ -46,11 +44,11 @@ export const viewport = {
   ],
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+interface RootLayoutProps {
+  children: React.ReactNode
+}
+
+export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body
@@ -64,21 +62,9 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <div className="relative flex h-screen overflow-hidden">
-              {/* <Header /> */}
-              <SidebarDesktop />
-              {/* <main className="flex flex-col flex-1 bg-muted/50 dark:bg-background">
-                {children}
-              </main> */}
-              <div className="group w-full overflow-auto pl-0 animate-in duration-300 ease-in-out peer-[[data-state=open]]:lg:ml-[220px] peer-[[data-state=open]]:xl:ml-[220px]">
-                <article className="md:grid grid-cols-16 gap-1 mx-auto">
-                  <main className="col-start-1 col-end-12 relative">{children}</main>
-                  <aside className="col-span-5 col-start-12 overflow-y-scroll">
-                    <RightSidebar />
-                  </aside>
-                </article>
-              </div>
-            </div>
+            <main className="flex flex-col flex-1 h-screen bg-[#121212]">
+              {children}  
+            </main>
           </Providers>
         </AI>
         <Analytics />

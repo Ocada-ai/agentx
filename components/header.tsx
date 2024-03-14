@@ -7,7 +7,7 @@ import { useWallet } from '@solana/wallet-adapter-react'
 import { useWalletModal } from '@solana/wallet-adapter-react-ui'
 import { SigninMessage } from '@/utils/signMessage'
 import { cn } from '@/lib/utils'
-import { useRouter, usePathname } from 'next/navigation'
+import { useRouter, usePathname, redirect } from 'next/navigation'
 import { buttonVariants } from '@/components/ui/button'
 import bs58 from 'bs58'
 
@@ -35,6 +35,15 @@ export function Header() {
 
       if (!wallet.publicKey || !wallet.signMessage) return
 
+      const user = JSON.stringify({ data: { address: wallet.publicKey }})
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        body: user,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
       const message = new SigninMessage({
         domain: window.location.host,
         publicKey: wallet.publicKey?.toBase58(),
@@ -58,8 +67,6 @@ export function Header() {
   }, [nonce, wallet, walletModal])
 
   useEffect(() => {
-    console.log(`wallet details is ${wallet.wallet}`)
-    console.log(wallet.wallet)
     if (wallet.disconnecting) {
       signOut({ callbackUrl: '/' })
     }
@@ -67,7 +74,6 @@ export function Header() {
 
   useEffect(() => {
     if (wallet.connected && status === 'unauthenticated') {
-      console.log('handle login useEffect')
       handleLogin()
     }
   }, [wallet.connected])
