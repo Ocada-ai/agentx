@@ -23,7 +23,7 @@ import {
 import { z } from 'zod';
 import { StockSkeleton } from '@/components/llm-stocks/stock-skeleton';
 import { EventsSkeleton } from '@/components/llm-stocks/events-skeleton';
-import { StocksSkeleton } from '@/components/llm-stocks/stocks-skeleton';
+import { StocksSkeleton, StocksSkeleton2} from '@/components/llm-stocks/stocks-skeleton';
 
 import { solanaContent, solanaAddressList } from '@/utils/constants';
 
@@ -243,14 +243,15 @@ async function submitUserMessage(content: string) {
   });
 
   completion.onFunctionCall('list_stocks', async ({  }) => {
+    const trending = await trendingCrypto();
+    const updatedStocks = trending;
     reply.update(
       <BotCard>
-        <StocksSkeleton />
+        <StocksSkeleton2 cryptoList={updatedStocks} />
       </BotCard>,
     );
     
-    const trending = await trendingCrypto();
-    const updatedStocks = trending;
+
   
     // for (let i = 0; i < trending.length; i++) {
     //   const stock = trending[i];
@@ -269,8 +270,10 @@ async function submitUserMessage(content: string) {
 
     reply.done(
       <BotCard>
-        {/* <Stocks stocks={updatedStocks} /> */}
-        <h1>{trending}</h1>
+
+      <Stocks stocks={trending} />
+      {/* Other children as needed */}
+
       </BotCard>,
     );
 

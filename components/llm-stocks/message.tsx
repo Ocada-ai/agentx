@@ -54,7 +54,9 @@ export function BotCard({
       >
         <IconAI />
       </div>
-      <div className="ml-4 flex-1 px-1">{children}</div>
+      <div className="ml-4 flex-1 px-1">
+        {children}
+      </div>
     </div>
   );
 }

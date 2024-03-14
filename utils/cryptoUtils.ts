@@ -17,28 +17,51 @@ export const cryptoPrice = async (name: String) => {
 // 	return currentHolding;
 // }
 
-export const trendingCrypto = async () => {
-    const url = `https://api.coingecko.com/api/v3/search/trending`;
+// export const trendingCrypto = async () => {
+//     const url = `https://api.coingecko.com/api/v3/search/trending`;
+//     const response = await fetch(url);
+//     const data = await response.json();
+
+//     // Map to get symbols and prices
+//     const trendingTokens = data.coins.map((coin: any) => {
+//         const symbol: string = coin.item.symbol;
+//         const price: string = coin.item.data.price;
+//         return { symbol, price };
+//     });
+
+//     // Format the results as a list
+//     const formattedList = trendingTokens.map((token: { symbol: string, price: string }, index: number) => {
+//         return `${index + 1}) ${token.symbol}, price is ${token.price}`;
+//     }).join('\n');
+
+//     console.log(`RESULT OF TRENDING TOKENS:\n${formattedList}`);
+//     return formattedList; // Now returning the formatted string
+// };
+
+
+export const trendingCrypto = async (): Promise<{ symbol: string; price: string }[]> => {
+    const url = 'https://api.coingecko.com/api/v3/search/trending';
     const response = await fetch(url);
     const data = await response.json();
 
     // Map to get symbols and prices
     const trendingTokens = data.coins.map((coin: any) => {
         const symbol: string = coin.item.symbol;
-        const price: string = coin.item.data.price;
-        return { symbol, price };
+        console.log("This is the price returned :", coin.item.data.price); 
+        const rawPrice = coin.item.data.price.replace(/[^0-9.]/g, "");
+const price: number = parseFloat(rawPrice);
+console.log(price); // This should log: 1.11
+        // Note: Assuming coin.item.data.price exists, but this may not be correct.
+        // You might need to adjust how you're accessing the price based on the actual API response structure.
+        const priceChangePercentage: number = Math.round(coin.item.data.price_change_percentage_24h.usd);
+
+        console.log(symbol, price, priceChangePercentage)
+        
+        return { symbol, price, priceChangePercentage };
     });
 
-    // Format the results as a list
-    const formattedList = trendingTokens.map((token: { symbol: string, price: string }, index: number) => {
-        return `${index + 1}) ${token.symbol}, price is ${token.price}`;
-    }).join('\n');
-
-    console.log(`RESULT OF TRENDING TOKENS:\n${formattedList}`);
-    return formattedList; // Now returning the formatted string
+    return trendingTokens; // Returning the array of objects with symbol and price
 };
-
-
 
 
 export const cryptoHistoricalData = async (name: String) => {
