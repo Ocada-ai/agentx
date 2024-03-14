@@ -2,19 +2,24 @@ import { getChats } from '@/app/supabase'
 import { ClearHistory } from '@/components/clear-history'
 import { SidebarItems } from '@/components/sidebar-items'
 import { ThemeToggle } from '@/components/theme-toggle'
-import { cache } from 'react'
+import { cache, useEffect, useState } from 'react'
 
 interface SidebarListProps {
   userId?: string
   children?: React.ReactNode
 }
 
-const loadChats = cache(async (userId?: string) => {
-  return await getChats(userId)
-})
+export function SidebarList({ userId }: SidebarListProps) {
+  const [chats, setChats] = useState<[] | null>(null);
 
-export async function SidebarList({ userId }: SidebarListProps) {
-  const chats = await loadChats(userId)
+  useEffect(()=>{
+    const  fetchFunc = async() => {
+      const data: any = await getChats(userId as any);
+      setChats(data);
+    }
+    if(chats == null) fetchFunc()
+  }, [])
+
 
   return (
     <div className="flex flex-1 flex-col overflow-hidden min-h-full">

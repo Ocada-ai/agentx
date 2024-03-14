@@ -23,6 +23,9 @@ import { cn } from '@/lib/utils'
 
 import { useWallet } from '@solana/wallet-adapter-react'
 import { redirect } from 'next/navigation'
+import { createRoom } from '@/app/supabase'
+
+import { useLocalStorage } from '@/lib/hooks/use-local-storage'
 
 export default function Page() {
   const [messages, setMessages] = useUIState<typeof AI>();
@@ -31,6 +34,7 @@ export default function Page() {
   const { formRef, onKeyDown } = useEnterSubmit();
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const wallet = useWallet()
+  const [titleId, setTitleId] = useLocalStorage('titleId', null)
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -62,6 +66,8 @@ export default function Page() {
     }
   }, [wallet])
 
+
+
   return (
     <div className="pt-4 md:pt-16 h-[97vh] bg-[#101010] m-4 rounded-[28px] ring-[3px] ring-[#1a1a1a] overflow-y-scroll relative flex flex-col justify-between">
       <div className="pb-[200px] pt-4 md:pt-10">
@@ -82,7 +88,7 @@ export default function Page() {
               ]);
 
               // Submit and get response message
-              const responseMessage = await submitUserMessage(message);
+              const responseMessage = await submitUserMessage(message, null);
               setMessages(currentMessages => [
                 ...currentMessages,
                 responseMessage,
@@ -119,21 +125,19 @@ export default function Page() {
                 ]);
 
                 try {
-                  // Submit and get response message
-                  const responseMessage = await submitUserMessage(value);
                   // Save title into Supabase
                   if (!wallet.publicKey) return
-                  if(messages.length == 0 ){
-                    const titleData = JSON.stringify({ data: { address: wallet.publicKey, title: value.substring(0, 100) }})
-                    const res = await fetch('/api/chat/title', {
-                      method: 'POST',
-                      body: titleData,
-                      headers: {
-                        'Content-Type': 'application/json',
-                      },
-                    });
+                  let curTitleId = null;
+                  if(messages.length == 0) {
+                    const res:any = await createRoom(wallet.publicKey, value );
+                    if(res) curTitleId = res.titleId
+                    setTitleId(curTitleId);
                   }
 
+                  if(!curTitleId)  curTitleId = titleId
+
+                  // Submit and get response message
+                  const responseMessage = await submitUserMessage(value, curTitleId);
                   // Show Message
                   setMessages(currentMessages => [
                     ...currentMessages,

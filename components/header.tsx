@@ -74,7 +74,6 @@ export function Header() {
 
   useEffect(() => {
     if (wallet.connected && status === 'unauthenticated') {
-      console.log('handle login useEffect')
       handleLogin()
     }
   }, [wallet.connected])
