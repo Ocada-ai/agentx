@@ -23,9 +23,12 @@ import { cn } from '@/lib/utils'
 
 import { useWallet } from '@solana/wallet-adapter-react'
 import { redirect } from 'next/navigation'
+
 import { createRoom } from '@/app/supabase'
 
 import { useLocalStorage } from '@/lib/hooks/use-local-storage'
+
+
 
 export default function Page() {
   const [messages, setMessages] = useUIState<typeof AI>();
@@ -34,7 +37,10 @@ export default function Page() {
   const { formRef, onKeyDown } = useEnterSubmit();
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const wallet = useWallet()
+
   const [titleId, setTitleId] = useLocalStorage('titleId', null)
+
+
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -68,10 +74,12 @@ export default function Page() {
 
 
 
+
   return (
     <div className="pt-4 md:pt-16 h-[97vh] bg-[#101010] m-4 rounded-[28px] ring-[3px] ring-[#1a1a1a] overflow-y-scroll relative flex flex-col justify-between">
       <div className="pb-[200px] pt-4 md:pt-10">
         {messages && messages.length ? (
+
           <>
             <ChatList messages={messages} />
           </>
@@ -88,7 +96,9 @@ export default function Page() {
               ]);
 
               // Submit and get response message
+
               const responseMessage = await submitUserMessage(message, null);
+
               setMessages(currentMessages => [
                 ...currentMessages,
                 responseMessage,
@@ -125,6 +135,7 @@ export default function Page() {
                 ]);
 
                 try {
+
                   // Save title into Supabase
                   if (!wallet.publicKey) return
                   let curTitleId = null;
@@ -139,6 +150,7 @@ export default function Page() {
                   // Submit and get response message
                   const responseMessage = await submitUserMessage(value, curTitleId);
                   // Show Message
+
                   setMessages(currentMessages => [
                     ...currentMessages,
                     responseMessage,

@@ -4,5 +4,8 @@ export const cryptoPrice = async (name: String) => {
     const response = await fetch(url)
     const data = await response.json()
     const currentPrice = data[name.toLowerCase()]?.[vsCurrency.toLowerCase()]
+    console.log(`Current Holding here: ${currentPrice}`)
 	return currentPrice;
+
 }
+
