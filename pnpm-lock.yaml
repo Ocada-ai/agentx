@@ -5,6 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@langchain/core':
+    specifier: ^0.1.46
+    version: 0.1.46
   '@langchain/openai':
     specifier: ^0.0.18
     version: 0.0.18
@@ -98,6 +101,9 @@ dependencies:
   openai:
     specifier: ^4.28.4
     version: 4.28.4
+  prompts:
+    specifier: link:@langchain/core/prompts
+    version: link:@langchain/core/prompts
   react:
     specifier: ^18
     version: 18.2.0
@@ -119,9 +125,12 @@ dependencies:
   tailwindcss-animate:
     specifier: ^1.0.7
     version: 1.0.7(tailwindcss@3.4.1)
+  tavily_search:
+    specifier: link:@langchain/community/tools/tavily_search
+    version: link:@langchain/community/tools/tavily_search
   tools:
-    specifier: link:@langchain/core/tools
-    version: link:@langchain/core/tools
+    specifier: link:@langchain/community/tools
+    version: link:@langchain/community/tools
   tweetnacl:
     specifier: ^1.0.3
     version: 1.0.3
@@ -2733,7 +2742,7 @@ packages:
       ws:
         optional: true
     dependencies:
-      '@langchain/core': 0.1.43
+      '@langchain/core': 0.1.46
       '@langchain/openai': 0.0.18
       '@vercel/kv': 1.0.1
       flat: 5.0.2
@@ -2745,8 +2754,8 @@ packages:
       - encoding
     dev: false
 
-  /@langchain/core@0.1.43:
-    resolution: {integrity: sha512-owE+UU38e4TsUq5yoaKCF+ag6u0ppwgdaqEt2Q57pdcr9nEcy8/PgTunxB10Vksq4fTJgnwWEYf/wMGZnFlRow==}
+  /@langchain/core@0.1.46:
+    resolution: {integrity: sha512-UmPukG3rrYKdTWvMtXpF6o3HG6uV5DlbdMdmfT/Bne4rMXwrFmUMVw40R1q2kI+CXOuh9SMmYxpz0jS3I7maog==}
     engines: {node: '>=18'}
     dependencies:
       ansi-styles: 5.2.0
@@ -2766,7 +2775,7 @@ packages:
     resolution: {integrity: sha512-SBY1PlwiHIcjW185yVXHo4XXgTVAyGxw7IHpuEqs7201/EVjFW91HskzGRvduYm2td3/NV91BBVFgXhJQcvtmA==}
     engines: {node: '>=18'}
     dependencies:
-      '@langchain/core': 0.1.43
+      '@langchain/core': 0.1.46
       js-tiktoken: 1.0.10
       openai: 4.28.4
       zod: 3.22.4
@@ -10297,7 +10306,7 @@ packages:
     dependencies:
       '@anthropic-ai/sdk': 0.9.1
       '@langchain/community': 0.0.35(@vercel/kv@1.0.1)(ws@7.5.9)
-      '@langchain/core': 0.1.43
+      '@langchain/core': 0.1.46
       '@langchain/openai': 0.0.18
       '@vercel/kv': 1.0.1
       binary-extensions: 2.2.0
