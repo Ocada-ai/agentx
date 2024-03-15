@@ -23,15 +23,19 @@ import {
 import { z } from 'zod';
 import { StockSkeleton } from '@/components/llm-stocks/stock-skeleton';
 import { EventsSkeleton } from '@/components/llm-stocks/events-skeleton';
-import { StocksSkeleton } from '@/components/llm-stocks/stocks-skeleton';
+import { StocksSkeleton, StocksSkeleton2} from '@/components/llm-stocks/stocks-skeleton';
 
 import { solanaContent, solanaAddressList } from '@/utils/constants';
 
 import { MemoryVectorStore } from 'langchain/vectorstores/memory'
 import { OpenAIEmbeddings, ChatOpenAI } from '@langchain/openai'
 
-import { cryptoPrice } from "@/utils/cryptoUtils";
+
+import { cryptoPrice, trendingCrypto } from "@/utils/cryptoUtils";
 import { insertRoomHistory } from '@/app/supabase';
+
+
+
 
 const openai = new OpenAI({
   apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY || '',
@@ -79,7 +83,7 @@ async function confirmPurchase(symbol: string, price: number, amount: number) {
 
     systemMessage.done(
       <SystemMessage>
-        You have purchased {amount} shares of {symbol} at ${price}. Total cost ={' '}
+        You have purchased {amount} total tokens of {symbol} at ${price}. Total cost ={' '}
         {formatNumber(amount * price)}.
       </SystemMessage>,
     );
@@ -88,7 +92,7 @@ async function confirmPurchase(symbol: string, price: number, amount: number) {
       ...aiState.get(),
       {
         role: 'system',
-        content: `[User has purchased ${amount} shares of ${symbol} at ${price}. Total cost = ${
+        content: `[User has purchased ${amount} tokens of ${symbol} at ${price}. Total cost = ${
           amount * price
         }]`,
       },
@@ -139,14 +143,14 @@ async function submitUserMessage(content: string, titleId: any) {
 
         If the user requests purchasing a stock, call \`show_stock_purchase_ui\` to show the purchase UI.
         If the user just wants the price, call \`show_stock_price\` to show the price.
-        If you want to show trending stocks, call \`list_stocks\`.
+        If you want to show trending tokens, call \`list_stocks\`.
         If you want to show events, call \`get_events\`.
         If you want to show information about a specific solana wallet address, call \`fetch_solana_detail\`.
         If you want to show price of a specified cryptocurrency, call \`fetch_crypto_price\`.
-        If you want to show details about a spcific solana wallet address, call \`fetch_wallet_details\`.
-        If the user wants to sell stock and cryptocurrency, or complete another impossible task, respond that you are a demo and cannot do that.
+        If you want to show details about a specific ethereum wallet address, call \`fetch_wallet_details\`.
+        If the user wants to sell stock and cryptocurrency, or complete another impossible task, respond that you are a demo and cannot do that yet.
 
-        Besides that, you can also chat with users and do some calculations if needed. Remember to always return results in an appropriately structured format that can easily be read by others.`,
+        Besides that, you can also chat with users and do some calculations if needed. Remember to always return results in an appropriately structured format that can easily be read by others. if it's a numbered result, retun the answers in bullet format`,
       },
       ...aiState.get().map((info: any) => ({
         role: info.role,
@@ -191,7 +195,7 @@ async function submitUserMessage(content: string, titleId: any) {
       },
       {
         name: 'list_stocks',
-        description: 'List three imaginary stocks that are trending.',
+        description: 'Lists the top trending crypto tokens.',
         parameters: z.object({
           stocks: z.array(
             z.object({
@@ -255,27 +259,29 @@ async function submitUserMessage(content: string, titleId: any) {
     }
   });
 
-  completion.onFunctionCall('list_stocks', async ({ stocks }) => {
+  completion.onFunctionCall('list_stocks', async ({  }) => {
+    const trending = await trendingCrypto();
+    const updatedStocks = trending;
     reply.update(
       <BotCard>
-        <StocksSkeleton />
+        <StocksSkeleton2 cryptoList={updatedStocks} />
       </BotCard>,
     );
+    
 
-    const updatedStocks = [];
   
-    for (let i = 0; i < stocks.length; i++) {
-      const stock = stocks[i];
-      const currentPrice = await cryptoPrice(stock.name);
-      const delta = stock.delta;
+    // for (let i = 0; i < trending.length; i++) {
+    //   const stock = trending[i];
+    //   const currentPrice = await cryptoPrice(stock.name);
+    //   const delta = stock.delta;
   
-      updatedStocks.push({
-        symbol: stock.symbol,
-        name: stock.name,
-        price: currentPrice,
-        delta: delta
-      });
-    }
+    //   updatedStocks.push({
+    //     symbol: stock.symbol,
+    //     name: stock.name,
+    //     price: currentPrice,
+    //     delta: delta
+    //   });
+    // }
 
     await sleep(1000);
 
@@ -289,7 +295,10 @@ async function submitUserMessage(content: string, titleId: any) {
 
     reply.done(
       <BotCard>
-        <Stocks stocks={updatedStocks} />
+
+      <Stocks stocks={trending} />
+      {/* Other children as needed */}
+
       </BotCard>,
     );
 
@@ -298,7 +307,7 @@ async function submitUserMessage(content: string, titleId: any) {
       {
         role: 'function',
         name: 'list_stocks',
-        content: JSON.stringify(stocks),
+        content: JSON.stringify(updatedStocks),
       },
     ]);
   });
@@ -310,15 +319,11 @@ async function submitUserMessage(content: string, titleId: any) {
       </BotCard>,
     );
 
+    // const currentEvents = await searchTheWeb(events);
+    // console.log(`Results for ${events} are ${currentEvents}`);
+
     await sleep(1000);
 
-    const data = {
-      title_id: title_id, 
-      question: question, 
-      answer: events, 
-      type: "get_events"
-    }
-    const res = await insertRoomHistory(data);
 
     reply.done(
       <BotCard>

@@ -429,6 +429,7 @@ function IconOcada({ className, ...props }: React.ComponentProps<'svg'>) {
   )
 }
 
+
 function IconTrash({ className, ...props }: React.ComponentProps<'svg'>) {
   return (
     <svg
@@ -442,6 +443,8 @@ function IconTrash({ className, ...props }: React.ComponentProps<'svg'>) {
     </svg>
   )
 }
+
+
 
 export {
   IconAI,
@@ -467,6 +470,10 @@ export {
   IconPromptHistory,
   IconTools,
   IconSpinner,
+
   IconOcada,
   IconTrash
+
+
+
 };

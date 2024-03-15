@@ -19,7 +19,7 @@ const Purchase = dynamic(
     ssr: false,
     loading: () => (
       <div className="bg-zinc-900 rounded-lg px-4 py-5 text-center text-xs">
-        Loading stock info...
+        Loading token info...
       </div>
     ),
   },

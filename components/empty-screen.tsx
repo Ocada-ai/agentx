@@ -8,12 +8,12 @@ const exampleMessages = [
     message: 'What are the trending tokens?',
   },
   {
-    heading: "What's the stock price of AAPL?",
-    message: "What's the stock price of AAPL?",
+    heading: "What's the current price of Solana?",
+    message: "What's the current price of Solana?",
   },
   {
-    heading: "I'd like to buy 10 shares of MSFT",
-    message: "I'd like to buy 10 shares of MSFT",
+    heading: "I'd like to buy 10 Solana tokens",
+    message: "I'd like to buy 10 Solana tokens",
   },
 ];
 
