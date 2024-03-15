@@ -52,3 +52,8 @@ This library is created by [Vercel](https://vercel.com) and [Next.js](https://ne
 - Jeremy Philemon ([@jeremyphilemon](https://github.com/jeremyphilemon)) - [Vercel](https://vercel.com)
 - shadcn ([@shadcn](https://twitter.com/shadcn)) - [Vercel](https://vercel.com)
 - Jared Palmer ([@jaredpalmer](https://twitter.com/jaredpalmer)) - [Vercel](https://vercel.com)
+
+## bash for database
+prisma generate
+prisma migrate dev
+prisma studio
