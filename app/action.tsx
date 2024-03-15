@@ -108,6 +108,8 @@ async function submitUserMessage(content: string, titleId: any) {
   'use server';
 
   const question = content;
+  const title_id = titleId;
+
   const aiState = getMutableAIState<typeof AI>();
   aiState.update([
     ...aiState.get(),
@@ -241,7 +243,7 @@ async function submitUserMessage(content: string, titleId: any) {
     reply.update(<BotMessage>{content}</BotMessage>);
     if (isFinal) {
       const data = {
-        title_id: "", 
+        title_id: title_id, 
         question: question, 
         answer: answer, 
         type: "text"
@@ -275,7 +277,15 @@ async function submitUserMessage(content: string, titleId: any) {
       });
     }
 
-  await sleep(1000);
+    await sleep(1000);
+
+    const data = {
+      title_id: title_id, 
+      question: question, 
+      answer: updatedStocks, 
+      type: "list_stocks"
+    }
+    const res = await insertRoomHistory(data);
 
     reply.done(
       <BotCard>
@@ -302,6 +312,14 @@ async function submitUserMessage(content: string, titleId: any) {
 
     await sleep(1000);
 
+    const data = {
+      title_id: title_id, 
+      question: question, 
+      answer: events, 
+      type: "get_events"
+    }
+    const res = await insertRoomHistory(data);
+
     reply.done(
       <BotCard>
         <Events events={events} />
@@ -324,6 +342,18 @@ async function submitUserMessage(content: string, titleId: any) {
       reply.update(<BotCard><StockSkeleton /></BotCard>);
       const currentPrice = await cryptoPrice(name);
       console.log('show stock price:', currentPrice)
+
+      const data = {
+        title_id: title_id, 
+        question: question, 
+        answer: {
+          symbol: symbol,
+          price: currentPrice,
+          delta: delta
+        }, 
+        type: "show_stock_price"
+      }
+      const res = await insertRoomHistory(data);
 
       reply.done(
         <BotCard>
@@ -361,6 +391,18 @@ async function submitUserMessage(content: string, titleId: any) {
       const currentPrice = await cryptoPrice(name);
       console.log('show stock price:', currentPrice)
 
+      const data = {
+        title_id: title_id, 
+        question: question, 
+        answer: {
+          symbol: symbol,
+          price: currentPrice,
+          numberOfShares: numberOfShares
+        }, 
+        type: "show_stock_purchase_ui"
+      }
+      const res = await insertRoomHistory(data);
+      
       reply.done(
         <>
           <BotMessage>
@@ -417,6 +459,15 @@ async function submitUserMessage(content: string, titleId: any) {
     })
     const response = await chatModel.invoke(prompt)
     const answer = response.content.toString()
+
+    const chatdata = {
+      title_id: title_id, 
+      question: question, 
+      answer: answer, 
+      type: "fetch_solana_detail"
+    }
+    const res = await insertRoomHistory(chatdata);
+
     reply.update(<BotMessage>{answer}</BotMessage>);
     reply.done();
     aiState.done([
@@ -448,6 +499,14 @@ async function submitUserMessage(content: string, titleId: any) {
     })
 
     const answer = (await chatModel.invoke(prompt)).content.toString();
+
+    const chatdata = {
+      title_id: title_id, 
+      question: question, 
+      answer: answer, 
+      type: "fetch_wallet_details"
+    }
+    const res = await insertRoomHistory(chatdata);
 
     reply.update(<BotMessage>{answer}</BotMessage>);
     reply.done();
