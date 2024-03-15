@@ -31,10 +31,9 @@ import { MemoryVectorStore } from 'langchain/vectorstores/memory'
 import { OpenAIEmbeddings, ChatOpenAI } from '@langchain/openai'
 
 
-import { cryptoPrice } from "@/utils/cryptoUtils";
+import { cryptoPrice, trendingCrypto } from "@/utils/cryptoUtils";
 import { insertRoomHistory } from '@/app/supabase';
 
-import { searchTheWeb } from '@/utils/eventsUtils';
 
 
 
