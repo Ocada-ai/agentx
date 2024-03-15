@@ -9,41 +9,32 @@ export function Stocks({ stocks }: { stocks: any[] }) {
   const { submitUserMessage } = useActions<typeof AI>();
 
   return (
-    <div className="flex flex-col gap-2 pb-4 mb-4 overflow-y-scroll text-sm sm:flex-row">
+<div className="flex flex-wrap gap-4 justify-start pb-4 mb-4 overflow-y-auto text-sm">
       {stocks.map(stock => (
         <button
           key={stock.symbol}
-          className="flex flex-row gap-2 p-2 text-left rounded-lg cursor-pointer bg-zinc-900 hover:bg-zinc-800 sm:w-52"
+          className="flex flex-row items-center gap-2 p-2 text-left bg-zinc-900 hover:bg-zinc-800 rounded-lg w-full sm:w-auto"
+          style={{ flex: "1 0 30%" }} // Ensures flex items are allowed to grow and wrap, with a basis of 30%
           onClick={async () => {
             const response = await submitUserMessage(`View ${stock.symbol}`, null);
             setMessages(currentMessages => [...currentMessages, response]);
           }}
         >
           <div
-            className={`text-xl ${
-              stock.delta > 0 ? 'text-yellow-600' : 'text-red-600'
-            } p-2 w-11 bg-white/10 flex flex-row justify-center rounded-md`}
+            className={`text-xl ${stock.priceChangePercentage > 0 ? 'text-yellow-600' : 'text-red-600'} p-2 w-11 bg-white/10 flex justify-center items-center rounded-md`}
           >
-            {stock.delta > 0 ? '↑' : '↓'}
+            {stock.priceChangePercentage > 0 ? '↑' : '↓'}
           </div>
           <div className="flex flex-col">
-            <div className="uppercase text-zinc-300 bold">{stock.symbol}</div>
+            <div className="uppercase text-zinc-300 font-bold">{stock.symbol}</div>
             <div className="text-base text-zinc-500">${stock.price}</div>
           </div>
           <div className="flex flex-col ml-auto">
-            <div
-              className={`${
-                stock.delta > 0 ? 'text-yellow-600' : 'text-red-600'
-              } bold uppercase text-right`}
-            >
-              {` ${((stock.delta / stock.price) * 100).toFixed(2)}%`}
+            <div className={`${stock.priceChangePercentage > 0 ? 'text-yellow-600' : 'text-red-600'} font-bold uppercase text-right`}>
+              {` ${((stock.priceChangePercentage / stock.price) * 100).toFixed(2)}%`}
             </div>
-            <div
-              className={`${
-                stock.delta > 0 ? 'text-yellow-700' : 'text-red-700'
-              } text-base text-right`}
-            >
-              {stock.delta}
+            <div className={`${stock.priceChangePercentage > 0 ? 'text-yellow-700' : 'text-red-700'} text-base text-right`}>
+              {stock.priceChangePercentage}
             </div>
           </div>
         </button>

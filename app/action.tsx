@@ -23,7 +23,7 @@ import {
 import { z } from 'zod';
 import { StockSkeleton } from '@/components/llm-stocks/stock-skeleton';
 import { EventsSkeleton } from '@/components/llm-stocks/events-skeleton';
-import { StocksSkeleton } from '@/components/llm-stocks/stocks-skeleton';
+import { StocksSkeleton, StocksSkeleton2} from '@/components/llm-stocks/stocks-skeleton';
 
 import { solanaContent, solanaAddressList } from '@/utils/constants';
 
@@ -31,8 +31,10 @@ import { MemoryVectorStore } from 'langchain/vectorstores/memory'
 import { OpenAIEmbeddings, ChatOpenAI } from '@langchain/openai'
 
 
-import { cryptoPrice } from "@/utils/cryptoUtils";
+import { cryptoPrice, trendingCrypto } from "@/utils/cryptoUtils";
 import { insertRoomHistory } from '@/app/supabase';
+
+
 
 
 const openai = new OpenAI({
@@ -81,7 +83,7 @@ async function confirmPurchase(symbol: string, price: number, amount: number) {
 
     systemMessage.done(
       <SystemMessage>
-        You have purchased {amount} shares of {symbol} at ${price}. Total cost ={' '}
+        You have purchased {amount} total tokens of {symbol} at ${price}. Total cost ={' '}
         {formatNumber(amount * price)}.
       </SystemMessage>,
     );
@@ -90,7 +92,7 @@ async function confirmPurchase(symbol: string, price: number, amount: number) {
       ...aiState.get(),
       {
         role: 'system',
-        content: `[User has purchased ${amount} shares of ${symbol} at ${price}. Total cost = ${
+        content: `[User has purchased ${amount} tokens of ${symbol} at ${price}. Total cost = ${
           amount * price
         }]`,
       },
@@ -110,6 +112,8 @@ async function submitUserMessage(content: string, titleId: any) {
   'use server';
 
   const question = content;
+  const title_id = titleId;
+
   const aiState = getMutableAIState<typeof AI>();
   aiState.update([
     ...aiState.get(),
@@ -143,8 +147,8 @@ async function submitUserMessage(content: string, titleId: any) {
         If you want to show events, call \`get_events\`.
         If you want to show information about a specific solana wallet address, call \`fetch_solana_detail\`.
         If you want to show price of a specified cryptocurrency, call \`fetch_crypto_price\`.
-        If you want to show details about a spcific solana wallet address, call \`fetch_wallet_details\`.
-        If the user wants to sell stock and cryptocurrency, or complete another impossible task, respond that you are a demo and cannot do that.
+        If you want to show details about a specific ethereum wallet address, call \`fetch_wallet_details\`.
+        If the user wants to sell stock and cryptocurrency, or complete another impossible task, respond that you are a demo and cannot do that yet.
 
         Besides that, you can also chat with users and do some calculations if needed. Remember to always return results in an appropriately structured format that can easily be read by others. if it's a numbered result, retun the answers in bullet format`,
       },
@@ -243,7 +247,7 @@ async function submitUserMessage(content: string, titleId: any) {
     reply.update(<BotMessage>{content}</BotMessage>);
     if (isFinal) {
       const data = {
-        title_id: "", 
+        title_id: title_id, 
         question: question, 
         answer: answer, 
         type: "text"
@@ -256,14 +260,15 @@ async function submitUserMessage(content: string, titleId: any) {
   });
 
   completion.onFunctionCall('list_stocks', async ({  }) => {
+    const trending = await trendingCrypto();
+    const updatedStocks = trending;
     reply.update(
       <BotCard>
-        <StocksSkeleton />
+        <StocksSkeleton2 cryptoList={updatedStocks} />
       </BotCard>,
     );
     
-    const trending = await trendingCrypto();
-    const updatedStocks = trending;
+
   
     // for (let i = 0; i < trending.length; i++) {
     //   const stock = trending[i];
@@ -278,12 +283,22 @@ async function submitUserMessage(content: string, titleId: any) {
     //   });
     // }
 
-  await sleep(1000);
+    await sleep(1000);
+
+    const data = {
+      title_id: title_id, 
+      question: question, 
+      answer: updatedStocks, 
+      type: "list_stocks"
+    }
+    const res = await insertRoomHistory(data);
 
     reply.done(
       <BotCard>
-        {/* <Stocks stocks={updatedStocks} /> */}
-        <h1>{trending}</h1>
+
+      <Stocks stocks={trending} />
+      {/* Other children as needed */}
+
       </BotCard>,
     );
 
@@ -304,7 +319,11 @@ async function submitUserMessage(content: string, titleId: any) {
       </BotCard>,
     );
 
+    // const currentEvents = await searchTheWeb(events);
+    // console.log(`Results for ${events} are ${currentEvents}`);
+
     await sleep(1000);
+
 
     reply.done(
       <BotCard>
@@ -329,7 +348,17 @@ async function submitUserMessage(content: string, titleId: any) {
       const currentPrice = await cryptoPrice(name);
       console.log('show stock price:', currentPrice)
 
-      
+      const data = {
+        title_id: title_id, 
+        question: question, 
+        answer: {
+          symbol: symbol,
+          price: currentPrice,
+          delta: delta
+        }, 
+        type: "show_stock_price"
+      }
+      const res = await insertRoomHistory(data);
 
       reply.done(
         <BotCard>
@@ -367,6 +396,18 @@ async function submitUserMessage(content: string, titleId: any) {
       const currentPrice = await cryptoPrice(name);
       console.log('show stock price:', currentPrice)
 
+      const data = {
+        title_id: title_id, 
+        question: question, 
+        answer: {
+          symbol: symbol,
+          price: currentPrice,
+          numberOfShares: numberOfShares
+        }, 
+        type: "show_stock_purchase_ui"
+      }
+      const res = await insertRoomHistory(data);
+      
       reply.done(
         <>
           <BotMessage>
@@ -423,6 +464,15 @@ async function submitUserMessage(content: string, titleId: any) {
     })
     const response = await chatModel.invoke(prompt)
     const answer = response.content.toString()
+
+    const chatdata = {
+      title_id: title_id, 
+      question: question, 
+      answer: answer, 
+      type: "fetch_solana_detail"
+    }
+    const res = await insertRoomHistory(chatdata);
+
     reply.update(<BotMessage>{answer}</BotMessage>);
     reply.done();
     aiState.done([
@@ -454,6 +504,14 @@ async function submitUserMessage(content: string, titleId: any) {
     })
 
     const answer = (await chatModel.invoke(prompt)).content.toString();
+
+    const chatdata = {
+      title_id: title_id, 
+      question: question, 
+      answer: answer, 
+      type: "fetch_wallet_details"
+    }
+    const res = await insertRoomHistory(chatdata);
 
     reply.update(<BotMessage>{answer}</BotMessage>);
     reply.done();
