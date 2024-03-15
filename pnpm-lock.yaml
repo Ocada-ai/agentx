@@ -7,7 +7,7 @@ settings:
 dependencies:
   '@langchain/core':
     specifier: ^0.1.46
-    version: 0.1.46
+    version: 0.1.47
   '@langchain/openai':
     specifier: ^0.0.18
     version: 0.0.18
@@ -2772,7 +2772,7 @@ packages:
       ws:
         optional: true
     dependencies:
-      '@langchain/core': 0.1.44
+      '@langchain/core': 0.1.47
       '@langchain/openai': 0.0.19
       '@supabase/supabase-js': 2.39.8
       '@vercel/kv': 1.0.1
@@ -2785,8 +2785,8 @@ packages:
       - encoding
     dev: false
 
-  /@langchain/core@0.1.44:
-    resolution: {integrity: sha512-6kzRRf8X1TgkAfc8xOZ1qCHalasPDxdcNLnL++ZCGtWLyiKMFP7HcDwG/UewYsbqQd3sTQUPiP9+PHdPWXHd/Q==}
+  /@langchain/core@0.1.47:
+    resolution: {integrity: sha512-tjv+HY9Pf3EKax5MoiUZxMyKvZt5JJVAe6v9qeBJGMIigfD5AR/GS4MRtON3wPSNVUcSEX+c5xPC6WZCkDVOvA==}
     engines: {node: '>=18'}
     dependencies:
       ansi-styles: 5.2.0
@@ -2806,7 +2806,7 @@ packages:
     resolution: {integrity: sha512-SBY1PlwiHIcjW185yVXHo4XXgTVAyGxw7IHpuEqs7201/EVjFW91HskzGRvduYm2td3/NV91BBVFgXhJQcvtmA==}
     engines: {node: '>=18'}
     dependencies:
-      '@langchain/core': 0.1.44
+      '@langchain/core': 0.1.47
       js-tiktoken: 1.0.10
       openai: 4.28.4
       zod: 3.22.4
@@ -2819,7 +2819,7 @@ packages:
     resolution: {integrity: sha512-b1CHZCNVc2u4LZbFc1Ls0T7U4LWNGvMeQsrNidLZT5jbjg6VzzDZuVCDPGqCwUc8bzFWvPBO52oT1Wy+aCOX6w==}
     engines: {node: '>=18'}
     dependencies:
-      '@langchain/core': 0.1.44
+      '@langchain/core': 0.1.47
       js-tiktoken: 1.0.10
       openai: 4.28.4
       zod: 3.22.4
@@ -10561,7 +10561,7 @@ packages:
     dependencies:
       '@anthropic-ai/sdk': 0.9.1
       '@langchain/community': 0.0.36(@supabase/supabase-js@2.39.8)(@vercel/kv@1.0.1)(ws@7.5.9)
-      '@langchain/core': 0.1.44
+      '@langchain/core': 0.1.47
       '@langchain/openai': 0.0.19
       '@supabase/supabase-js': 2.39.8
       '@vercel/kv': 1.0.1
