@@ -39,6 +39,18 @@ export function LoginButtonSolana({
 
       if (!wallet.publicKey || !wallet.signMessage) return
 
+      
+      const user = JSON.stringify({ data: { address: wallet.publicKey }})
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        body: user,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+
+
       const message = new SigninMessage({
         domain: window.location.host,
         publicKey: wallet.publicKey?.toBase58(),

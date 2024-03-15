@@ -6,6 +6,7 @@ export const cryptoPrice = async (name: String) => {
     const currentPrice = data[name.toLowerCase()]?.[vsCurrency.toLowerCase()]
     console.log(`Current Holding here: ${currentPrice}`)
 	return currentPrice;
+
 }
 
 export const trendingCrypto = async (): Promise<{ symbol: string; price: string }[]> => {

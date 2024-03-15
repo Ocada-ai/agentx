@@ -109,8 +109,8 @@ export const solanaAddressList = [
     'FoNqK2xudK7TfKjPFxpzAcTaU2Wwyt81znT4RjJBLFQp',
     'QRDxhMw1P2NEfiw5mYXG79bwfgHTdasY2xNP76XSea9',
     'FASQhaZQT53W9eT9wWnPoBFw8xzZDey9TbMmJj6jCQTs'
-  ]
-  export const solanaContent = [
+]
+export const solanaContent = [
     '"friendlyname is Kamino Program, abbreviation is Kamino Program, category is programs, flag is , Logo URI is https://pbs.twimg.com/profile_images/1563154884718985216/MPPps3IA_400x400.jpg"',
     '"friendlyname is Francium  Lending Reward Program, abbreviation is Lending Reward, category is programs, flag is , Logo URI is https://pbs.twimg.com/profile_images/1476861175023353857/Srga_3kj_400x400.jpg"',
     '"friendlyname is DeGods Bank, abbreviation is DeGods Bank, category is programs, flag is , Logo URI is https://uploads-ssl.webflow.com/6190adde0207043d887665cd/620a4521d9114e3baaa296f8_DeGods.png"',
@@ -207,18 +207,18 @@ export const solanaAddressList = [
     '"friendlyname is Break Solana Program, abbreviation is , category is programs, flag is , Logo URI is "',
     '"friendlyname is Mango Governance Program, abbreviation is , category is programs, flag is , Logo URI is "',
     '"friendlyname is Step Finance Swap Program, abbreviation is , category is programs, flag is , Logo URI is "',
-'"friendlyname is Goblin Gold Program ID, abbreviation is GGo1dnYpjKfe9omzUaFtaCyizvwpAMf3NhxSCMD61F3A, category is programs, flag is , Logo URI is https://pbs.twimg.com/profile_images/1496450638053576704/7e7Xhvjy_400x400.jpg"',
-'"friendlyname is AlphaArt, abbreviation is AA, category is programs, flag is , Logo URI is "',
-'"friendlyname is Coinable\'s Program ID, abbreviation is Coinable\'s Program ID, category is programs, flag is , Logo URI is "',
-'"friendlyname is Nazare Program, abbreviation is Nazare Program, category is programs, flag is , Logo URI is https://pbs.twimg.com/profile_images/1563031023486738432/m3W7VA1Q_400x400.jpg"',
-'"friendlyname is Streamflow MultiSig Program, abbreviation is  Streamflow MultiSig Program, category is programs, flag is , Logo URI is https://pbs.twimg.com/profile_images/1396561843146080259/VJNtxnX0_400x400.jpg"',
-'"friendlyname is DigitalEyes, abbreviation is DigitalEyes, category is programs, flag is , Logo URI is "',
-'"friendlyname is Mean Finance DDCA Program, abbreviation is Mean Finance DDCA Program, category is programs, flag is , Logo URI is https://pbs.twimg.com/profile_images/1511040310344044544/ksia9GiX_400x400.jpg"',
-'"friendlyname is Parrot Program, abbreviation is Parrot Program, category is programs, flag is , Logo URI is "',
-'"friendlyname is Quarry Merge Mine, abbreviation is , category is programs, flag is , Logo URI is "',
-'"friendlyname is MarginFi Program, abbreviation is MarginFi Program, category is programs, flag is , Logo URI is https://pbs.twimg.com/profile_images/1495835980443623429/6sfyPSTK_400x400.jpg"',
-'"friendlyname is Mango Program v2, abbreviation is , category is programs, flag is , Logo URI is "',
-'"friendlyname is Tulip | Orca Vault, abbreviation is Tulip Orca Vault, category is programs, flag is , Logo URI is https://s2.coinmarketcap.com/static/img/coins/200x200/10373.png"',
-'"friendlyname is Quarry Redeemer, abbreviation is , category is programs, flag is , Logo URI is "',
-'"friendlyname is PsyOptions - Tokenized  Europeans Protocol DAO, abbreviation is Tokenized Europeans Protocol DAO, category is accounts, flag is , Logo URI is "'
+    '"friendlyname is Goblin Gold Program ID, abbreviation is GGo1dnYpjKfe9omzUaFtaCyizvwpAMf3NhxSCMD61F3A, category is programs, flag is , Logo URI is https://pbs.twimg.com/profile_images/1496450638053576704/7e7Xhvjy_400x400.jpg"',
+    '"friendlyname is AlphaArt, abbreviation is AA, category is programs, flag is , Logo URI is "',
+    '"friendlyname is Coinable\'s Program ID, abbreviation is Coinable\'s Program ID, category is programs, flag is , Logo URI is "',
+    '"friendlyname is Nazare Program, abbreviation is Nazare Program, category is programs, flag is , Logo URI is https://pbs.twimg.com/profile_images/1563031023486738432/m3W7VA1Q_400x400.jpg"',
+    '"friendlyname is Streamflow MultiSig Program, abbreviation is  Streamflow MultiSig Program, category is programs, flag is , Logo URI is https://pbs.twimg.com/profile_images/1396561843146080259/VJNtxnX0_400x400.jpg"',
+    '"friendlyname is DigitalEyes, abbreviation is DigitalEyes, category is programs, flag is , Logo URI is "',
+    '"friendlyname is Mean Finance DDCA Program, abbreviation is Mean Finance DDCA Program, category is programs, flag is , Logo URI is https://pbs.twimg.com/profile_images/1511040310344044544/ksia9GiX_400x400.jpg"',
+    '"friendlyname is Parrot Program, abbreviation is Parrot Program, category is programs, flag is , Logo URI is "',
+    '"friendlyname is Quarry Merge Mine, abbreviation is , category is programs, flag is , Logo URI is "',
+    '"friendlyname is MarginFi Program, abbreviation is MarginFi Program, category is programs, flag is , Logo URI is https://pbs.twimg.com/profile_images/1495835980443623429/6sfyPSTK_400x400.jpg"',
+    '"friendlyname is Mango Program v2, abbreviation is , category is programs, flag is , Logo URI is "',
+    '"friendlyname is Tulip | Orca Vault, abbreviation is Tulip Orca Vault, category is programs, flag is , Logo URI is https://s2.coinmarketcap.com/static/img/coins/200x200/10373.png"',
+    '"friendlyname is Quarry Redeemer, abbreviation is , category is programs, flag is , Logo URI is "',
+    '"friendlyname is PsyOptions - Tokenized  Europeans Protocol DAO, abbreviation is Tokenized Europeans Protocol DAO, category is accounts, flag is , Logo URI is "'
 ]

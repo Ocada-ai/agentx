@@ -16,7 +16,7 @@ export function Stocks({ stocks }: { stocks: any[] }) {
           className="flex flex-row items-center gap-2 p-2 text-left bg-zinc-900 hover:bg-zinc-800 rounded-lg w-full sm:w-auto"
           style={{ flex: "1 0 30%" }} // Ensures flex items are allowed to grow and wrap, with a basis of 30%
           onClick={async () => {
-            const response = await submitUserMessage(`View ${stock.symbol}`);
+            const response = await submitUserMessage(`View ${stock.symbol}`, null);
             setMessages(currentMessages => [...currentMessages, response]);
           }}
         >
