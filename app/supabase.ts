@@ -44,7 +44,7 @@ export async function createRoom(address: any, title: any) {
     }
 }
 
-export async function insertRoomHistory({title_id, question, answer, type}: {title_id: string, question: string, answer: string, type: string} ) {
+export async function insertRoomHistory({title_id, question, answer, type}: {title_id: string, question: string, answer: any, type: string} ) {
     if (!title_id) return []
     const titleId =  title_id;
     try {
@@ -55,6 +55,22 @@ export async function insertRoomHistory({title_id, question, answer, type}: {tit
             const { error } = await supabase.from('contents').insert({ title_id: title_id, question: question, answer: answer, type: type })
             if(error) return null;
             else return { status: '200'};
+        }
+    } catch (error) {
+        console.log(error)
+    }  
+}
+
+
+export async function getRoomHistory(titleId: any) {
+    if (!titleId) return []
+    const title_id =  titleId;
+    try {
+        const { data, error } = await supabase.from('contents').select().eq('title_id', titleId);
+        if(error) return null
+        return {
+            status: 200,
+            data: data
         }
     } catch (error) {
         console.log(error)

@@ -68,7 +68,8 @@ export function SidebarItem({ index, chat, children }: SidebarItemProps) {
           <IconMessage className="mr-2 text-type-600 text-opacity-50" />
         )}
       </div> */}
-      <div
+      <Link
+        href={'/chat/' + chat.id.toString()}
         className={cn(
           buttonVariants({ variant: 'ghost' }),
           'group w-full ps-4 transition-colors hover:bg-zinc-200/40 dark:hover:bg-zinc-300/10 py-2 h-6',
@@ -116,7 +117,7 @@ export function SidebarItem({ index, chat, children }: SidebarItemProps) {
             )}
           </span>
         </div>
-      </div>
+      </Link>
       {isActive && <div className="absolute right-2 top-1">{children}</div>}
     </motion.div>
   )
