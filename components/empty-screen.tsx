@@ -1,11 +1,11 @@
-import { Button } from '@/components/ui/button';
-import { ExternalLink } from '@/components/external-link';
-import { IconArrowRight } from '@/components/ui/icons';
+import { Button } from "@/components/ui/button";
+import { ExternalLink } from "@/components/external-link";
+import { IconArrowRight } from "@/components/ui/icons";
 
 const exampleMessages = [
   {
-    heading: 'What are the trending tokens?',
-    message: 'What are the trending tokens?',
+    heading: "What are the trending tokens?",
+    message: "What are the trending tokens?",
   },
   {
     heading: "What's the current price of Solana?",
@@ -24,13 +24,13 @@ export function EmptyScreen({
 }) {
   return (
     <div className="w-full lg:max-w-3xl mx-auto px-4">
-      <div className="rounded-lg py-8">
+      <div className="py-16">
         <div className="mb-6">
           <h1 className="mb-2 text-3xl font-semibold text-type-600 text-opacity-80">
-            Welcome to{' '}
+            Welcome to{" "}
             <span className="text-theme-500 font-bold text-opacity-100">
               OCADA
-            </span>{' '}
+            </span>{" "}
             AI Agent!
           </h1>
           <p className="font-normal text-sm leading-normal text-type-600 text-opacity-50">
@@ -42,7 +42,7 @@ export function EmptyScreen({
             <Button
               key={index}
               variant="link"
-              className="bg-[#141414] border-[0.5px] border-[#1a1a1a] shadow-[0_2px_4px_0_#0000001a] h-full px-5 text-sm font-normal py-4 rounded-xl mt-0 text-left flex-col items-start justify-between hover:no-underline text-type-600 text-opacity-60"
+              className="bg-[#1a1a1a] border-[0.5px] border-[#292929] shadow-[0_2px_4px_0_#0000001a] h-full px-5 text-sm font-normal py-4 rounded-xl mt-0 text-left flex-col items-start justify-between hover:no-underline text-type-600 text-opacity-60"
               onClick={async () => {
                 submitMessage(message.message);
               }}
@@ -50,7 +50,7 @@ export function EmptyScreen({
               {message.heading}
               <span className="w-full flex items-center justify-end">
                 <i className="size-9 rounded-full flex justify-center items-center bg-[#171717] text-type-600">
-                  <IconArrowRight className="text-muted-foreground" />
+                  <IconArrowRight className="text-type-600 opacity-60" />
                 </i>
               </span>
             </Button>
