@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { useId, useState } from 'react';
-import { useActions, useAIState, useUIState } from 'ai/rsc';
-import { formatNumber } from '@/lib/utils';
+import { useId, useState } from "react";
+import { useActions, useAIState, useUIState } from "ai/rsc";
+import { formatNumber } from "@/lib/utils";
 
-import type { AI } from '../../app/action';
+import type { AI } from "../../app/action";
 
 export function Purchase({
   defaultAmount,
@@ -17,7 +17,7 @@ export function Purchase({
 }) {
   const [value, setValue] = useState(defaultAmount || 100);
   const [purchasingUI, setPurchasingUI] = useState<null | React.ReactNode>(
-    null,
+    null
   );
   const [history, setHistory] = useAIState<typeof AI>();
   const [, setMessages] = useUIState<typeof AI>();
@@ -34,7 +34,7 @@ export function Purchase({
 
     // Insert a hidden history info to the list.
     const info = {
-      role: 'system' as const,
+      role: "system" as const,
       content: `[User has changed to purchase ${newValue} shares of ${name}. Total cost: $${(
         newValue * price
       ).toFixed(2)}]`,
@@ -55,18 +55,20 @@ export function Purchase({
   }
 
   return (
-    <div className="p-4 text-yellow-400 border rounded-xl bg-zinc-950">
+    <div className="p-4 text-yellow-400 border-2 border-[#23231d] rounded-xl bg-zinc-950 font-gabarito">
       <div className="inline-block float-right px-2 py-1 text-xs rounded-full bg-white/10">
         +1.23% ↑
       </div>
-      <div className="text-lg text-zinc-300">{name}</div>
-      <div className="text-3xl font-bold">${price}</div>
+      <div className="text-base text-type-alt-600">{name}</div>
+      <div className="text-3xl text-type-alt-600 font-normal">${price}</div>
       {purchasingUI ? (
         <div className="mt-4 text-zinc-200">{purchasingUI}</div>
       ) : (
         <>
           <div className="relative pb-6 mt-6">
-            <p>Shares to purchase</p>
+            <p className="text-sm text-type-alt-600 text-opacity-80">
+              Shares to purchase
+            </p>
             <input
               id="labels-range-input"
               type="range"
