@@ -14,20 +14,18 @@ export const trendingCrypto = async (): Promise<{ symbol: string; price: string 
     const response = await fetch(url);
     const data = await response.json();
 
-   
     const trendingTokens = data.coins.map((coin: any) => {
-        const symbol: string = coin.item.symbol;
-        console.log("This is the price returned :", coin.item.data.price); 
-        const rawPrice = coin.item.data.price.replace(/[^0-9.]/g, "");
-const price: number = parseFloat(rawPrice);
-console.log(price); 
-   
-        const priceChangePercentage: number = Math.round(coin.item.data.price_change_percentage_24h.usd);
+        const name: string = coin.item.name;
+        const rawPrice = coin.item.data.price.toString(); // Convert to string
+        const price: number = parseFloat(rawPrice.replace(/[^0-9.]/g, ""));
+        const roundedPrice: string = price.toFixed(6); // Adjust the number of decimal places as needed
 
-        console.log(symbol, price, priceChangePercentage)
+        const priceChangePercentage: number = coin.item.data.price_change_percentage_24h.usd.toFixed(2);
+
+        console.log(name, roundedPrice, priceChangePercentage);
         
-        return { symbol, price, priceChangePercentage };
-    });
+        return { name, price: roundedPrice, priceChangePercentage };
+    }).slice(0, 5); // Slice to get only the first 5 tokens
 
     return trendingTokens; 
 };

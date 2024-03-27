@@ -10,7 +10,36 @@ import type { AI } from '../../app/action';
 
 export function Stock({ name = 'DOGE', price = 12.34, delta = 1 }) {
   const [history, setHistory] = useAIState<typeof AI>();
+  const [dateTime, setDateTime] = useState<{ formattedDate: string; formattedTime: string }>({ formattedDate: '', formattedTime: '' });
   const id = useId();
+
+  function getCurrentDateTime(): { formattedDate: string; formattedTime: string } {
+    // Create a new Date object representing the current date and time
+    const now = new Date();
+  
+    // Get the current day, month, year, hours, minutes, and seconds
+    const day = now.getDate();
+    const month = now.getMonth() + 1; // Month is zero-based, so add 1
+    const year = now.getFullYear();
+    const hours = now.getHours();
+    const minutes = now.getMinutes();
+    const seconds = now.getSeconds();
+  
+    // Format the date and time components
+    const formattedDate = `${year}-${month < 10 ? '0' + month : month}-${day < 10 ? '0' + day : day}`;
+    const formattedTime = `${hours < 10 ? '0' + hours : hours}:${minutes < 10 ? '0' + minutes : minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
+  
+    // Return the formatted date and time
+    return { formattedDate, formattedTime };
+  }
+
+  useEffect(() => {
+    // Get the current date and time
+    const { formattedDate, formattedTime } = getCurrentDateTime();
+    // Update the state with the current date and time
+    setDateTime({ formattedDate, formattedTime });
+  }, []);
+  
 
   const [priceAtTime, setPriceAtTime] = useState({
     time: '00:00',
@@ -65,7 +94,7 @@ export function Stock({ name = 'DOGE', price = 12.34, delta = 1 }) {
       <div className="text-lg text-zinc-300">{name}</div>
       <div className="text-3xl font-bold">${price}</div>
       <div className="mt-1 text-xs text text-zinc-500">
-        Closed: Feb 27, 4:59 PM EST
+      Closed At: {dateTime.formattedDate}, {dateTime.formattedTime}
       </div>
 
       <div
