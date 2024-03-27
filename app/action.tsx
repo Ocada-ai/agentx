@@ -33,6 +33,7 @@ import { OpenAIEmbeddings, ChatOpenAI } from '@langchain/openai'
 
 import { cryptoPrice, trendingCrypto } from "@/utils/cryptoUtils";
 import { insertRoomHistory } from '@/app/supabase';
+import searchTavily from '@/utils/search';
 
 
 
@@ -142,9 +143,9 @@ async function submitUserMessage(content: string, titleId: any) {
         - "[User has changed the amount of AAPL to 10]" means that the user has changed the amount of AAPL to 10 in the UI.
 
         If the user requests purchasing a stock, call \`show_stock_purchase_ui\` to show the purchase UI.
-        If the user just wants the price, call \`show_stock_price\` to show the price.
+        If the user just wants the price, call \`show_stock_price\` to show the price, if the price returns undefined or nothing, call \`get_events\` to get the price of the crypto asset.
         If you want to show trending tokens, call \`list_stocks\`.
-        If you want to show events, call \`get_events\`.
+        If you want to search the internet or just search for queries you don't know about, call \`get_events\`.
         If you want to show information about a specific solana wallet address or if user asks question about an exchange or the wallet address provided doesn't start with 0x, call \`fetch_solana_detail\`.
         If you want to show price of a specified cryptocurrency, call \`fetch_crypto_price\`.
         If you want to show details about a specific ethereum wallet address, call \`fetch_wallet_details\`.
@@ -210,17 +211,9 @@ async function submitUserMessage(content: string, titleId: any) {
       {
         name: 'get_events',
         description:
-          'List funny imaginary events between user highlighted dates that describe stock activity.',
+          'searches the internet to get the latest events.',
         parameters: z.object({
-          events: z.array(
-            z.object({
-              date: z
-                .string()
-                .describe('The date of the event, in ISO-8601 format'),
-              headline: z.string().describe('The headline of the event'),
-              description: z.string().describe('The description of the event'),
-            }),
-          ),
+            query: z.string().describe('the result of the internet search' )
         }),
       },
       {
@@ -312,12 +305,14 @@ async function submitUserMessage(content: string, titleId: any) {
     ]);
   });
 
-  completion.onFunctionCall('get_events', async ({ events }) => {
+  completion.onFunctionCall('get_events', async ({ query }) => {
     reply.update(
       <BotCard>
         <EventsSkeleton />
       </BotCard>,
     );
+    const event = await searchTavily(query);
+    console.log("Search results:", event);
 
     // const currentEvents = await searchTheWeb(events);
     // console.log(`Results for ${events} are ${currentEvents}`);
@@ -327,7 +322,11 @@ async function submitUserMessage(content: string, titleId: any) {
 
     reply.done(
       <BotCard>
-        <Events events={events} />
+        <Events results={event.results ? event.results.map(result => ({
+    ...result,
+    score: parseFloat(result.score) // Convert score from string to number
+  })) : []} />
+        {/* <h1> {event} </h1> */}
       </BotCard>,
     );
 
@@ -336,7 +335,7 @@ async function submitUserMessage(content: string, titleId: any) {
       {
         role: 'function',
         name: 'list_stocks',
-        content: JSON.stringify(events),
+        content: JSON.stringify(query),
       },
     ]);
   });
