@@ -1,10 +1,10 @@
-'use client'
+"use client";
 
-import { useRouter } from 'next/navigation'
-import * as React from 'react'
-import { toast } from 'react-hot-toast'
+import { useRouter } from "next/navigation";
+import * as React from "react";
+import { toast } from "react-hot-toast";
 
-import { ServerActionResult, type Chat } from '@/lib/types'
+import { ServerActionResult, type Chat } from "@/lib/types";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -13,19 +13,19 @@ import {
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogTitle
-} from '@/components/ui/alert-dialog'
-import { Button } from '@/components/ui/button'
-import { IconShare, IconSpinner, IconTrash } from '@/components/ui/icons'
-import { ChatShareDialog } from '@/components/chat-share-dialog'
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import { IconShare, IconSpinner, IconTrash } from "@/components/ui/icons";
+import { ChatShareDialog } from "@/components/chat-share-dialog";
 import {
   Tooltip,
   TooltipContent,
-  TooltipTrigger
-} from '@/components/ui/tooltip'
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface SidebarActionsProps {
-  chat: Chat
+  chat: Chat;
   // removeChat: (args: { id: string; path: string }) => ServerActionResult<void>
   // shareChat: (id: string) => ServerActionResult<Chat>
 }
@@ -35,10 +35,10 @@ export function SidebarActions({
   // removeChat,
   // shareChat
 }: SidebarActionsProps) {
-  const router = useRouter()
-  const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false)
+  const router = useRouter();
+  const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
   // const [shareDialogOpen, setShareDialogOpen] = React.useState(false)
-  const [isRemovePending, startRemoveTransition] = React.useTransition()
+  const [isRemovePending, startRemoveTransition] = React.useTransition();
 
   return (
     <>
@@ -60,11 +60,11 @@ export function SidebarActions({
           <TooltipTrigger asChild>
             <Button
               variant="ghost"
-              className="size-6 p-0 hover:bg-background"
+              className="size-6 p-0 bg-transparent"
               disabled={isRemovePending}
               onClick={() => setDeleteDialogOpen(true)}
             >
-              <IconTrash />
+              <IconTrash className="stroke-type-alt-600 fill-[#31312b] hover:fill-black hover:opacity-100" />
               <span className="sr-only">Delete</span>
             </Button>
           </TooltipTrigger>
@@ -121,5 +121,5 @@ export function SidebarActions({
         </AlertDialogContent>
       </AlertDialog>
     </>
-  )
+  );
 }

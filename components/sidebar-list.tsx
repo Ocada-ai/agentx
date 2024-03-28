@@ -21,8 +21,8 @@ export function SidebarList({ userId }: SidebarListProps) {
   }, []);
 
   return (
-    <div className="flex flex-1 flex-col overflow-hidden min-h-full">
-      <div className="flex-1 overflow-auto">
+    <div className="flex flex-1 flex-col overflow-hidden">
+      <div className="flex-1 overflow-auto no-scrollbar">
         {chats?.length ? (
           <div className="space-y-1 relative">
             <SidebarItems chats={chats} />

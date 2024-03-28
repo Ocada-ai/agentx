@@ -11,7 +11,7 @@ export function UserMessage({ children }: { children: React.ReactNode }) {
       <div className="flex size-8 shrink-0 select-none items-center justify-center rounded-full bg-[#262626]">
         <IconUser className="text-type-600" />
       </div>
-      <div className="ml-4 flex-1 space-y-2 overflow-hidden px-1 text-type-600 text-opacity-80">
+      <div className="ml-4 flex-1 space-y-2 overflow-hidden px-1 text-zinc-300 text-opacity-80">
         {children}
       </div>
     </div>
@@ -35,7 +35,7 @@ export function BotMessage({
       <div className="flex size-8 shrink-0 select-none items-center justify-center rounded-full">
         <IconOcada />
       </div>
-      <div className="ml-4 flex-1 space-y-2 overflow-hidden px-1 text-type-600 text-opacity-80">
+      <div className="ml-4 flex-1 space-y-2 overflow-hidden px-1 text-zinc-300 text-opacity-80">
         {children}
       </div>
     </div>

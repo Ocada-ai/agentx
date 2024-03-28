@@ -24,23 +24,22 @@ export function SidebarDesktop() {
 
   return (
     <Sidebar className="peer absolute inset-y-0 z-30 hidden -translate-x-full bg-[#171717] duration-300 ease-in-out data-[state=open]:translate-x-0 lg:flex lg:w-[220px] min-h-screen px-5 pt-4 h-full flex-col dark:bg-[#171717]">
-      <Image alt="ocada" src="/OCADA.svg" width={92} height={92} />
-
-      <div className="mt-5 mb-3 ">
-        <Link
-          href="/"
-          className={cn(
-            buttonVariants({ variant: "outline" }),
-            "h-10 w-full justify-start bg-[#171717] px-4 shadow-none transition-colors hover:bg-zinc-200/40 border-none mb-2 rounded-full ring-[3px] ring-[#1a1a1a] text-type-600 text-opacity-50"
-          )}
-          onClick={handleUrl}
-        >
-          <IconPlus className="-translate-x-2" />
-          New Chat
-        </Link>
-      </div>
-      <menu className="h-full flex flex-col">
-        <>
+      <div className="flex h-full flex-col">
+        <Image alt="ocada" src="/OCADA.svg" width={92} height={92} />
+        <div className="mt-5 mb-3 ">
+          <Link
+            href="/"
+            className={cn(
+              buttonVariants({ variant: "outline" }),
+              "h-10 w-full justify-start bg-[#171717] px-4 shadow-none transition-colors hover:bg-zinc-200/40 border-none mb-2 rounded-full ring-[3px] ring-[#1a1a1a] text-type-600 text-opacity-50"
+            )}
+            onClick={handleUrl}
+          >
+            <IconPlus className="-translate-x-2" />
+            New Chat
+          </Link>
+        </div>
+        <menu className="flex flex-col">
           {/* <h2>Features Coming soon...</h2> */}
           <div className="flex flex-col gap-5 mb-3 pointer-events-none">
             {/* <Link
@@ -75,11 +74,12 @@ export function SidebarDesktop() {
               History
             </p>
           </div>
-          {wallet && wallet.publicKey && (
-            <ChatHistory userId={wallet.publicKey?.toString()} />
-          )}
-        </>
-      </menu>
+        </menu>
+
+        {wallet && wallet.publicKey && (
+          <ChatHistory userId={wallet.publicKey?.toString()} />
+        )}
+      </div>
     </Sidebar>
   );
 }
