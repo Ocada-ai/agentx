@@ -141,9 +141,9 @@ async function submitUserMessage(content: string, titleId: any) {
         - "[User has changed the amount of AAPL to 10]" means that the user has changed the amount of AAPL to 10 in the UI.
 
         If the user requests purchasing a stock, call \`show_stock_purchase_ui\` to show the purchase UI.
-        If the user just wants the price, call \`show_stock_price\` to show the price, if the price returns undefined or nothing, call \`get_events\` to get the price of the crypto asset.
+        If the user just wants the price, call \`show_stock_price\` to show the price, if the price returns undefined or nothing or empty value, call \`get_events\` to get the price of the crypto asset.
         If you want to show trending tokens, call \`list_stocks\`.
-        If you want to search the internet or just search for queries you don't know about, call \`get_events\`.
+        If you want to search the internet or just search for queries you don't know about, call \`get_events\`, or if a user asks a controversial question that requires advice or deep insight, call \`get_events\` read the content of the result, and then act as an experienced professional in that field and provide the user with the answer to their question and not only results from the function.
         If you want to show information about a specific solana wallet address or if user asks question about an exchange or the wallet address provided doesn't start with 0x, call \`fetch_solana_detail\`.
         If you want to show price of a specified cryptocurrency, call \`fetch_crypto_price\`.
         If you want to show details about a specific ethereum wallet address, call \`fetch_wallet_details\`.
@@ -151,6 +151,7 @@ async function submitUserMessage(content: string, titleId: any) {
 
         Besides that, you can also chat with users and do some calculations if needed. Remember to always return results in an appropriately structured format that can easily be read by others. if it's a numbered result, retun the answers in bullet format`,
       },
+
       ...aiState.get().map((info: any) => ({
         role: info.role,
         content: info.content,
