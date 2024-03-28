@@ -3,7 +3,7 @@ import { Header } from "@/components/header";
 
 export default function RightSidebar() {
   return (
-    <aside className="h-screen lg:flex flex-col items-center gap-9 py-4 px-6 bg-[#101010] ring-[#1a1a1a] no-scrollbar hidden xl:fixed xl:flex overflow-y-scroll relative right-0 w-[320px] inset-y-0">
+    <aside className="no-scrollbar overflow-y-scroll relative h-screen hidden xl:fixed xl:flex xl:flex-col items-center gap-9 py-4 px-6 bg-[#101010] ring-[#1a1a1a] right-0 w-[320px] inset-y-0">
       <Header />
       <div className="w-full flex flex-col gap-6 mt-2">
         <div className="w-full flex justify-center">
