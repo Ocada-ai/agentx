@@ -32,3 +32,4 @@ export function Events({ results }: { results: SearchResult[] }) {
     </div>
   );
 }
+

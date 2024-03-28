@@ -36,8 +36,6 @@ import { insertRoomHistory } from '@/app/supabase';
 import searchTavily from '@/utils/search';
 
 
-
-
 const openai = new OpenAI({
   apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY || '',
 });
@@ -59,7 +57,7 @@ async function confirmPurchase(symbol: string, price: number, amount: number) {
   const systemMessage = createStreamableUI(null);
 
   runAsyncFnWithoutBlocking(async () => {
-    // You can update the UI at any point.
+    
     await sleep(1000);
 
     purchasing.update(
@@ -262,20 +260,6 @@ async function submitUserMessage(content: string, titleId: any) {
     );
     
 
-  
-    // for (let i = 0; i < trending.length; i++) {
-    //   const stock = trending[i];
-    //   const currentPrice = await cryptoPrice(stock.name);
-    //   const delta = stock.delta;
-  
-    //   updatedStocks.push({
-    //     symbol: stock.symbol,
-    //     name: stock.name,
-    //     price: currentPrice,
-    //     delta: delta
-    //   });
-    // }
-
     await sleep(1000);
 
     const data = {
@@ -290,8 +274,6 @@ async function submitUserMessage(content: string, titleId: any) {
       <BotCard>
 
       <Stocks stocks={trending} />
-      {/* Other children as needed */}
-
       </BotCard>,
     );
 
