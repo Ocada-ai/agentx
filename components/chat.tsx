@@ -71,44 +71,42 @@ export default function Chat({ initialMessages }: any) {
   }, []);
 
   return (
-    <div className="h-screen overflow-y-scroll relative flex flex-col justify-between no-scrollbar bg-[#141414]">
-      <div className="pb-[200px] pt-4 md:pt-10">
-        {messages && messages.length ? (
-          <>
-            <ChatList messages={messages} />
-          </>
-        ) : (
-          <EmptyScreen
-            submitMessage={async (message) => {
-              // Add user message UI
-              setMessages((currentMessages) => [
-                ...currentMessages,
-                {
-                  id: Date.now(),
-                  display: <UserMessage>{message}</UserMessage>,
-                },
-              ]);
+    <div className="relative">
+      {messages && messages.length ? (
+        <>
+          <ChatList messages={messages} />
+        </>
+      ) : (
+        <EmptyScreen
+          submitMessage={async (message) => {
+            // Add user message UI
+            setMessages((currentMessages) => [
+              ...currentMessages,
+              {
+                id: Date.now(),
+                display: <UserMessage>{message}</UserMessage>,
+              },
+            ]);
 
-              let curTitleId = null;
-              const res: any = await createRoom(wallet.publicKey, message);
-              if (res) curTitleId = res.titleId;
-              setTitleId(curTitleId);
+            let curTitleId = null;
+            const res: any = await createRoom(wallet.publicKey, message);
+            if (res) curTitleId = res.titleId;
+            setTitleId(curTitleId);
 
-              // Submit and get response message
-              const responseMessage = await submitUserMessage(
-                message,
-                curTitleId
-              );
-              setMessages((currentMessages) => [
-                ...currentMessages,
-                responseMessage,
-              ]);
-            }}
-          />
-        )}
-        <ChatScrollAnchor trackVisibility={true} />
-      </div>
-      <div className="sticky bottom-0 w-full bg-[#141414] animate-in duration-300 ease-in-out">
+            // Submit and get response message
+            const responseMessage = await submitUserMessage(
+              message,
+              curTitleId
+            );
+            setMessages((currentMessages) => [
+              ...currentMessages,
+              responseMessage,
+            ]);
+          }}
+        />
+      )}
+      {/* <ChatScrollAnchor trackVisibility={true} /> */}
+      <div className="fixed inset-x-0 w-full bottom-0 bg-transparent animate-in duration-300 ease-in-out lg:pl-[220px] xl:pr-[320px] bg-gradient-to-b from-[#1414143a] from-10% via-[#141414d1] via-30% to-[#141414] to-100%">
         <div className="lg:max-w-3xl sm:px-4 mx-auto">
           <div className="px-4 py-2 space-y-4 bg-transparent sm:rounded-t-xl md:py-4">
             <form

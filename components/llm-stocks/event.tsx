@@ -1,30 +1,40 @@
-import { format, parseISO } from 'date-fns';
+import { format, parseISO } from "date-fns";
 
-interface Event {
-  date: string;
-  headline: string;
-  description: string;
+interface SearchResult {
+  title: string;
+  url: string;
+  content: string;
+  score: number;
 }
 
-export function Events({ events }: { events: Event[] }) {
+export function Events({ results }: { results: SearchResult[] }) {
   return (
-    <div className="flex flex-col sm:flex-row gap-2 overflow-scroll py-4 -mt-2">
-      {events.map(event => (
+    <div className="flex flex-col sm:flex-row gap-3 overflow-scroll py-4 mt-2 no-scrollbar">
+      {results.map((result) => (
         <div
-          key={event.date}
-          className="flex flex-col p-4 bg-zinc-900 rounded-md max-w-96 flex-shrink-0"
+          key={result.url}
+          className="flex flex-col items-start gap-2 p-4 bg-[#1a1a1a] rounded-md max-w-96 flex-shrink-0 no-scrollbar"
         >
-          <div className="text-zinc-400 text-sm">
-            {format(parseISO(event.date), 'dd LLL, yyyy')}
+          <div className="text-base font-semibold text-zinc-200">
+            {result.title}
           </div>
-          <div className="text-base font-bold text-zinc-200">
-            {event.headline.slice(0, 30)}
+          <div className="text-xs bg-theme-500 text-theme-700 bg-opacity-10 py-1 px-3 rounded-full font-semibold">
+            Score: {result.score}
           </div>
-          <div className="text-zinc-500">
-            {event.description.slice(0, 70)}...
+          <div className="text-zinc-600 no-scrollbar">
+            {result.content.slice(0, 70)}...
           </div>
+          <a
+            href={result.url}
+            className="text-zinc-500 text-sm font-base font-gabarito border-b border-zinc-500 border-dotted border-opacity-40 mt-auto"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Read More
+          </a>
         </div>
       ))}
     </div>
   );
 }
+

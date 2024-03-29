@@ -50,7 +50,7 @@ export default async function ChatPage({ params }: ChatPageProps) {
                 reply.done()
             }
             if(chat.type === 'get_events'){
-                reply.update(<BotCard><Events events={data} /></BotCard>)
+                reply.update(<BotCard><Events results={data} /></BotCard>)
                 reply.done()
 
             }
