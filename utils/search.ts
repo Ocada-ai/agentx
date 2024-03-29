@@ -1,5 +1,3 @@
-import fetch from 'node-fetch';
-
 interface SearchResponse {
     answer: string;
     query: string;
@@ -36,7 +34,7 @@ export default async function searchTavily( query: string): Promise<SearchRespon
         throw new Error(`Failed to fetch data from Tavily Search API: ${response.statusText}`);
     }
 
-    const responseData: SearchResponse = await response.json();
+    const responseData = await response.json() as SearchResponse;
     console.log("Search results:", responseData);
     return responseData;
 }
