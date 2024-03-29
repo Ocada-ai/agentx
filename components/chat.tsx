@@ -1,47 +1,47 @@
-'use client';
+"use client";
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from "react";
 
-import { useUIState, useActions } from 'ai/rsc';
-import { UserMessage } from '@/components/llm-stocks/message';
+import { useUIState, useActions } from "ai/rsc";
+import { UserMessage } from "@/components/llm-stocks/message";
 
-import { type AI } from '@/app/action';
-import { ChatScrollAnchor } from '@/lib/hooks/chat-scroll-anchor';
-import { FooterText } from '@/components/footer';
-import Textarea from 'react-textarea-autosize';
-import { useEnterSubmit } from '@/lib/hooks/use-enter-submit';
+import { type AI } from "@/app/action";
+import { ChatScrollAnchor } from "@/lib/hooks/chat-scroll-anchor";
+import { FooterText } from "@/components/footer";
+import Textarea from "react-textarea-autosize";
+import { useEnterSubmit } from "@/lib/hooks/use-enter-submit";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from '@/components/ui/tooltip';
-import { IconArrowElbow, IconPlus, IconPlane } from '@/components/ui/icons';
-import { Button, buttonVariants } from '@/components/ui/button';
-import { ChatList } from '@/components/chat-list';
-import { EmptyScreen } from '@/components/empty-screen';
-import { cn } from '@/lib/utils'
+} from "@/components/ui/tooltip";
+import { IconArrowElbow, IconPlus, IconPlane } from "@/components/ui/icons";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { ChatList } from "@/components/chat-list";
+import { EmptyScreen } from "@/components/empty-screen";
+import { cn } from "@/lib/utils";
 
-import { useWallet } from '@solana/wallet-adapter-react'
-import { redirect } from 'next/navigation'
-import { createRoom } from '@/app/supabase'
+import { useWallet } from "@solana/wallet-adapter-react";
+import { redirect } from "next/navigation";
+import { createRoom } from "@/app/supabase";
 
-import { useLocalStorage } from '@/lib/hooks/use-local-storage'
+import { useLocalStorage } from "@/lib/hooks/use-local-storage";
 
-export default function Chat({initialMessages}: any) {
+export default function Chat({ initialMessages }: any) {
   const [messages, setMessages] = useUIState<typeof AI>();
   const { submitUserMessage } = useActions<typeof AI>();
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState("");
   const { formRef, onKeyDown } = useEnterSubmit();
   const inputRef = useRef<HTMLTextAreaElement>(null);
-  const wallet = useWallet()
-  const [titleId, setTitleId] = useLocalStorage('titleId', null)
+  const wallet = useWallet();
+  const [titleId, setTitleId] = useLocalStorage("titleId", null);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === '/') {
+      if (e.key === "/") {
         if (
           e.target &&
-          ['INPUT', 'TEXTAREA'].includes((e.target as any).nodeName)
+          ["INPUT", "TEXTAREA"].includes((e.target as any).nodeName)
         ) {
           return;
         }
@@ -53,60 +53,60 @@ export default function Chat({initialMessages}: any) {
       }
     };
 
-    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener("keydown", handleKeyDown);
     };
   }, [inputRef]);
 
   useEffect(() => {
     if (!wallet.wallet) {
-      redirect('/sign-in')
+      redirect("/sign-in");
     }
-  }, [wallet])
-  
-  useEffect(() => {
-    if(initialMessages) setMessages(initialMessages)
-  }, [])
+  }, [wallet]);
 
+  useEffect(() => {
+    if (initialMessages) setMessages(initialMessages);
+  }, []);
 
   return (
-    <div className="pt-4 md:pt-16 h-[97vh] bg-[#101010] m-4 rounded-[28px] ring-[3px] ring-[#1a1a1a] overflow-y-scroll relative flex flex-col justify-between">
-      <div className="pb-[200px] pt-4 md:pt-10">
-        {messages && messages.length ? (
-          <>
-            <ChatList messages={messages} />
-          </>
-        ) : (
-          <EmptyScreen
-            submitMessage={async message => {
-              // Add user message UI
-              setMessages(currentMessages => [
-                ...currentMessages,
-                {
-                  id: Date.now(),
-                  display: <UserMessage>{message}</UserMessage>,
-                },
-              ]);
+    <div className="relative">
+      {messages && messages.length ? (
+        <>
+          <ChatList messages={messages} />
+        </>
+      ) : (
+        <EmptyScreen
+          submitMessage={async (message) => {
+            // Add user message UI
+            setMessages((currentMessages) => [
+              ...currentMessages,
+              {
+                id: Date.now(),
+                display: <UserMessage>{message}</UserMessage>,
+              },
+            ]);
 
-              let curTitleId = null;
-              const res:any = await createRoom(wallet.publicKey, message );
-              if(res) curTitleId = res.titleId
-              setTitleId(curTitleId);
+            let curTitleId = null;
+            const res: any = await createRoom(wallet.publicKey, message);
+            if (res) curTitleId = res.titleId;
+            setTitleId(curTitleId);
 
-              // Submit and get response message
-              const responseMessage = await submitUserMessage(message, curTitleId);
-              setMessages(currentMessages => [
-                ...currentMessages,
-                responseMessage,
-              ]);
-            }}
-          />
-        )}
-        <ChatScrollAnchor trackVisibility={true} />
-      </div>
-      <div className="sticky bottom-0 w-full bg-[#101010] animate-in duration-300 ease-in-out">
+            // Submit and get response message
+            const responseMessage = await submitUserMessage(
+              message,
+              curTitleId
+            );
+            setMessages((currentMessages) => [
+              ...currentMessages,
+              responseMessage,
+            ]);
+          }}
+        />
+      )}
+      {/* <ChatScrollAnchor trackVisibility={true} /> */}
+      <div className="fixed inset-x-0 w-full bottom-0 bg-transparent animate-in duration-300 ease-in-out lg:pl-[220px] xl:pr-[320px] bg-gradient-to-b from-[#1414143a] from-10% via-[#141414d1] via-30% to-[#141414] to-100%">
         <div className="lg:max-w-3xl sm:px-4 mx-auto">
           <div className="px-4 py-2 space-y-4 bg-transparent sm:rounded-t-xl md:py-4">
             <form
@@ -116,15 +116,15 @@ export default function Chat({initialMessages}: any) {
 
                 // Blur focus on mobile
                 if (window.innerWidth < 600) {
-                  e.target['message']?.blur();
+                  e.target["message"]?.blur();
                 }
 
                 const value = inputValue.trim();
-                setInputValue('');
+                setInputValue("");
                 if (!value) return;
 
                 // Add user message UI
-                setMessages(currentMessages => [
+                setMessages((currentMessages) => [
                   ...currentMessages,
                   {
                     id: Date.now(),
@@ -134,20 +134,23 @@ export default function Chat({initialMessages}: any) {
 
                 try {
                   // Save title into Supabase
-                  if (!wallet.publicKey) return
+                  if (!wallet.publicKey) return;
                   let curTitleId = null;
-                  if(messages.length == 0) {
-                    const res:any = await createRoom(wallet.publicKey, value );
-                    if(res) curTitleId = res.titleId
+                  if (messages.length == 0) {
+                    const res: any = await createRoom(wallet.publicKey, value);
+                    if (res) curTitleId = res.titleId;
                     setTitleId(curTitleId);
                   }
 
-                  if(!curTitleId)  curTitleId = titleId
+                  if (!curTitleId) curTitleId = titleId;
 
                   // Submit and get response message
-                  const responseMessage = await submitUserMessage(value, curTitleId);
+                  const responseMessage = await submitUserMessage(
+                    value,
+                    curTitleId
+                  );
                   // Show Message
-                  setMessages(currentMessages => [
+                  setMessages((currentMessages) => [
                     ...currentMessages,
                     responseMessage,
                   ]);
@@ -157,17 +160,17 @@ export default function Chat({initialMessages}: any) {
                 }
               }}
             >
-              <div className="relative flex flex-col w-full px-8 overflow-hidden max-h-48 bg-[#141414] ring-[6px] ring-[#141414] rounded-full border-[2px] border-[#242424] text-type-600">
+              <div className="relative flex flex-col w-full px-8 overflow-hidden max-h-48 bg-[#1a1a1a] ring-[6px] ring-[#1a1a1a] rounded-full border-[2px] border-[#242424] text-type-600">
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button
                       variant="outline"
                       size="icon"
                       className={cn(
-                        buttonVariants({ size: 'sm', variant: 'outline' }),
-                        'absolute left-3 top-[10px] size-8 rounded-full bg-transparent hover:bg-theme-700 p-0 sm:left-4 border-[2px] border-[#242424] '
+                        buttonVariants({ size: "sm", variant: "outline" }),
+                        "absolute left-3 top-[10px] size-8 rounded-full bg-transparent hover:bg-theme-700 p-0 sm:left-4 border-[2px] border-[#242424] "
                       )}
-                      onClick={e => {
+                      onClick={(e) => {
                         e.preventDefault();
                         window.location.reload();
                       }}
@@ -191,7 +194,7 @@ export default function Chat({initialMessages}: any) {
                   name="message"
                   rows={1}
                   value={inputValue}
-                  onChange={e => setInputValue(e.target.value)}
+                  onChange={(e) => setInputValue(e.target.value)}
                 />
                 <div className="absolute right-3 top-[10px] sm:right-4">
                   <Tooltip>
@@ -200,7 +203,7 @@ export default function Chat({initialMessages}: any) {
                         type="submit"
                         size="icon"
                         className="bg-transparent hover:bg-transparent right-10"
-                        disabled={inputValue === ''}
+                        disabled={inputValue === ""}
                       >
                         <IconPlane className="opacity-75 hover:opacity-100" />
                         <span className="sr-only bg-type-600 text-opacity-70">

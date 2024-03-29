@@ -1,9 +1,9 @@
-import React from 'react'
-import { Header } from '@/components/header'
+import React from "react";
+import { Header } from "@/components/header";
 
 export default function RightSidebar() {
   return (
-    <aside className="h-[97vh] overflow-y-scroll flex flex-col items-center gap-9 py-4 px-6 bg-[#101010] m-4 rounded-[28px] ring-[3px] ring-[#1a1a1a]">
+    <aside className="no-scrollbar overflow-y-scroll relative h-screen hidden xl:fixed xl:flex xl:flex-col items-center gap-9 py-4 px-6 bg-[#101010] ring-[#1a1a1a] right-0 w-[320px] inset-y-0">
       <Header />
       <div className="w-full flex flex-col gap-6 mt-2">
         <div className="w-full flex justify-center">
@@ -47,7 +47,7 @@ export default function RightSidebar() {
         <div className="w-full grid gap-8">
           {/* SPL-Tokens section */}
           <div className="flex flex-col items-center gap-2">
-            <h1 className="font-normal text-gray-500 text-sm text-opacity-90 ps-2 pointer-events-none">
+            <h1 className="ps-2 text-sm text-type-600 text-opacity-50 font-normal flex gap-2 items-center pointer-events-none cursor-crosshair">
               Juicebot (coming soon...)
             </h1>
             {/* {analysis && (
@@ -72,5 +72,5 @@ export default function RightSidebar() {
         </div>
       </div>
     </aside>
-  )
+  );
 }
