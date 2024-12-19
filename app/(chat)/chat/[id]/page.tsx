@@ -21,9 +21,9 @@ export interface ChatPageProps {
 export default async function ChatPage({ params }: ChatPageProps) {
     const messages: any[] = [];
     const res: any = await getRoomHistory(params.id)
-    const chats = res.data
+    const chats = res?.data || null
 
-    if(chats.length > 0){
+    if(chats?.length > 0){
         const initialMessages = chats.map((chat: any) => {
             const replyInitial = createStreamableUI(
                 <BotMessage className="items-center">{spinner}</BotMessage>,

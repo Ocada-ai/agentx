@@ -10,9 +10,8 @@ const Dropdown: React.FC<DropdownProps> = ({ actions }) => {
 
 
   return (
-    <div className="relative">
-      
-        <div className="z-10 bg-white shadow-lg rounded-md mt-1">
+    <div className="relative">      
+        <div className="shadow-lg rounded-md mt-1">
           <div className="p-2">
             {actions.map((action, index) => (
               <button

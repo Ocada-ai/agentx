@@ -18,7 +18,7 @@ import { useWallet } from "@solana/wallet-adapter-react";
 import { redirect } from "next/navigation";
 import Dropdown from './ui/actions-dropdown';
 import { actions } from "./actions";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 
 export function SidebarDesktop() {
   const wallet = useWallet();
@@ -27,11 +27,11 @@ export function SidebarDesktop() {
   };
 
   const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const toggleDropdown = () => {
-    setIsOpen(true);
+    setIsOpen(!isOpen);
   };
-
 
   return (
     <Sidebar className="peer absolute inset-y-0 z-30 hidden -translate-x-full bg-[#171717] duration-300 ease-in-out data-[state=open]:translate-x-0 lg:flex lg:w-[220px] min-h-screen px-5 pt-4 h-full flex-col dark:bg-[#171717]">
@@ -52,7 +52,7 @@ export function SidebarDesktop() {
         </div>
         <menu className="flex flex-col">
           {/* <h2>Features Coming soon...</h2> */}
-          <div className="flex flex-col gap-5 mb-3 pointer-events-none">
+          <div className="flex flex-col gap-5 mb-3">
             {/* <Link
               href="/"
               className="text-base text-type-600 text-opacity-50 font-medium flex gap-2 items-center"
@@ -84,38 +84,36 @@ export function SidebarDesktop() {
 
 
             <div
-              
-              className="text-sm text-type-600 font-medium flex gap-2 items-center "
-            >
-              <IconModel className="stroke-type-600" />
-              <span onClick={toggleDropdown} className=" cursor-pointer items-center flex text-type-600 gap-5 w-full "> Actions
-
-                
-        <IconChevronUpDown className="text-sm text-type-600 " />
-      
+              className="text-sm text-type-600 font-medium flex flex-col gap-2 items-center "
+              >
+              <button
+                onClick={toggleDropdown}
+                className="w-full flex justify-between gap-2"
+              >
+                <IconModel className="stroke-type-600" />
+                <span className="cursor-pointer items-center flex text-type-600 gap-5 w-full">
+                  Actions
+                  <IconChevronUpDown className="text-sm text-type-600" />
                 </span>
-                {isOpen &&(
-                  <div className="">This is open ...
-                  <Dropdown actions={actions} />
-                  </div>
-                  )}
-              
+              </button>
+              <div
+                ref={dropdownRef}
+                className={`overflow-hidden transition-all duration-1000 ease-in-out ${
+                  isOpen ? "max-h-40" : "max-h-0"
+                }`}
+              >
+                <Dropdown actions={actions} />
+              </div>
             </div>
-
-
-
             <p className="text-sm text-type-600 text-opacity-50 font-medium flex gap-2 items-center">
-              <IconPromptHistory className="stroke-type-600 opacity-50" />
+              <IconModel className="stroke-type-600 opacity-50" />
               History
             </p>
           </div>
         </menu>
-
         {wallet && wallet.publicKey && (
           <ChatHistory userId={wallet.publicKey?.toString()} />
         )}
-
-        
       </div>
     </Sidebar>
   );
