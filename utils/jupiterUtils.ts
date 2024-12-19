@@ -4,13 +4,16 @@ import { Wallet } from '@project-serum/anchor';
 import bs58 from 'bs58';
 
 
-export async function jupiterSwap() {
+const jupiterSwap = ()=> {
+  
+  async function testSwap() {
+    
     try {
-        const connection = new Connection('https://mainnet.helius-rpc.com/?api-key=1b789c89-6ab1-4d31-b192-4205a155cc96');
-
-const wallet = new Wallet(Keypair.fromSecretKey(bs58.decode(process.env.PRIVATE_KEY || '')));
-
-// Swapping SOL to USDC with input 0.1 SOL and 0.5% slippage
+      const connection = new Connection('https://mainnet.helius-rpc.com/?api-key=1b789c89-6ab1-4d31-b192-4205a155cc96');
+      
+      const wallet = new Wallet(Keypair.fromSecretKey(bs58.decode(process.env.PRIVATE_KEY || '')));
+      
+      // Swapping SOL to USDC with input 0.1 SOL and 0.5% slippage
 const quoteResponse = await (
     await fetch('https://quote-api.jup.ag/v6/quote?inputMint=So11111111111111111111111111111111111111112\
   &outputMint=EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v\
@@ -26,10 +29,11 @@ const quoteResponse = await (
 
 }
 
-// Run the main function if this file is being run directly
-if (require.main === module) {
-    jupiterSwap();
+testSwap()
 }
+
+
+export default jupiterSwap;
 
 
   // get serialized transactions for the swap

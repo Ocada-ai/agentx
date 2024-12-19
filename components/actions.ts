@@ -1,4 +1,4 @@
-import { useRouter } from 'next/navigation';
+
 
 
 export const actions = [
@@ -7,7 +7,7 @@ export const actions = [
     onClick: () => {
       const uniqueChatId = btoa(`${Date.now()}-${Math.random()}`);
       console.log(uniqueChatId)
-      window.location.href=`/chat/${uniqueChatId}?query=Jupiter%20Swap`
+      window.location.href=`/Actions/${uniqueChatId}/Jupiter%20Swap`
       console.log('Jupiter Swap action triggered');
     },
   },
