@@ -4,7 +4,7 @@ import { Wallet } from '@project-serum/anchor';
 import bs58 from 'bs58';
 
 
-async function main() {
+export async function jupiterSwap() {
     try {
         const connection = new Connection('https://mainnet.helius-rpc.com/?api-key=1b789c89-6ab1-4d31-b192-4205a155cc96');
 
@@ -28,7 +28,7 @@ const quoteResponse = await (
 
 // Run the main function if this file is being run directly
 if (require.main === module) {
-    main();
+    jupiterSwap();
 }
 
 

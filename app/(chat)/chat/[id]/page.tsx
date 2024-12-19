@@ -1,3 +1,8 @@
+'use client'
+
+import { useEffect } from 'react';
+import { useRouter } from 'next/router';
+
 import { auth } from '@/auth'
 import Chat from '@/components/chat'
 import { getRoomHistory } from '@/app/supabase';
@@ -7,6 +12,7 @@ import { StockSkeleton } from '@/components/llm-stocks/stock-skeleton';
 import { EventsSkeleton } from '@/components/llm-stocks/events-skeleton';
 import { StocksSkeleton } from '@/components/llm-stocks/stocks-skeleton';
 import { UserMessage } from '@/components/llm-stocks/message';
+import { jupiterSwap } from '@/utils/jupiterUtils';
 
 import { createStreamableUI, useUIState } from 'ai/rsc';
 import { type AI } from '@/app/action';
@@ -22,6 +28,25 @@ export default async function ChatPage({ params }: ChatPageProps) {
     const messages: any[] = [];
     const res: any = await getRoomHistory(params.id)
     const chats = res?.data || null
+
+    const router = useRouter();
+  const { id } = router.query; // Access the chat ID from the URL
+  const [chatState, setChatState] = useState('');
+
+  useEffect(() => {
+    // Check if the query parameter is available
+    if (id) {
+      const query = new URLSearchParams(window.location.search);
+      const actionQuery = query.get('query'); // Get the 'query' parameter
+
+      if (actionQuery === 'Jupiter Swap') {
+        // run the function here
+        jupiterSwap();
+
+
+      }
+    }
+  }, [id]);
 
     if(chats?.length > 0){
         const initialMessages = chats.map((chat: any) => {
