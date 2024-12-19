@@ -11,15 +11,26 @@ import {
   IconModel,
   IconPromptHistory,
   IconTools,
+  IconChevronUpDown,
 } from "@/components/ui/icons";
 import { auth } from "@/auth";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { redirect } from "next/navigation";
+import Dropdown from './ui/actions-dropdown';
+import { actions } from "./actions";
+import { useState, useEffect, useRef } from "react";
 
 export function SidebarDesktop() {
   const wallet = useWallet();
   const handleUrl = () => {
     redirect("/");
+  };
+
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const toggleDropdown = () => {
+    setIsOpen(!isOpen);
   };
 
   return (
@@ -41,7 +52,7 @@ export function SidebarDesktop() {
         </div>
         <menu className="flex flex-col">
           {/* <h2>Features Coming soon...</h2> */}
-          <div className="flex flex-col gap-5 mb-3 pointer-events-none">
+          <div className="flex flex-col gap-5 mb-3">
             {/* <Link
               href="/"
               className="text-base text-type-600 text-opacity-50 font-medium flex gap-2 items-center"
@@ -69,13 +80,37 @@ export function SidebarDesktop() {
                 <span className="text-xs font-normal">(coming soon...)</span>
               </span>
             </Link>
+
+
+
+            <div
+              className="text-sm text-type-600 font-medium flex flex-col gap-2 items-center "
+              >
+              <button
+                onClick={toggleDropdown}
+                className="w-full flex justify-between gap-2"
+              >
+                <IconModel className="stroke-type-600" />
+                <span className="cursor-pointer items-center flex text-type-600 gap-5 w-full">
+                  Actions
+                  <IconChevronUpDown className="text-sm text-type-600" />
+                </span>
+              </button>
+              <div
+                ref={dropdownRef}
+                className={`overflow-hidden transition-all duration-1000 ease-in-out ${
+                  isOpen ? "max-h-40" : "max-h-0"
+                }`}
+              >
+                <Dropdown actions={actions} />
+              </div>
+            </div>
             <p className="text-sm text-type-600 text-opacity-50 font-medium flex gap-2 items-center">
-              <IconPromptHistory className="stroke-type-600 opacity-50" />
+              <IconModel className="stroke-type-600 opacity-50" />
               History
             </p>
           </div>
         </menu>
-
         {wallet && wallet.publicKey && (
           <ChatHistory userId={wallet.publicKey?.toString()} />
         )}
