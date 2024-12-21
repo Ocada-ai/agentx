@@ -2,6 +2,7 @@
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import JupiterSwap from '../components/jupiterswap';
+import { SwapInterface } from '../components/Swapinterface';
 
 
 export interface ActionProps {
@@ -38,7 +39,7 @@ export default function ActionsPage({params}:ActionProps) {
 
   return (
     <div>
-{actionState ? (<JupiterSwap params={params} />) : 'action state incorrect'}
+{actionState ? (<SwapInterface />) : 'action state incorrect'}
     
     </div>
   );

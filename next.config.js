@@ -7,6 +7,14 @@ const nextConfig = {
       net: false,
       tls: false,
       crypto: false,
+      
+      
+      os: require.resolve('os-browserify/browser'),
+      path: require.resolve('path-browserify'),
+      // http: require.resolve('stream-http'),
+      // https: require.resolve('https-browserify'),
+      // zlib: require.resolve('browserify-zlib'),
+    
     };
     return config;
   },

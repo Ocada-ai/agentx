@@ -5,7 +5,7 @@ import { Wallet } from "@project-serum/anchor";
 import bs58 from "bs58";
 import Chat from "@/components/chat";
 import RightSidebar from "@/components/right-sidebar";
-import { EmptyScreenSwap } from "./empty_screen_swap";
+// import { EmptyScreenSwap } from "./empty_screen_swap";
 import { useEnterSubmit } from "@/lib/hooks/use-enter-submit";
 import { useUIState } from "ai/rsc";
 import { AI } from "@/app/action";
@@ -121,7 +121,7 @@ const JupiterSwap = ({ params }: ActionProps) => {
       )}
     </div> */}
       {/* <Chat /> */}
-      <EmptyScreenSwap
+      {/* <EmptyScreenSwap
         submitMessage={async (message) => {
           // Add user message UI
           setMessages((currentMessages) => [
@@ -144,7 +144,7 @@ const JupiterSwap = ({ params }: ActionProps) => {
             // responseMessage,
           ]);
         }}
-      />
+      /> */}
 
       <div className="p-4">
         <h1 className="text-2xl font-bold">Jupiter Swap</h1>

@@ -9,9 +9,10 @@
     "lint": "next lint",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx}\" --cache",
-     "jupiter": "ts-node --esm utils/jupiterUtils.ts"
+    "jupiter": "ts-node --esm utils/jupiterUtils.ts"
   },
   "dependencies": {
+    "@jup-ag/core": "4.0.0-beta.21",
     "@langchain/core": "^0.1.46",
     "@langchain/openai": "^0.0.18",
     "@project-serum/anchor": "^0.26.0",
@@ -28,7 +29,7 @@
     "@solana/wallet-adapter-phantom": "^0.9.24",
     "@solana/wallet-adapter-react": "^0.15.35",
     "@solana/wallet-adapter-react-ui": "^0.9.35",
-    "@solana/wallet-adapter-wallets": "^0.19.30",
+    "@solana/wallet-adapter-wallets": "^0.19.32",
     "@solana/web3.js": "1.87.6",
     "@supabase/supabase-js": "^2.39.8",
     "@tailwindcss/typography": "^0.5.10",
@@ -43,6 +44,7 @@
     "date-fns": "^3.3.1",
     "framer-motion": "^11.0.12",
     "geist": "^1.2.2",
+    "jsbi": "^4.3.0",
     "langchain": "^0.1.26",
     "messages": "link:@langchain/core/messages",
     "nanoid": "^5.0.6",
@@ -51,6 +53,8 @@
     "next-themes": "^0.2.1",
     "node-fetch": "^3.3.2",
     "openai": "^4.28.4",
+    "os-browserify": "^0.3.0",
+    "path-browserify": "^1.0.1",
     "prompts": "link:@langchain/core/prompts",
     "react": "^18",
     "react-dom": "^18",
