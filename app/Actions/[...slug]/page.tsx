@@ -38,7 +38,7 @@ export default function ActionsPage({params}:ActionProps) {
 
   return (
     <div>
-{actionState ? (<JupiterSwap/>) : 'action state incorrect'}
+{actionState ? (<JupiterSwap params={params} />) : 'action state incorrect'}
     
     </div>
   );
